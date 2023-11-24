@@ -152,7 +152,9 @@ const EventCard: React.FC<EventCardInterface> = ({
             <Text.M weight={Text.Weight.medium}>
               {`${strings.manager}: ${huntingManager}`}
             </Text.M>
-            <Text.S>{`#${id} ${showHuntingArea ? huntingArea : ''}`}</Text.S>
+            <Text.S>{`Medžioklė #${id} ${
+              showHuntingArea ? huntingArea : ''
+            }`}</Text.S>
           </Column>
         </MainContent>
         {StatusConfig[status] ? (

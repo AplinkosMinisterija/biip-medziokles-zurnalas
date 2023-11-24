@@ -72,7 +72,11 @@ const HuntingMemberConfirmationPanel = (): JSX.Element => {
                   status: UserStatus.Accepted,
                 },
               },
-              {onFinish: () => {}},
+              {
+                onFinish: () => {
+                  navigation.goBack();
+                },
+              },
             ),
           );
           navigation.goBack();
@@ -100,7 +104,11 @@ const HuntingMemberConfirmationPanel = (): JSX.Element => {
                     status: UserStatus.Declined,
                   },
                 },
-                {onFinish: () => {}},
+                {
+                  onFinish: () => {
+                    navigation.goBack();
+                  },
+                },
               ),
             );
             navigation.goBack();

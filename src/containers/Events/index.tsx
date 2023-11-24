@@ -1,4 +1,4 @@
-import {useFocusEffect, useIsFocused} from '@react-navigation/native';
+import {useIsFocused} from '@react-navigation/native';
 import {api} from '@root/apis/api';
 import CustomSwitch from '@root/components/CustomSwitch';
 import HorizontalTabs, {
@@ -24,7 +24,7 @@ import {EventCategory} from '@root/state/types';
 import {getMyTenantUser} from '@state/tenantUsers/tenantUsersSelectors';
 import {useQuery} from '@tanstack/react-query';
 import {isIOS} from '@utils/layout';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StatusBar, View} from 'react-native';
 import {
   checkNotifications,
@@ -61,15 +61,9 @@ const Events = (props: any) => {
   const huntingsFromState = useSelector(getHuntingHistoryNoSections);
 
   const eventsPastQuery = useQuery({
-    queryKey: [
-      'huntingEventsPast',
-      // selectedEventCategory,
-      isFocused,
-      showMyHuntingEventsOnly,
-      selectedArea,
-    ],
+    queryKey: ['huntingEventsPast', showMyHuntingEventsOnly, selectedArea],
     refetchOnWindowFocus: true,
-    // enabled: selectedEventCategory.key === EventCategory.past,
+    enabled: selectedEventCategory.key === EventCategory.past,
     queryFn: () =>
       api.getHuntingEvents({
         scope: EventCategory.past,
@@ -80,15 +74,9 @@ const Events = (props: any) => {
   });
 
   const eventsFutureQuery = useQuery({
-    queryKey: [
-      'huntingEventsFuture',
-      // selectedEventCategory,
-      isFocused,
-      showMyHuntingEventsOnly,
-      selectedArea,
-    ],
+    queryKey: ['huntingEventsFuture', showMyHuntingEventsOnly, selectedArea],
     refetchOnWindowFocus: true,
-    // enabled: selectedEventCategory.key === EventCategory.future,
+    enabled: selectedEventCategory.key === EventCategory.future,
     queryFn: () =>
       api.getHuntingEvents({
         scope: EventCategory.future,
@@ -109,13 +97,14 @@ const Events = (props: any) => {
       : handleNotificationPermission();
   }, []);
 
-  useFocusEffect(
-    useCallback(() => {
-      console.tron.log('useFocusEffect!!!!!');
-      eventsPastQuery.refetch();
+  useEffect(() => {
+    if (selectedEventCategory.key === EventCategory.future) {
       eventsFutureQuery.refetch();
-    }, []),
-  );
+    }
+    if (selectedEventCategory.key === EventCategory.past) {
+      eventsPastQuery.refetch();
+    }
+  }, [isFocused, selectedEventCategory.key]);
 
   const handleNotificationPermission = () => {
     if (!getNotificationPermissionAsked) {
@@ -175,7 +164,7 @@ const Events = (props: any) => {
           <EventsList
             data={eventsFutureQuery.data?.data?.rows}
             myId={myId}
-            refreshing={eventsFutureQuery.isLoading}
+            // refreshing={eventsFutureQuery.isFetching}
             onRefresh={eventsFutureQuery.refetch}
             handleEventCardPress={handleEventCardPress}
           />
@@ -185,7 +174,7 @@ const Events = (props: any) => {
           <EventsList
             data={eventsPastQuery.data?.data?.rows}
             myId={myId}
-            refreshing={eventsPastQuery.isLoading}
+            // refreshing={eventsPastQuery.isFetching}
             onRefresh={eventsPastQuery.refetch}
             handleEventCardPress={handleEventCardPress}
           />

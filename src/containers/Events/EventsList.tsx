@@ -12,7 +12,7 @@ import EventCard from './EventCard';
 interface Props {
   data: ExtendedHuntingData[];
   myId: string | number;
-  refreshing: boolean;
+  refreshing?: boolean;
   handleEventCardPress: (id: string) => void;
   onRefresh: () => void;
 }
@@ -20,12 +20,11 @@ interface Props {
 const EventsList: React.FC<Props> = ({
   data,
   myId,
-  refreshing,
+  refreshing = false,
   onRefresh,
   handleEventCardPress,
 }) => {
   const selectedArea = useSelector(getSelectedHuntingArea);
-
   return (
     <StyledFlatList
       ListEmptyComponent={() => (
@@ -51,7 +50,7 @@ const EventsList: React.FC<Props> = ({
           membersCount={item?.users ? Object.keys(item?.users).length : 0}
           status={item?.status}
           showHuntingArea={!selectedArea}
-          huntingArea={item?.huntingArea?.name || ''}
+          huntingArea={`| MPV #${item?.huntingArea?.mpvId || ''}`}
           isAdmin={
             item?.managerUser
               ? myId === item?.managerUser?.id

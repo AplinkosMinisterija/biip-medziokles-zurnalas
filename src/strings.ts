@@ -169,8 +169,8 @@ export const strings: any = {
   organization: 'Medžiotojų būrelis',
   limits: 'Limitai',
   newMember: 'Naujas narys',
-  confirmationTerms: 'Esu susipažinęs su saugaus elgesio žiniomis medžioklėje.',
-  confirmationGunLicense: 'Patvirtinu, kad ginklų leidimai galiojantys.',
+  confirmationTerms:
+    'Patvirtinu, kad esu susipažinęs su saugaus elgesio medžioklėje reikalavimais ir leidimas laikyti (nešiotis) ginklą yra galiojantis (jeigu medžiojama su šaunamuoju ginklu)',
   sign: 'Pasirašyti',
   clear: 'Išvalyti',
   editHunting: 'Redaguoti medžioklę',

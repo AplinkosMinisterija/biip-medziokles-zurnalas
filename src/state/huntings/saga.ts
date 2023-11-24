@@ -1,6 +1,7 @@
 import {api} from '@apis/api';
 import {routes} from '@containers/Router';
 import {goBack, navigate, pop} from '@utils/navigation';
+import {AxiosError} from 'axios';
 import {call, delay, put, takeLatest} from 'redux-saga/effects';
 import {strings} from '../../strings';
 import {appActions} from '../app/actions';
@@ -59,11 +60,21 @@ function* handleInviteHuntingMember({payload, options}: Action): any {
       yield delay(300);
       yield put(dataActions.getMainData());
       yield put(appActions.setGuestInvitationPhoto(null));
+      yield call(goBack);
       if (options?.onFinish) {
         yield call(options.onFinish, response);
       }
     }
   } catch (e) {
+    const error = e as AxiosError;
+    const message =
+      error.response?.status === 400
+        ? 'Bilieto numeris nerastas'
+        : 'Nepavyko pridėti svečią';
+    yield call(navigate, routes.huntingDialog, {
+      title: 'Klaida pridedant svečią',
+      message,
+    });
     yield put(appActions.handleError(e));
   } finally {
     yield put(syncActions.setOnSync.huntingMember(false));
@@ -117,7 +128,13 @@ function* handleUpdateHunterLocation({payload, options}: Action) {
 function* handleUpdateHuntingStatus({payload}: Action) {
   try {
     yield put(syncActions.setOnSync.updateStatus(true));
-    yield call(api.updateHunting, {id: payload.id, data: payload});
+    if (payload.status === HuntingStatus.Ready) {
+      yield call(api.startHuntingRegistration, payload.id);
+    } else if (payload.status === HuntingStatus.Started) {
+      yield call(api.startHunting, payload.id);
+    } else if (payload.status === HuntingStatus.Ended) {
+      yield call(api.endHunting, payload.id);
+    }
     yield put(dataActions.getMainData());
     yield delay(100);
     const messageText =
@@ -141,6 +158,15 @@ function* handleUpdateHuntingStatus({payload}: Action) {
       });
     }
   } catch (e) {
+    const error = e as AxiosError;
+    const message =
+      error.response?.status === 400
+        ? 'Medžioklės statusą nepavyko pakeisti dėl apribojimų. Patikrinkite, ar niekas iš medžioklės nariu nemedžioja tam pačiam plote kitoje medžioklėje'
+        : 'Nepavyko pridėti svečią';
+    yield call(navigate, routes.huntingDialog, {
+      title: 'Nepavyko atlikti veiksmo ',
+      message,
+    });
     yield put(appActions.handleError(e));
   } finally {
     yield put(syncActions.setOnSync.updateStatus(false));

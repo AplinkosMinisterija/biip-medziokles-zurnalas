@@ -40,7 +40,11 @@ const ImagePreview = () => {
           text={strings.common.back}
           onPress={navigation.goBack}
         />
-        <CreateButton text={strings.common.delete} onPress={handleDelete} />
+        <CreateButton
+          variant={Button.Variant.Danger}
+          text={strings.common.delete}
+          onPress={handleDelete}
+        />
       </FooterContainer>
     </Container>
   );

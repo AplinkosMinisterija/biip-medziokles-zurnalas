@@ -199,6 +199,30 @@ class ApiClass {
     return response.data;
   };
 
+  startHuntingRegistration = async (id: string): Promise<any> => {
+    const response: AxiosResponse = await this.post(
+      `/api/huntings/${id}/startRegistration`,
+      {},
+    );
+    return response.data;
+  };
+
+  startHunting = async (id: string): Promise<any> => {
+    const response: AxiosResponse = await this.post(
+      `/api/huntings/${id}/start`,
+      {},
+    );
+    return response.data;
+  };
+
+  endHunting = async (id: string): Promise<any> => {
+    const response: AxiosResponse = await this.post(
+      `/api/huntings/${id}/end`,
+      {},
+    );
+    return response.data;
+  };
+
   deleteHunting = async ({
     huntingId,
   }: {

@@ -22,4 +22,4 @@ export const getIsMyHuntingEventsFilter = (state: State): boolean =>
   state.app.showMyHuntingEventsOnly;
 
 export const getAppHomeScreenMode = (state: State): AppHomeScreenMode =>
-  state.app.selectedAppHomeScreenMode;
+  state.app.selectedAppHomeScreenMode || AppHomeScreenMode.HUNTING;
