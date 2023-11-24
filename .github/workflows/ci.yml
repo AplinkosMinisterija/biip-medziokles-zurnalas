@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Set up node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: yarn
@@ -36,3 +36,9 @@ jobs:
 
       - name: Build debug APK using release mode
         run: yarn assembleRelease
+        env:
+          KEY_PATH: debug.keystore
+          KEY_STORE_PASSWORD: android
+          KEY_ALIAS: androiddebugkey
+          KEY_PASSWORD: android
+
