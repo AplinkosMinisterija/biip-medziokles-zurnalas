@@ -1,0 +1,168 @@
+name: Publish
+run-name: "Publish: ${{ inputs.type || 'beta' }} (${{ github.run_number }})"
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      type:
+        description: Type
+        required: true
+        default: firebase-staging
+        type: choice
+        options:
+          - firebase-development
+          - firebase-staging
+          - firebase-production
+          - beta
+          - production
+      release-notes:
+        description: Release notes
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  config:
+    name: Configure publish options
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      base-environment: ${{ inputs.type || 'beta' }}
+      release-notes: ${{ inputs.release-notes || 'Hello world release notes' }}
+
+      version-code: ${{ steps.version-code.outputs.version-code }}
+      version-name: ${{ steps.version-name.outputs.version-name }}
+
+      run-publish-firebase: ${{ steps.firebase.outputs.run-publish-firebase || false }}
+      run-publish-google-play: ${{ steps.google-play.outputs.run-publish-google-play || true }}
+      google-play-track: ${{ steps.google-play.outputs.google-play-track || 'beta' }}
+    steps:
+      - name: Set version code
+        id: version-code
+        run: echo "version-code=${{ github.run_number }}" >> "${GITHUB_OUTPUT}"
+
+      # For version-name based on CalVer (Calendar Versioning) e.g. 23.11.27-123.
+      - name: Set CalVer version name
+        id: version-name
+        run: echo "version-name=$(date +"%y.%m.%d")-${{ steps.version-code.outputs.version-code }}" >> "${GITHUB_OUTPUT}"
+
+      - name: Set to run Firebase publish
+        id: firebase
+        if: ${{ startsWith(inputs.type, 'firebase') }}
+        run: echo "run-publish-firebase=true" >> "${GITHUB_OUTPUT}"
+
+      - name: Set to run Google Play publish
+        id: google-play
+        if: ${{ inputs.type == 'production' || inputs.type == 'beta' || (github.event_name == 'push' && github.ref_name == 'main') }}
+        run: |
+          echo "run-publish-google-play=true" >> "${GITHUB_OUTPUT}"
+          echo "google-play-track=${{ inputs.type || 'beta' }}" >> "${GITHUB_OUTPUT}"
+
+  publish-android-firebase:
+    name: Publish Android to Firebase
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: config
+    if: fromJSON(needs.config.outputs.run-publish-firebase)
+    environment:
+      name: android-${{ needs.config.outputs.base-environment }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Prepare build environment
+        uses: ./.github/actions/prepare-build-environment
+        with:
+          fastlane-working-directory: android
+
+      - name: Create required files
+        working-directory: android/app
+        run: |
+          echo "$FIREBASE_SERVICE_CREDENTIALS_FILE_CONTENT" > firebase-credentials.json
+          echo "$UPLOAD_KEY" | base64 --decode > keystore.jks
+        env:
+          FIREBASE_SERVICE_CREDENTIALS_FILE_CONTENT: ${{ secrets.FIREBASE_SERVICE_CREDENTIALS_FILE_CONTENT }}
+          UPLOAD_KEY: ${{ secrets.ANDROID_UPLOAD_KEY_BASE_64 }}
+
+      - name: Fastlane firebase publish
+        run: bundle exec fastlane android publish_firebase
+        working-directory: android
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/android/app/firebase-credentials.json
+          # This can be kept public, because it's already disclosed in google-services.json.
+          FIREBASE_APP_ID: ${{ vars.FIREBASE_APP_ID }}
+
+          VERSION_NAME: ${{ needs.config.outputs.version-name }}
+          VERSION_CODE: ${{ needs.config.outputs.version-code }}
+          RELEASE_NOTES: ${{ needs.config.outputs.release-notes }}
+
+          # Full path is required by Fastlane otherwise
+          # Keystore file '/home/runner/.gradle/daemon/7.3.3/debug.keystore' not found for signing config 'externalOverride'.
+          KEY_PATH: ${{ github.workspace }}/android/app/keystore.jks
+          KEY_ALIAS: ${{ vars.ANDROID_UPLOAD_KEY_ALIAS }}
+          KEY_STORE_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEY_STORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEY_PASSWORD }}
+
+          APP_ENV: ${{ vars.APP_ENVIRONMENT }}
+          BASE_URL: ${{ vars.APP_API_BASE_URL }}
+
+  publish-android-google-play:
+    name: Publish Android to Google Play
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: config
+    if: fromJSON(needs.config.outputs.run-publish-google-play)
+    environment:
+      name: google-play-${{ needs.config.outputs.base-environment }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Prepare build environment
+        uses: ./.github/actions/prepare-build-environment
+        with:
+          fastlane-working-directory: android
+
+      - name: Create upload keystore
+        working-directory: android/app
+        run: echo "$UPLOAD_KEY" | base64 --decode > keystore.jks
+        env:
+          UPLOAD_KEY: ${{ secrets.ANDROID_UPLOAD_KEY_BASE_64 }}
+
+      - name: Fastlane firebase publish
+        run: bundle exec fastlane android publish_google_play
+        working-directory: android
+        env:
+          GOOGLE_PLAY_SERVICE_CREDENTIALS_FILE_CONTENT: ${{ secrets.GOOGLE_PLAY_SERVICE_CREDENTIALS_FILE_CONTENT }}
+          GOOGLE_PLAY_TRACK: ${{ vars.GOOGLE_PLAY_TRACK }}
+
+          # VERSION_NAME: ${{ needs.config.outputs.version-name }}
+          # VERSION_CODE: ${{ needs.config.outputs.version-code }}
+          VERSION_NAME: '1.0.19'
+          VERSION_CODE: 21
+          RELEASE_NOTES: ${{ needs.config.outputs.release-notes }}
+
+          # Full path is required by Fastlane otherwise
+          # Keystore file '/home/runner/.gradle/daemon/7.3.3/debug.keystore' not found for signing config 'externalOverride'.
+          KEY_PATH: ${{ github.workspace }}/android/app/keystore.jks
+          KEY_ALIAS: ${{ vars.ANDROID_UPLOAD_KEY_ALIAS }}
+          KEY_STORE_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEY_STORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEY_PASSWORD }}
+
+          APP_ENV: ${{ vars.APP_ENVIRONMENT }}
+          BASE_URL: ${{ vars.APP_API_BASE_URL }}
+
+  publish-debug:
+    name: Publish debug
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: config
+    steps:
+      - run: echo "${{ toJSON(needs.config.outputs) }}"

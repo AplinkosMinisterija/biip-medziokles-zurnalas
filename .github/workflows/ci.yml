@@ -16,28 +16,21 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Set up node
-        uses: actions/setup-node@v4
+      - name: Prepare build environment
+        uses: ./.github/actions/prepare-build-environment
         with:
-          node-version: '20'
-          cache: yarn
+          fastlane-working-directory: android
 
-      - name: Set up Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: zulu
-          java-version: '17'
-          cache: gradle
-
-      - name: Install dependencies
-        run: yarn install --immutable --immutable-cache --check-cache
-
-      - name: Build debug APK using release mode
-        run: yarn assembleRelease
+      - name: Android build test
+        run: bundle exec fastlane android ci
+        working-directory: android
         env:
-          KEY_PATH: debug.keystore
+          # Full path is required by Fastlane otherwise
+          # Keystore file '/home/runner/.gradle/daemon/7.3.3/debug.keystore' not found for signing config 'externalOverride'.
+          KEY_PATH: ${{ github.workspace }}/android/app/debug.keystore
           KEY_STORE_PASSWORD: android
           KEY_ALIAS: androiddebugkey
           KEY_PASSWORD: android
