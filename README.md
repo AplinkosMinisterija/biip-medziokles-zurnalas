@@ -11,8 +11,9 @@ developed by the Ministry of Environment of the Republic of Lithuania.
 
 - [About the Project](#about-the-project)
 - [Getting Started](#getting-started)
-    - [Installation](#installation)
-    - [Usage](#usage)
+  - [Installation](#installation)
+  - [Usage](#usage)
+- [Deployment](#deployment)
 - [Contributing](#contributing)
 
 ## About the Project
@@ -55,7 +56,25 @@ records of hunted animals in real time using a mobile phone.
    yarn android
    ```
 
-   *(For iOS options, refer to [package.json](package.json).)*
+   _(For iOS options, refer to [package.json](package.json).)_
+
+## Deployment
+
+### Production
+
+To deploy the application to the production environment (both Google Play and App Store), run the `publish` action
+workflow and select type `production`. This is only allowed for the main branch.
+
+### Beta
+
+The main branch of the repository is automatically deployed to the Google Play beta. Any changes pushed to the main
+branch will trigger a new deployment.
+
+### Firebase App Distribution
+
+To deploy any branch to the Firebase App Distribution, use the `Publish` GitHub workflow with a type starting
+with `firebase` (e.g., `firebase-staging`). Select the suffix based on the API for which you want to publish the app
+version, e.g., `firebase-development` uses the development API.
 
 ## Contributing
 
