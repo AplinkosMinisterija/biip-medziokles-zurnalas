@@ -1,10 +1,5 @@
-name: Prepare build environment
+name: Prepare Android build environment
 description: Prepare application's build environment
-
-inputs:
-  fastlane-working-directory:
-    description: "Required input to set Fastlane working directory."
-    required: true
 
 runs:
   using: composite
@@ -27,7 +22,7 @@ runs:
       with:
         ruby-version: '2.7.4'
         bundler-cache: true
-        working-directory: ${{ inputs.fastlane-working-directory }}
+        working-directory: android
 
     - name: Install dependencies
       run: yarn install --immutable --immutable-cache --check-cache

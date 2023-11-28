@@ -2,10 +2,10 @@ name: Continuous integration
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
 
-permissions: { }
+permissions: {}
 
 jobs:
   build-android:
@@ -20,9 +20,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Prepare build environment
-        uses: ./.github/actions/prepare-build-environment
-        with:
-          fastlane-working-directory: android
+        uses: ./.github/actions/prepare-android-build-environment
 
       - name: Android build test
         run: bundle exec fastlane android ci
