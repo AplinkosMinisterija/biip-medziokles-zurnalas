@@ -4,7 +4,6 @@ run-name: "Publish: ${{ inputs.type || 'beta' }} (${{ github.run_number }})"
 on:
   push:
     branches: [main]
-  pull_request:
   workflow_dispatch:
     inputs:
       type:
@@ -33,14 +32,14 @@ jobs:
     timeout-minutes: 5
     outputs:
       base-environment: ${{ inputs.type || 'beta' }}
-      release-notes: ${{ inputs.release-notes || 'Hello world release notes' }}
+      release-notes: ${{ inputs.release-notes }}
 
       version-code: ${{ steps.version-code.outputs.version-code }}
       version-name: ${{ steps.version-name.outputs.version-name }}
 
       run-publish-firebase: ${{ steps.firebase.outputs.run-publish-firebase || false }}
-      run-publish-google-play: ${{ steps.google-play.outputs.run-publish-google-play || true }}
-      google-play-track: ${{ steps.google-play.outputs.google-play-track || 'beta' }}
+      run-publish-google-play: ${{ steps.google-play.outputs.run-publish-google-play || false }}
+      google-play-track: ${{ steps.google-play.outputs.google-play-track }}
     steps:
       - name: Set version code
         id: version-code
@@ -136,17 +135,15 @@ jobs:
         env:
           UPLOAD_KEY: ${{ secrets.ANDROID_UPLOAD_KEY_BASE_64 }}
 
-      - name: Fastlane firebase publish
+      - name: Fastlane publish ${{ vars.GOOGLE_PLAY_TRACK }} to Google Play
         run: bundle exec fastlane android publish_google_play
         working-directory: android
         env:
           GOOGLE_PLAY_SERVICE_CREDENTIALS_FILE_CONTENT: ${{ secrets.GOOGLE_PLAY_SERVICE_CREDENTIALS_FILE_CONTENT }}
           GOOGLE_PLAY_TRACK: ${{ vars.GOOGLE_PLAY_TRACK }}
 
-          # VERSION_NAME: ${{ needs.config.outputs.version-name }}
-          # VERSION_CODE: ${{ needs.config.outputs.version-code }}
-          VERSION_NAME: '1.0.19'
-          VERSION_CODE: 21
+          VERSION_NAME: ${{ needs.config.outputs.version-name }}
+          VERSION_CODE: ${{ needs.config.outputs.version-code }}
           RELEASE_NOTES: ${{ needs.config.outputs.release-notes }}
 
           # Full path is required by Fastlane otherwise
@@ -158,11 +155,3 @@ jobs:
 
           APP_ENV: ${{ vars.APP_ENVIRONMENT }}
           BASE_URL: ${{ vars.APP_API_BASE_URL }}
-
-  publish-debug:
-    name: Publish debug
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    needs: config
-    steps:
-      - run: echo "${{ toJSON(needs.config.outputs) }}"
