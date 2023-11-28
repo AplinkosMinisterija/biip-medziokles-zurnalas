@@ -1,0 +1,74 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+  desc "Continuous integration"
+  lane :ci do
+      gradle(
+        task: "assemble",
+        build_type: "Release",
+          properties: {
+            "android.injected.signing.store.file" => ENV['KEY_PATH'],
+            "android.injected.signing.store.password" => ENV['KEY_STORE_PASSWORD'],
+            "android.injected.signing.key.alias" => ENV['KEY_ALIAS'],
+            "android.injected.signing.key.password" => ENV['KEY_PASSWORD'],
+          }
+      )
+  end
+
+  desc "Build release"
+  private_lane :build_release do |options|
+      increment_version_code(
+        gradle_file_path: "./app/build.gradle",
+        version_code: ENV['VERSION_CODE']
+      )
+
+      increment_version_name(
+        gradle_file_path: "./app/build.gradle",
+        version_name: ENV['VERSION_NAME']
+      )
+      gradle(
+        task: options[:task],
+        build_type: "Release",
+          properties: {
+            "android.injected.signing.store.file" => ENV['KEY_PATH'],
+            "android.injected.signing.store.password" => ENV['KEY_STORE_PASSWORD'],
+            "android.injected.signing.key.alias" => ENV['KEY_ALIAS'],
+            "android.injected.signing.key.password" => ENV['KEY_PASSWORD'],
+          }
+      )
+  end
+
+  desc "Publish to Firebase"
+  lane :publish_firebase do
+      build_release(task: 'assemble')
+      firebase_app_distribution(
+        app: ENV['FIREBASE_APP_ID'],
+        groups: 'testing-android',
+        release_notes: ENV['RELEASE_NOTES']
+      )
+  end
+
+  desc "Publish to Google Play"
+  lane :publish_google_play do
+      build_release(task: 'bundle')
+      upload_to_play_store(
+        track: ENV['GOOGLE_PLAY_TRACK'],
+        json_key_data: ENV['GOOGLE_PLAY_SERVICE_CREDENTIALS_FILE_CONTENT'],
+      )
+  end
+end
