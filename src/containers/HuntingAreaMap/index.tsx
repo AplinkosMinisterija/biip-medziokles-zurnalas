@@ -4,8 +4,6 @@ import {
   getExtendedHunting,
   getHuntingMember,
 } from '@root/state/data/dataSelectors';
-import {getHuntingMembersLocation} from '@root/state/huntingMembers/huntingMembersSelectors';
-import {filter} from 'lodash';
 import React, {useEffect, useState} from 'react';
 import {StatusBar, View} from 'react-native';
 import {useSelector} from 'react-redux';
@@ -17,39 +15,55 @@ import HuntingMap from '../Hunting/HuntingMap';
 const HuntingAreaMap = () => {
   const route = useRoute<any>();
   const {memberId, closePrevView = false, huntingId} = route.params;
-  const [mapMembers, setMapMembers] = useState<{
-    current: Array<string>;
-    others: Array<string>;
-  }>({
-    current: [],
-    others: [],
-  });
+  const [mapMembers, setMapMembers] = useState<
+    Array<{
+      x: number;
+      y: number;
+      type?: 'current' | 'other';
+      huntingMemberId: number;
+      phone: string;
+      fullName: string;
+    }>
+  >([]);
 
   const memberData = useSelector(getHuntingMember(memberId));
 
   const huntingData = useSelector(getExtendedHunting(huntingId));
 
-  const allMapMembers = useSelector(getHuntingMembersLocation(mapMembers));
+  // const allMapMembers = useSelector(getHuntingMembersLocation(mapMembers));
+  // const myMapMember: any;
+  // const otherMapMembers = filter(mapMembers, member => {
+  //   if (member.huntingMemberId === memberId) {
+  //     myMapMember = member;
+  //     return false;
+  //   }
 
-  const otherMapMembers = filter(
-    allMapMembers,
-    member => member.id !== memberId,
-  );
+  //   return true;
+  // });
 
-  const mapMembersLocation = otherMapMembers.map(member => {
-    return member
-      ? [
-          member.id,
-          member.hunting === huntingId ? '004650' : 'A5B9C0',
-          member.location?.[0],
-          member.location?.[1],
-        ]
-      : [];
-  });
+  // const myMapMember = filter(
+  //   mapMembers,
+  //   member => member.huntingMemberId === memberId,
+  // );
+
+  // const mapMembersLocation = otherMapMembers.map(member => {
+  //   return member
+  //     ? [
+  //         member.id,
+  //         member.hunting === huntingId ? '004650' : 'A5B9C0',
+  //         member.location?.[0],
+  //         member.location?.[1],
+  //       ]
+  //     : [];
+  // });
 
   useEffect(() => {
     if (huntingId) {
-      api.getHuntingMapMembers(huntingId).then(res => {
+      api.getGeoPoints(huntingId).then(res => {
+        console.tron.log('getGeoPoints', res);
+        // res.findIndex(item => item.huntingMemberId === memberId);
+
+        // res.splice();
         setMapMembers(res);
       });
     }
@@ -62,15 +76,14 @@ const HuntingAreaMap = () => {
       {huntingData?.huntingArea?.id && (
         <Wrapper>
           <HuntingMap
-            url={`https://maps.biip.lt/hunting?filter_attr=mpv_id&filter_val=${
+            url={`https://maps.biip.lt/medziokle?mpvId=${
               huntingData.huntingArea.mpvId
-            }&geom_mode=pan${
-              mapMembersLocation?.length
-                ? `&geom_view=` + JSON.stringify(mapMembersLocation)
-                : ''
-            }${
+            }&draw=true&${
               memberData?.location
-                ? `&geom_current=${JSON.stringify(memberData.location)}`
+                ? `&zoom=${JSON.stringify({
+                    x: memberData.location[0],
+                    y: memberData.location[1],
+                  })}`
                 : ''
             }`}
             editMode={true}

@@ -46,13 +46,6 @@ const TabView = () => {
     route.params.tab && setSelectedTab(route.params.tab);
   }, [route.params.tab]);
 
-  useEffect(() => {
-    // TODO change this, makes random strange navigation
-    if (!huntingData) {
-      navigation.navigate(routes.events);
-    }
-  }, [huntingData, navigation]);
-
   const me = useSelector(getMe);
   const loading = useSelector(getOnSync.updateStatus);
   const huntingMembersSectionList = formatHuntingMembersList(

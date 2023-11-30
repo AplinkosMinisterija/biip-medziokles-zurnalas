@@ -268,6 +268,13 @@ class ApiClass {
     return response.data;
   };
 
+  getGeoPoints = async (huntingId: string): Promise<any> => {
+    const response: AxiosResponse = await this.get(
+      `/api/huntings/${huntingId}/geoPoints`,
+    );
+    return response.data;
+  };
+
   removeHuntingMember = async ({member}: {member: string}): Promise<any> => {
     const response: AxiosResponse = await this.delete(
       `/api/huntingMembers/${member}`,

@@ -1,6 +1,6 @@
 {
   "name": "mobile_medziotojas",
-  "version": "1.0.18",
+  "version": "1.0.19",
   "private": true,
   "scripts": {
     "android": "adb reverse tcp:9090 tcp:9090 && react-native run-android",

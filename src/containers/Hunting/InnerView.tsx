@@ -136,7 +136,7 @@ const HuntingInner = () => {
             <MapWrapper>
               {huntingData.huntingArea && (
                 <HuntingMap
-                  url={`https://maps.biip.lt/hunting?filter_attr=mpv_id&filter_val=${
+                  url={`https://maps.biip.lt/medziokle?mpvId=${
                     huntingData.huntingArea.mpvId
                   }&geom_mode=view&geom_view=${JSON.stringify(
                     mapMembersLocation,

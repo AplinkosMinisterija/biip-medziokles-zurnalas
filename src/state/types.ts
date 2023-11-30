@@ -220,7 +220,6 @@ export interface HuntingMemberData {
   createdBy: string | null;
   createdAt: string;
   deletedAt: string | null;
-  location: Array<string> | null;
   leftAt: string | null;
 }
 
@@ -681,4 +680,16 @@ export interface FootprintRecord {
   photos?: Array<string>;
   comment?: string;
   location?: number[];
+}
+
+export interface GeoMapSelectedPoint {
+  type: string;
+  features: {
+    type: string;
+    geometry: {
+      type: string;
+      coordinates: number[];
+    };
+    properties?: any;
+  }[];
 }

@@ -72,7 +72,6 @@ const UserInvitation = () => {
           },
           {
             onFinish: () => {
-              navigation.goBack();
               navigation.navigate(routes.selectHunterLocation, {
                 userId: selectedMember.id,
                 huntingId,

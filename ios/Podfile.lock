@@ -405,7 +405,7 @@ PODS:
     - React-Core
   - RNCMaskedView (0.2.9):
     - React-Core
-  - RNDeviceInfo (10.9.0):
+  - RNDeviceInfo (10.11.0):
     - React-Core
   - RNFBApp (14.11.1):
     - Firebase/CoreOnly (= 8.15.0)
@@ -461,7 +461,7 @@ PODS:
   - vision-camera-code-scanner (0.2.0):
     - GoogleMLKit/BarcodeScanning
     - React-Core
-  - VisionCamera (2.15.6):
+  - VisionCamera (2.16.5):
     - React
     - React-callinvoker
     - React-Core
@@ -753,7 +753,7 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: b03032fdbdb725bea0bd9e5ec5a7272865ae7398
   RNCClipboard: 3f0451a8100393908bea5c5c5b16f96d45f30bfc
   RNCMaskedView: 949696f25ec596bfc697fc88e6f95cf0c79669b6
-  RNDeviceInfo: 02ea8b23e2280fa18e00a06d7e62804d74028579
+  RNDeviceInfo: bf8a32acbcb875f568217285d1793b0e8588c974
   RNFBApp: 9646e09d041ea159b84584865212e4cf33acd179
   RNFBCrashlytics: f2b5e456c4969bdec60482e83d973d873ff17f1d
   RNFileViewer: ce7ca3ac370e18554d35d6355cffd7c30437c592
@@ -766,9 +766,9 @@ SPEC CHECKSUMS:
   RNSVG: ed492aaf3af9ca01bc945f7a149d76d62e73ec82
   Sentry: 4c9babff9034785067c896fd580b1f7de44da020
   vision-camera-code-scanner: dda884a7f3ec8243a2a6d6489b91860648371bca
-  VisionCamera: a38c45fe2cb8f796f2120cec837d8275a6357fc0
+  VisionCamera: 94664ff9477db05c1c426e35ffcf372c0e3b12be
   Yoga: 8a90b50af67eaa9fe94fd03e550bfeab06096873
 
 PODFILE CHECKSUM: a5eb04ce7e6b275d120042d4e1b684002342d284
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.12.1

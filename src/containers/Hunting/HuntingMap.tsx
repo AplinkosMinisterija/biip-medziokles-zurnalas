@@ -2,7 +2,7 @@ import {useNavigation} from '@react-navigation/native';
 import {getExtendedHuntingMember, getMe} from '@root/state/data/dataSelectors';
 import {huntingActions} from '@root/state/huntings/actions';
 import {getOnSync} from '@root/state/sync/syncSelectors';
-import {State} from '@root/state/types';
+import {GeoMapSelectedPoint, State} from '@root/state/types';
 import {formatPhoneNumber} from '@utils/format';
 import {isEqual} from 'lodash';
 import React, {useRef, useState} from 'react';
@@ -52,6 +52,8 @@ const HuntingMap = ({
       : () => undefined,
   );
 
+  console.tron.log('member', member);
+
   const myUserId = useSelector(getMe);
   const userIsMe = member && myUserId === member?.user?.id;
 
@@ -78,16 +80,13 @@ const HuntingMap = ({
         startInLoadingState={true}
         onMessage={async e => {
           let response = JSON.parse(e.nativeEvent.data);
-          const currentLocation = response?.mapIframeMsg?.currentLocation;
-          const selectedlocation = response?.mapIframeMsg?.mapFeature;
-          if (currentLocation) {
-            setCurrentLocation(currentLocation);
-            setSelectedLocation(null);
-          } else if (selectedlocation) {
-            setCurrentLocation(null);
-            setSelectedLocation(selectedlocation);
+          const selected: GeoMapSelectedPoint = JSON.parse(
+            response?.mapIframeMsg?.data,
+          );
+          // selectedlocation = response?.mapIframeMsg?.mapFeature;
+          if (selected) {
+            setSelectedLocation(selected);
           } else {
-            setCurrentLocation(null);
             setSelectedLocation(null);
           }
         }}
@@ -101,14 +100,14 @@ const HuntingMap = ({
           }
         }}
       />
-      {(currentLocation || selectedLocation) && (
+      {selectedLocation && (
         <PopUp extraFooter={extraFooter}>
           {member && (
             <Text.M
               weight={Text.Weight.bold}
             >{`${member?.user?.firstName} ${member?.user?.lastName}`}</Text.M>
           )}
-          {editMode && memberId && currentLocation && !hidePopUp && (
+          {editMode && memberId && !hidePopUp && (
             <ButtonWrapper>
               <BottomButton
                 variant={Button.Variant.PrimaryLight}
@@ -128,7 +127,7 @@ const HuntingMap = ({
                     huntingActions.updateHunterLocation(
                       {
                         memberId,
-                        location: currentLocation,
+                        location: selectedLocation,
                       },
                       {
                         onFinish: () =>
