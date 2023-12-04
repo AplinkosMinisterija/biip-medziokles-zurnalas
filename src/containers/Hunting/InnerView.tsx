@@ -4,13 +4,11 @@ import BackButton from '@root/components/BackButton';
 import EmptyState from '@root/components/EmptyState';
 import {dataActions} from '@root/state/data/actions';
 import {getExtendedHunting, getMe} from '@root/state/data/dataSelectors';
-import {getHuntingMembersLocation} from '@root/state/huntingMembers/huntingMembersSelectors';
 import {getOnSync} from '@root/state/sync/syncSelectors';
 import {strings} from '@root/strings';
 import {theme} from '@root/theme';
 import {formatHuntingMembersList} from '@root/utils/format';
-import {HuntingStatus} from '@state/types';
-import {map} from 'lodash';
+import {HuntingMemberGeoData, HuntingStatus} from '@state/types';
 import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, StatusBar, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
@@ -32,38 +30,19 @@ const HuntingInner = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation<any>();
   const [selectedTab, setSelectedTab] = useState<string>(Selection.Members);
-  const [mapMembers, setMapMembers] = useState<{
-    current: Array<string>;
-    others: Array<string>;
-  }>({
-    current: [],
-    others: [],
-  });
+  const [mapMembers, setMapMembers] = useState<Array<HuntingMemberGeoData>>([]);
 
-  const allMapMembers = useSelector(getHuntingMembersLocation(mapMembers));
-
-  const mapMembersLocation = map(allMapMembers, member => {
-    return member
-      ? [
-          member?.id,
-          member.hunting === huntingId ? '004650' : 'A5B9C0',
-          member.location?.[0],
-          member.location?.[1],
-        ]
-      : [];
-  });
+  useEffect(() => {
+    if (huntingId) {
+      api.getGeoPoints(huntingId).then(res => {
+        setMapMembers(res);
+      });
+    }
+  }, [huntingId]);
 
   useEffect(() => {
     tab && setSelectedTab(tab);
   }, [tab]);
-
-  useEffect(() => {
-    if (huntingData?.id) {
-      api.getHuntingMapMembers(huntingId).then(res => {
-        setMapMembers(res);
-      });
-    }
-  }, [selectedTab]);
 
   const me = useSelector(getMe);
   const loading = useSelector(getOnSync.data);
@@ -138,9 +117,8 @@ const HuntingInner = () => {
                 <HuntingMap
                   url={`https://maps.biip.lt/medziokle?mpvId=${
                     huntingData.huntingArea.mpvId
-                  }&geom_mode=view&geom_view=${JSON.stringify(
-                    mapMembersLocation,
-                  )}`}
+                  }${mapMembers ? `&points=${JSON.stringify(mapMembers)}` : ''}
+                  `}
                 />
               )}
             </MapWrapper>

@@ -1,10 +1,13 @@
 import {useNavigation} from '@react-navigation/native';
-import {getExtendedHuntingMember, getMe} from '@root/state/data/dataSelectors';
 import {huntingActions} from '@root/state/huntings/actions';
 import {getOnSync} from '@root/state/sync/syncSelectors';
-import {GeoMapSelectedPoint, State} from '@root/state/types';
+import {
+  GeoFeature,
+  GeoMapSelectedPoint,
+  HuntingMemberGeoData,
+  State,
+} from '@root/state/types';
 import {formatPhoneNumber} from '@utils/format';
-import {isEqual} from 'lodash';
 import React, {useRef, useState} from 'react';
 import {ActivityIndicator, Linking, View} from 'react-native';
 import {WebView} from 'react-native-webview';
@@ -18,20 +21,19 @@ import {theme} from '../../theme';
 
 interface HuntingMapProps {
   url: string;
-  memberId?: string;
+  memberData?: HuntingMemberGeoData;
   extraFooter?: number;
   editMode?: boolean;
   closePrevView?: boolean;
-  initialLocation?: Array<string> | null | undefined;
+  initialLocation?: unknown;
 }
 
 const HuntingMap = ({
   url,
   extraFooter = 0,
   editMode = false,
-  memberId,
+  memberData,
   closePrevView,
-  initialLocation,
 }: HuntingMapProps) => {
   const isConnected = useSelector((state: State) => state.network.isConnected);
 
@@ -40,26 +42,12 @@ const HuntingMap = ({
   const navigation = useNavigation<any>();
 
   const [isReloaded, setIsReloaded] = useState(true);
-  const [currentLocation, setCurrentLocation] = useState(null);
-  const [selectedLocation, setSelectedLocation] =
-    useState<Array<string> | null>(null);
-
-  const member = useSelector(
-    memberId
-      ? getExtendedHuntingMember(memberId)
-      : selectedLocation
-      ? getExtendedHuntingMember(selectedLocation[0])
-      : () => undefined,
-  );
-
-  console.tron.log('member', member);
-
-  const myUserId = useSelector(getMe);
-  const userIsMe = member && myUserId === member?.user?.id;
+  const [currentGeoPointData, setCurrentGeoPointData] =
+    useState<GeoMapSelectedPoint | null>(null);
+  const [selectedGeoPointMemberData, setSelectedGeoPointMemberData] =
+    useState<GeoFeature | null>(null);
 
   const loading = useSelector(getOnSync.hunterLocation);
-
-  const hidePopUp = editMode && isEqual(initialLocation, currentLocation);
 
   return url ? (
     <Container>
@@ -79,16 +67,25 @@ const HuntingMap = ({
         originWhitelist={['https://*']}
         startInLoadingState={true}
         onMessage={async e => {
-          let response = JSON.parse(e.nativeEvent.data);
-          const selected: GeoMapSelectedPoint = JSON.parse(
-            response?.mapIframeMsg?.data,
-          );
-          // selectedlocation = response?.mapIframeMsg?.mapFeature;
-          if (selected) {
-            setSelectedLocation(selected);
-          } else {
-            setSelectedLocation(null);
-          }
+          try {
+            let response = JSON.parse(e.nativeEvent.data);
+            if (editMode) {
+              const currentPoint: GeoMapSelectedPoint = JSON.parse(
+                response?.mapIframeMsg?.data,
+              );
+              setCurrentGeoPointData(currentPoint);
+            } else {
+              const selected: GeoFeature = response?.mapIframeMsg?.selected;
+              console.tron.log('selected', selected);
+              if (selected && selected.geometry.type === 'Point') {
+                console.tron.log('SAVE selected');
+                setSelectedGeoPointMemberData(selected);
+              } else {
+                console.tron.log('NULL selected');
+                setSelectedGeoPointMemberData(null);
+              }
+            }
+          } catch (error) {}
         }}
         source={{
           uri: url,
@@ -100,14 +97,19 @@ const HuntingMap = ({
           }
         }}
       />
-      {selectedLocation && (
+      {(!!selectedGeoPointMemberData || memberData) && (
         <PopUp extraFooter={extraFooter}>
-          {member && (
+          {selectedGeoPointMemberData && (
             <Text.M
               weight={Text.Weight.bold}
-            >{`${member?.user?.firstName} ${member?.user?.lastName}`}</Text.M>
+            >{`${selectedGeoPointMemberData.properties?.fullName}`}</Text.M>
           )}
-          {editMode && memberId && !hidePopUp && (
+          {memberData && (
+            <Text.M
+              weight={Text.Weight.bold}
+            >{`${memberData?.fullName}`}</Text.M>
+          )}
+          {editMode && memberData && (
             <ButtonWrapper>
               <BottomButton
                 variant={Button.Variant.PrimaryLight}
@@ -126,8 +128,8 @@ const HuntingMap = ({
                   dispatch(
                     huntingActions.updateHunterLocation(
                       {
-                        memberId,
-                        location: selectedLocation,
+                        memberId: memberData.huntingMemberId,
+                        geom: currentGeoPointData,
                       },
                       {
                         onFinish: () =>
@@ -141,10 +143,16 @@ const HuntingMap = ({
               />
             </ButtonWrapper>
           )}
-          {!editMode && member?.user?.phone && !userIsMe && (
+          {!editMode && selectedGeoPointMemberData && (
             <StyledButton
-              text={formatPhoneNumber(member?.user?.phone)}
-              onPress={() => Linking.openURL(`tel:${member?.user?.phone}`)}
+              text={formatPhoneNumber(
+                selectedGeoPointMemberData.properties?.phone,
+              )}
+              onPress={() =>
+                Linking.openURL(
+                  `tel:${selectedGeoPointMemberData.properties?.phone}`,
+                )
+              }
               leftIcon={<PhoneIcon />}
             />
           )}

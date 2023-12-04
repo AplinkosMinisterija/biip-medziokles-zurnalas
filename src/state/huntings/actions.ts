@@ -89,7 +89,7 @@ export const huntingActions = {
     options,
   }),
   updateHunterLocation: (
-    payload: {memberId: string; location: Array<string>},
+    payload: {memberId: string | number; geom: unknown},
     options: {},
   ) => ({
     type: huntingConstants.UPDATE_HUNTER_LOCATION,

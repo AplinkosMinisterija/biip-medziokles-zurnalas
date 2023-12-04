@@ -249,14 +249,14 @@ class ApiClass {
 
   updateHunterLocation = async ({
     memberId,
-    location,
+    geom,
   }: {
     memberId: string;
-    location: Array<string>;
+    geom: unknown;
   }): Promise<any> => {
     const response: AxiosResponse = await this.patch(
       `/api/huntingMembers/${memberId}`,
-      {location},
+      {geom},
     );
     return response.data;
   };

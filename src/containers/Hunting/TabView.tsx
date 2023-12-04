@@ -4,12 +4,10 @@ import EmptyState from '@root/components/EmptyState';
 import HuntingTabViewHeader from '@root/components/headers/HuntingTabViewHeader';
 import {appActions} from '@root/state/app/actions';
 import {getExtendedHunting, getMe} from '@root/state/data/dataSelectors';
-import {getHuntingMembersLocation} from '@root/state/huntingMembers/huntingMembersSelectors';
 import {huntingActions} from '@root/state/huntings/actions';
 import {getOnSync} from '@root/state/sync/syncSelectors';
-import {HuntingStatus} from '@root/state/types';
+import {HuntingMemberGeoData, HuntingStatus} from '@root/state/types';
 import {formatHuntingMembersList} from '@root/utils/format';
-import {map} from 'lodash';
 import React, {useEffect, useState} from 'react';
 import {StatusBar, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
@@ -31,16 +29,15 @@ const TabView = () => {
   const route: HuntingRouteProps = useRoute();
   const huntingData = useSelector(getExtendedHunting(route.params.huntingId));
   const [selectedTab, setSelectedTab] = useState<string>(Selection.Members);
+  const [mapMembers, setMapMembers] = useState<Array<HuntingMemberGeoData>>([]);
 
-  const [mapMembers, setMapMembers] = useState<{
-    current: Array<string>;
-    others: Array<string>;
-  }>({
-    current: [],
-    others: [],
-  });
-
-  const allMapMembers = useSelector(getHuntingMembersLocation(mapMembers));
+  useEffect(() => {
+    if (huntingData?.id) {
+      api.getGeoPoints(huntingData?.id).then(res => {
+        setMapMembers(res);
+      });
+    }
+  }, [huntingData?.id]);
 
   useEffect(() => {
     route.params.tab && setSelectedTab(route.params.tab);
@@ -56,24 +53,6 @@ const TabView = () => {
   const myHuntingMember = huntingData?.huntingMembers?.find(
     member => member.user.id === me,
   );
-  const mapMembersLocation = map(allMapMembers, member => {
-    return member
-      ? [
-          member?.id,
-          member.hunting === huntingData?.id ? '004650' : 'A5B9C0',
-          member.location?.[0],
-          member.location?.[1],
-        ]
-      : [];
-  });
-
-  useEffect(() => {
-    if (huntingData?.id) {
-      api.getHuntingMapMembers(huntingData.id).then(res => {
-        setMapMembers(res);
-      });
-    }
-  }, []);
 
   const handleEndHunting = () => {
     if (huntingData?.id) {
@@ -131,12 +110,11 @@ const TabView = () => {
             {huntingData?.huntingArea?.id && (
               <MapWrapper>
                 <HuntingMap
-                  url={`https://maps.biip.lt/hunting?filter_attr=mpv_id&filter_val=${
-                    huntingData.huntingArea.mpvId
-                  }&geom_mode=view&geom_view=${JSON.stringify(
-                    mapMembersLocation,
-                  )}`}
                   extraFooter={90}
+                  url={`https://maps.biip.lt/medziokle?mpvId=${
+                    huntingData.huntingArea.mpvId
+                  }${mapMembers ? `&points=${JSON.stringify(mapMembers)}` : ''}
+                  `}
                 />
               </MapWrapper>
             )}

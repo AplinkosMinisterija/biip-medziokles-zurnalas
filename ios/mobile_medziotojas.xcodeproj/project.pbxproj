@@ -500,7 +500,7 @@
 				CODE_SIGN_ENTITLEMENTS = mobile_medziotojas/mobile_medziotojasDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = Z2KH68A259;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = mobile_medziotojas/Info.plist;
@@ -533,7 +533,7 @@
 				CODE_SIGN_ENTITLEMENTS = mobile_medziotojas/mobile_medziotojas.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = Z2KH68A259;
 				INFOPLIST_FILE = mobile_medziotojas/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

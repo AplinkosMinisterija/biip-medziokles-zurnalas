@@ -684,12 +684,23 @@ export interface FootprintRecord {
 
 export interface GeoMapSelectedPoint {
   type: string;
-  features: {
+  features: GeoFeature[];
+}
+
+export interface GeoFeature {
+  type: string;
+  geometry: {
     type: string;
-    geometry: {
-      type: string;
-      coordinates: number[];
-    };
-    properties?: any;
-  }[];
+    coordinates: number[];
+  };
+  properties?: any;
+}
+
+export interface HuntingMemberGeoData {
+  x: number;
+  y: number;
+  type?: 'current' | 'other';
+  huntingMemberId: number;
+  phone: string;
+  fullName: string;
 }
