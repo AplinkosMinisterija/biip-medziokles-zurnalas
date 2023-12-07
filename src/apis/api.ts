@@ -296,6 +296,20 @@ class ApiClass {
     return response.data;
   };
 
+  acceptHuntingMember = async ({
+    memberId,
+    signature,
+  }: {
+    memberId: string;
+    signature?: string;
+  }): Promise<AxiosResponse> => {
+    const response: AxiosResponse = await this.post(
+      `/api/huntingMembers/${memberId}/accept`,
+      {signature},
+    );
+    return response.data;
+  };
+
   getMainData = async (): Promise<any> => {
     const response: AxiosResponse = await this.get('/api/state/user');
     return response;

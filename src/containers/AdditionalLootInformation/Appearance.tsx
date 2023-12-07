@@ -1,3 +1,4 @@
+import HorizontalTabs from '@root/components/HorizontalTabs';
 import {getOnSync} from '@root/state/sync/syncSelectors';
 import {Formik} from 'formik';
 import React from 'react';
@@ -7,7 +8,6 @@ import {useSelector} from 'react-redux';
 import styled from 'styled-components';
 import * as Yup from 'yup';
 import ButtonFooter from '../../components/ButtonFooter';
-import SegmentedTabbar from '../../components/SegmentedTabbar';
 import TextArea from '../../components/TextArea';
 import {strings} from '../../strings';
 import {useKeyboard} from '../../utils/hooks';
@@ -29,8 +29,8 @@ const Appearance = ({onPress, onBack}: AppearanceProps) => {
   const loading = useSelector(getOnSync.loot);
 
   const routesScabies = [
-    {key: false, title: strings.common.no},
     {key: true, title: strings.common.yes},
+    {key: false, title: strings.common.no},
   ];
 
   const routesDefects = [
@@ -77,17 +77,19 @@ const Appearance = ({onPress, onBack}: AppearanceProps) => {
           >
             <Form>
               <View>
-                <SegmentedTabbar
+                <HorizontalTabs
                   routes={routesScabies}
                   label={strings.hasScabies}
-                  onSelect={val => setFieldValue('hasScabies', val)}
+                  selectedKey={values.hasScabies}
+                  onSelect={val => setFieldValue('hasScabies', val.key)}
                 />
-                <SegmentedTabbar
+                <HorizontalTabs
                   routes={routesDefects}
                   label={strings.hasDefects}
+                  selectedKey={values.hasDefects}
                   onSelect={val => {
                     setFieldError('appearanceNotes', '');
-                    setFieldValue('hasDefects', val);
+                    setFieldValue('hasDefects', val.key);
                   }}
                 />
               </View>

@@ -161,10 +161,10 @@ function* handleUpdateHuntingStatus({payload}: Action) {
     const error = e as AxiosError;
     const message =
       error.response?.status === 400
-        ? 'Medžioklės statusą nepavyko pakeisti dėl apribojimų. Patikrinkite, ar niekas iš medžioklės nariu nemedžioja tam pačiam plote kitoje medžioklėje'
-        : 'Nepavyko pridėti svečią';
+        ? 'Šiuo metu dalyvaujate kitoje medžioklėje.'
+        : 'Ivyko klaida';
     yield call(navigate, routes.huntingDialog, {
-      title: 'Nepavyko atlikti veiksmo ',
+      title: 'Nepavyko atlikti veiksmo',
       message,
     });
     yield put(appActions.handleError(e));
@@ -257,6 +257,38 @@ function* handleUpdateHuntingMember({payload, options}: Action) {
   }
 }
 
+function* handleAcceptHuntingMember({payload, options}: Action) {
+  try {
+    yield put(syncActions.setOnSync.huntingMember(true));
+    yield call(api.acceptHuntingMember, payload);
+    yield delay(300);
+    yield call(handleFetchMainData);
+    if (options?.onFinish) {
+      yield call(options.onFinish);
+    }
+  } catch (e) {
+    const error = e as AxiosError;
+    yield put(appActions.handleError(e));
+    if (error.response?.status === 400) {
+      if (payload?.signature) {
+        // pasirasiai pas vadova
+        yield call(navigate, routes.huntingDialog, {
+          title: 'Negalite tvirtinti dalyvavimo',
+          message: 'Medžiotojas dalyvauja kitoje medžioklėje.',
+        });
+      } else {
+        // pats tvirtina dalyvavima
+        yield call(navigate, routes.huntingDialog, {
+          title: 'Negalite dalyvauti medžioklėje',
+          message: 'Šiuo metu dalyvaujate kitoje medžioklėje.',
+        });
+      }
+    }
+  } finally {
+    yield put(syncActions.setOnSync.huntingMember(false));
+  }
+}
+
 function* handleDeleteHunting(action: Action) {
   try {
     yield call(api.deleteHunting, action.payload);
@@ -294,6 +326,10 @@ export function* HuntingSaga() {
   yield takeLatest(
     huntingConstants.UPDATE_HUNTING_MEMBER,
     handleUpdateHuntingMember,
+  );
+  yield takeLatest(
+    huntingConstants.ACCEPT_HUNTING_MEMBER,
+    handleAcceptHuntingMember,
   );
   yield takeLatest(huntingConstants.DELETE_HUNTING, handleDeleteHunting);
   yield takeLatest(

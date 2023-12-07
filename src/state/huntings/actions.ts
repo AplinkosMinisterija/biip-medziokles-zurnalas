@@ -18,6 +18,7 @@ export const huntingConstants = {
   UPDATE_LOOT: 'hunting_UPDATE_LOOT',
   DELETE_HUNTING: 'hunting_DELETE_HUNTING',
   UPDATE_HUNTER_LOCATION: 'hunting_UPDATE_HUNTER_LOCATION',
+  ACCEPT_HUNTING_MEMBER: 'hunting_ACCEPT_HUNTING_MEMBER',
 };
 
 export const huntingActions = {
@@ -85,6 +86,14 @@ export const huntingActions = {
     options = {},
   ) => ({
     type: huntingConstants.UPDATE_HUNTING_MEMBER,
+    payload,
+    options,
+  }),
+  acceptHuntingMember: (
+    payload: {memberId: string; signature?: string},
+    options = {},
+  ) => ({
+    type: huntingConstants.ACCEPT_HUNTING_MEMBER,
     payload,
     options,
   }),

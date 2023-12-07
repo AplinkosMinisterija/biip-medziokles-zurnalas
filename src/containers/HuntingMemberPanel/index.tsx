@@ -12,7 +12,7 @@ import {HuntingStatus, NATIONALITY, State, UserStatus} from '@root/state/types';
 import {theme} from '@root/theme';
 import {ExtendedHuntingData} from '@state/data/dataSelectors';
 import {formatPhoneNumber} from '@utils/format';
-import {format, isAfter} from 'date-fns';
+import {format} from 'date-fns';
 import {some} from 'lodash';
 import React, {useState} from 'react';
 import {Linking, View} from 'react-native';
@@ -54,11 +54,13 @@ const HuntingMemberPanel = () => {
     [HuntingStatus.Started, HuntingStatus.Ended],
     status => status === huntingData?.status,
   );
-  const huntingStart = huntingOngoingOrEnded
-    ? isAfter(new Date(huntingData.startDate), new Date(member.createdAt))
-      ? format(new Date(huntingData.startDate), 'yyyy-MM-dd HH:mm')
-      : format(new Date(member.createdAt), 'yyyy-MM-dd HH:mm')
-    : '';
+  console.tron.log(member); // member.acceptedAt
+  const acceptedAt = member.acceptedAt
+    ? format(new Date(member.acceptedAt), 'yyyy-MM-dd HH:mm')
+    : '-';
+  const acceptMethod = member.acceptMethod
+    ? strings.acceptCaseType[member.acceptMethod]
+    : '-';
   const huntingStatus = huntingData?.status;
 
   //Selected member constants
@@ -130,12 +132,17 @@ const HuntingMemberPanel = () => {
     >
       <>
         <Container>
-          {(huntingStatus === HuntingStatus.Started ||
-            huntingStatus === HuntingStatus.Ended) && (
-            <Row>
-              <Label>Pradėjo medžioklę: </Label>
-              <Value>{huntingStart}</Value>
-            </Row>
+          {member.acceptedAt && (
+            <>
+              <Row>
+                <Label>Pradėjo medžioklę: </Label>
+                <Value>{acceptedAt}</Value>
+              </Row>
+              <Row>
+                <Label>Patvirtinimo būdas: </Label>
+                <Value>{acceptMethod}</Value>
+              </Row>
+            </>
           )}
           {member.leftAt && (
             <Row>
@@ -215,13 +222,10 @@ const HuntingMemberPanel = () => {
                   syncSelector: getOnSync.huntingMember,
                   onSign: (signature: string) => {
                     dispatch(
-                      huntingActions.updateHuntingMember(
+                      huntingActions.acceptHuntingMember(
                         {
                           memberId: member.id,
-                          data: {
-                            status: UserStatus.Accepted,
-                            signature,
-                          },
+                          signature,
                         },
                         {onFinish: () => {}},
                       ),

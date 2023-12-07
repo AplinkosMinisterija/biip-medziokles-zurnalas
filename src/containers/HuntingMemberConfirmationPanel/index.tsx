@@ -3,7 +3,7 @@ import {getExtendedHunting} from '@root/state/data/dataSelectors';
 import {getMyHuntingMember} from '@root/state/huntingMembers/huntingMembersSelectors';
 import {huntingActions} from '@root/state/huntings/actions';
 import {getOnSync} from '@root/state/sync/syncSelectors';
-import {State, UserStatus} from '@root/state/types';
+import {State} from '@root/state/types';
 import {map} from 'lodash';
 import React, {useState} from 'react';
 import {View} from 'react-native';
@@ -65,12 +65,9 @@ const HuntingMemberConfirmationPanel = (): JSX.Element => {
       onPress: () => {
         if (myHuntingMember?.id) {
           dispatch(
-            huntingActions.updateHuntingMember(
+            huntingActions.acceptHuntingMember(
               {
                 memberId: myHuntingMember.id,
-                data: {
-                  status: UserStatus.Accepted,
-                },
               },
               {
                 onFinish: () => {

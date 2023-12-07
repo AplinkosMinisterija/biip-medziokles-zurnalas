@@ -119,7 +119,7 @@ const HuntingInformation = ({
 
 const Container = styled(SafeAreaView)`
   background-color: ${({theme}) => theme.colors.primaryDark};
-  padding-top: ${({theme}) => `${theme.header}px`};
+  padding-top: 5px;
 `;
 
 const InfoContainer = styled(View)`

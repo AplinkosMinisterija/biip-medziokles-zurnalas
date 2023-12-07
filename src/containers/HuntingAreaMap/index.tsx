@@ -1,6 +1,9 @@
 import {api} from '@apis/api';
 import {useRoute} from '@react-navigation/native';
-import {getExtendedHunting} from '@root/state/data/dataSelectors';
+import {
+  getExtendedHunting,
+  getExtendedHuntingMember,
+} from '@root/state/data/dataSelectors';
 import {HuntingMemberGeoData} from '@root/state/types';
 import React, {useEffect, useState} from 'react';
 import {StatusBar, View} from 'react-native';
@@ -18,6 +21,7 @@ const HuntingAreaMap = () => {
     useState<HuntingMemberGeoData | null>(null);
 
   const huntingData = useSelector(getExtendedHunting(huntingId));
+  const member = useSelector(getExtendedHuntingMember(memberId));
 
   useEffect(() => {
     if (huntingId) {
@@ -33,6 +37,7 @@ const HuntingAreaMap = () => {
     }
   }, [huntingId]);
 
+  // ${mapMembers ? `&points=${JSON.stringify(mapMembers)}` : ''}
   return (
     <Container>
       <StatusBar barStyle="dark-content" />
@@ -40,10 +45,10 @@ const HuntingAreaMap = () => {
       {huntingData?.huntingArea?.id && (
         <Wrapper>
           <HuntingMap
+            points={mapMembers}
             url={`https://maps.biip.lt/medziokle?mpvId=${
               huntingData.huntingArea.mpvId
             }&draw=true
-            ${mapMembers ? `&points=${JSON.stringify(mapMembers)}` : ''}
             ${
               memberGeoData
                 ? `&zoom=${JSON.stringify({
@@ -53,9 +58,8 @@ const HuntingAreaMap = () => {
                 : ''
             }`}
             editMode={true}
-            memberData={memberGeoData}
+            memberData={member}
             closePrevView={closePrevView}
-            // initialLocation={memberData?.location}
           />
         </Wrapper>
       )}

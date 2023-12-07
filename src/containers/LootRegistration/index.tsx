@@ -210,14 +210,14 @@ const LootRegistration = () => {
       case LootRegistrationSteps.GeoMap:
         return (
           <GeoMap
-            url={`https://maps.biip.lt/hunting?filter_attr=mpv_id&filter_val=${huntingAreaMPVId}&geom_mode=pan`}
+            url={`https://maps.biip.lt/medziokle?mpvId=${huntingAreaMPVId}&draw=true`}
             onBack={onBack}
             isLastStep={stepIndex === registrationSteps.length - 1}
             onPress={coords => {
               handleLootDataUpdate({
                 attributes: {
                   ...lootData.attributes,
-                  coordinates: coords,
+                  geom: coords,
                 },
               });
             }}

@@ -67,7 +67,7 @@ const Content = styled(View)`
 
 const RightContainer = styled(TouchableOpacity)`
   padding: 16px;
-  padding-top: 0;
+  // padding-top: 0;
   flex-direction: row;
   align-items: center;
 `;

@@ -159,6 +159,11 @@ export const strings: any = {
     CAR_ACCIDENT: 'Autoįvykis',
     SICK_OR_HURT: 'Sužeistas ar sergantis',
   },
+  acceptCaseType: {
+    IVR: 'telefoninis skambutis',
+    APP: 'mobili programėlė',
+    SIGNATURE: 'parašas',
+  },
   manager: 'Vadovas',
   admin: 'Administratoriai',
   members: 'Nariai',

@@ -6,8 +6,9 @@ import {appActions} from '@root/state/app/actions';
 import {getExtendedHunting, getMe} from '@root/state/data/dataSelectors';
 import {huntingActions} from '@root/state/huntings/actions';
 import {getOnSync} from '@root/state/sync/syncSelectors';
-import {HuntingMemberGeoData, HuntingStatus} from '@root/state/types';
+import {HuntingStatus} from '@root/state/types';
 import {formatHuntingMembersList} from '@root/utils/format';
+import {useQuery} from '@tanstack/react-query';
 import React, {useEffect, useState} from 'react';
 import {StatusBar, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
@@ -29,15 +30,12 @@ const TabView = () => {
   const route: HuntingRouteProps = useRoute();
   const huntingData = useSelector(getExtendedHunting(route.params.huntingId));
   const [selectedTab, setSelectedTab] = useState<string>(Selection.Members);
-  const [mapMembers, setMapMembers] = useState<Array<HuntingMemberGeoData>>([]);
 
-  useEffect(() => {
-    if (huntingData?.id) {
-      api.getGeoPoints(huntingData?.id).then(res => {
-        setMapMembers(res);
-      });
-    }
-  }, [huntingData?.id]);
+  const geoPoints = useQuery({
+    queryKey: ['geoPoints', route.params.huntingId, selectedTab],
+    refetchOnWindowFocus: true,
+    queryFn: () => api.getGeoPoints(route.params.huntingId),
+  });
 
   useEffect(() => {
     route.params.tab && setSelectedTab(route.params.tab);
@@ -111,9 +109,8 @@ const TabView = () => {
               <MapWrapper>
                 <HuntingMap
                   extraFooter={90}
-                  url={`https://maps.biip.lt/medziokle?mpvId=${
-                    huntingData.huntingArea.mpvId
-                  }${mapMembers ? `&points=${JSON.stringify(mapMembers)}` : ''}
+                  points={geoPoints.data}
+                  url={`https://maps.biip.lt/medziokle?mpvId=${huntingData.huntingArea.mpvId}
                   `}
                 />
               </MapWrapper>

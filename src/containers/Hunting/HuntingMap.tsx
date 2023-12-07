@@ -1,14 +1,15 @@
 import {useNavigation} from '@react-navigation/native';
+import {ExtendedHuntingMemberData} from '@root/state/data/dataSelectors';
 import {huntingActions} from '@root/state/huntings/actions';
 import {getOnSync} from '@root/state/sync/syncSelectors';
 import {
   GeoFeature,
-  GeoMapSelectedPoint,
+  GeoMapFeatureCollection,
   HuntingMemberGeoData,
   State,
 } from '@root/state/types';
 import {formatPhoneNumber} from '@utils/format';
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {ActivityIndicator, Linking, View} from 'react-native';
 import {WebView} from 'react-native-webview';
 import {useDispatch, useSelector} from 'react-redux';
@@ -21,11 +22,12 @@ import {theme} from '../../theme';
 
 interface HuntingMapProps {
   url: string;
-  memberData?: HuntingMemberGeoData;
+  memberData?: ExtendedHuntingMemberData | null;
   extraFooter?: number;
   editMode?: boolean;
   closePrevView?: boolean;
   initialLocation?: unknown;
+  points?: HuntingMemberGeoData[];
 }
 
 const HuntingMap = ({
@@ -34,21 +36,33 @@ const HuntingMap = ({
   editMode = false,
   memberData,
   closePrevView,
+  points,
 }: HuntingMapProps) => {
   const isConnected = useSelector((state: State) => state.network.isConnected);
 
-  const webViewRef = useRef(null);
+  const webViewRef = useRef<WebView>(null);
   const dispatch = useDispatch();
   const navigation = useNavigation<any>();
 
   const [isReloaded, setIsReloaded] = useState(true);
+
   const [currentGeoPointData, setCurrentGeoPointData] =
-    useState<GeoMapSelectedPoint | null>(null);
+    useState<GeoMapFeatureCollection | null>(null);
   const [selectedGeoPointMemberData, setSelectedGeoPointMemberData] =
     useState<GeoFeature | null>(null);
 
   const loading = useSelector(getOnSync.hunterLocation);
 
+  useEffect(() => {
+    if (webViewRef.current && points && points.length > 0) {
+      webViewRef.current.postMessage(
+        JSON.stringify({
+          points,
+        }),
+      );
+    }
+  }, [points, webViewRef]);
+  console.tron.log(url);
   return url ? (
     <Container>
       <WebView
@@ -64,24 +78,22 @@ const HuntingMap = ({
             <ActivityIndicator color={theme.colors.primary} size="large" />
           </LoaderContainer>
         )}
+        cacheMode={isConnected ? 'LOAD_DEFAULT' : 'LOAD_CACHE_ONLY'}
         originWhitelist={['https://*']}
         startInLoadingState={true}
         onMessage={async e => {
           try {
             let response = JSON.parse(e.nativeEvent.data);
             if (editMode) {
-              const currentPoint: GeoMapSelectedPoint = JSON.parse(
+              const currentPoint: GeoMapFeatureCollection = JSON.parse(
                 response?.mapIframeMsg?.data,
               );
               setCurrentGeoPointData(currentPoint);
             } else {
               const selected: GeoFeature = response?.mapIframeMsg?.selected;
-              console.tron.log('selected', selected);
               if (selected && selected.geometry.type === 'Point') {
-                console.tron.log('SAVE selected');
                 setSelectedGeoPointMemberData(selected);
               } else {
-                console.tron.log('NULL selected');
                 setSelectedGeoPointMemberData(null);
               }
             }
@@ -107,7 +119,7 @@ const HuntingMap = ({
           {memberData && (
             <Text.M
               weight={Text.Weight.bold}
-            >{`${memberData?.fullName}`}</Text.M>
+            >{`${memberData?.user?.firstName} ${memberData?.user?.lastName}`}</Text.M>
           )}
           {editMode && memberData && (
             <ButtonWrapper>
@@ -128,7 +140,7 @@ const HuntingMap = ({
                   dispatch(
                     huntingActions.updateHunterLocation(
                       {
-                        memberId: memberData.huntingMemberId,
+                        memberId: memberData.id,
                         geom: currentGeoPointData,
                       },
                       {
