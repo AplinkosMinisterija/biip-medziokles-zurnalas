@@ -53,6 +53,8 @@ export const formatHuntingMembersList = (
       left.push(member);
     } else if (hunting.manager.user.id === member.user?.id) {
       manager.push({...member, isManager: true});
+    } else if (hunting?.managerPending === member.id) {
+      manager.push({...member, isManagerPending: true});
     } else if (
       member.status === UserStatus.Invited &&
       hunting.status !== HuntingStatus.Created

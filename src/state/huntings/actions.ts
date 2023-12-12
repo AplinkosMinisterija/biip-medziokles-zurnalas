@@ -19,6 +19,8 @@ export const huntingConstants = {
   DELETE_HUNTING: 'hunting_DELETE_HUNTING',
   UPDATE_HUNTER_LOCATION: 'hunting_UPDATE_HUNTER_LOCATION',
   ACCEPT_HUNTING_MEMBER: 'hunting_ACCEPT_HUNTING_MEMBER',
+  ACCEPT_HUNTING_MANAGER_CHANGE: 'hunting_ACCEPT_HUNTING_MANAGER_CHANGE',
+  DECLINE_HUNTING_MANAGER_CHANGE: 'hunting_DECLINE_HUNTING_MANAGER_CHANGE',
 };
 
 export const huntingActions = {
@@ -64,6 +66,25 @@ export const huntingActions = {
   }) => ({
     type: huntingConstants.CHANGE_HUNTING_MANAGER,
     payload,
+  }),
+  acceptHuntingManagerChange: (
+    payload: {
+      huntingId: string;
+      signature?: string;
+    },
+    options = {},
+  ) => ({
+    type: huntingConstants.ACCEPT_HUNTING_MANAGER_CHANGE,
+    payload,
+    options,
+  }),
+  declineHuntingManagerChange: (
+    payload: {huntingId: string},
+    options = {},
+  ) => ({
+    type: huntingConstants.DECLINE_HUNTING_MANAGER_CHANGE,
+    payload,
+    options,
   }),
   removeHuntingMember: (payload: {memberId: string}) => ({
     type: huntingConstants.REMOVE_HUNTING_MEMBER,

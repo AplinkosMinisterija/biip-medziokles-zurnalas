@@ -30,7 +30,7 @@ const TabView = () => {
   const route: HuntingRouteProps = useRoute();
   const huntingData = useSelector(getExtendedHunting(route.params.huntingId));
   const [selectedTab, setSelectedTab] = useState<string>(Selection.Members);
-
+  console.tron.log('huntingData', huntingData);
   const geoPoints = useQuery({
     queryKey: ['geoPoints', route.params.huntingId, selectedTab],
     refetchOnWindowFocus: true,

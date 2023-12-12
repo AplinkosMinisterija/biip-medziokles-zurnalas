@@ -174,19 +174,62 @@ function* handleUpdateHuntingStatus({payload}: Action) {
 }
 
 function* handleChangeHuntingManager({
-  payload: {huntingId, managerId, signature},
+  payload: {huntingId, managerId},
 }: Action) {
   try {
     yield put(syncActions.setOnSync.huntingMember(true));
-    yield call(api.updateHunting, {
-      data: {manager: managerId, signature},
-      id: huntingId,
+    yield call(api.changeHuntingManager, {
+      huntingMemberId: managerId,
+      huntingId,
     });
     yield delay(300);
     yield call(handleFetchMainData);
   } catch (e) {
     yield put(appActions.handleError(e));
   } finally {
+    yield put(syncActions.setOnSync.huntingMember(false));
+  }
+}
+
+function* handleAcceptHuntingManagerChange({
+  payload: {huntingId, signature},
+  options,
+}: Action) {
+  try {
+    yield put(syncActions.setOnSync.huntingMember(true));
+    yield call(api.acceptHuntingManagerChange, {
+      huntingId,
+      signature,
+    });
+    yield delay(300);
+    yield call(handleFetchMainData);
+  } catch (e) {
+    yield put(appActions.handleError(e));
+  } finally {
+    if (options?.onFinish) {
+      yield call(options.onFinish);
+    }
+    yield put(syncActions.setOnSync.huntingMember(false));
+  }
+}
+
+function* handleDeclineHuntingManagerChange({
+  payload: {huntingId},
+  options,
+}: Action) {
+  try {
+    yield put(syncActions.setOnSync.huntingMember(true));
+    yield call(api.cancelHuntingManagerChange, {
+      huntingId,
+    });
+    yield delay(300);
+    yield call(handleFetchMainData);
+  } catch (e) {
+    yield put(appActions.handleError(e));
+  } finally {
+    if (options?.onFinish) {
+      yield call(options.onFinish);
+    }
     yield put(syncActions.setOnSync.huntingMember(false));
   }
 }
@@ -316,6 +359,14 @@ export function* HuntingSaga() {
   yield takeLatest(
     huntingConstants.CHANGE_HUNTING_MANAGER,
     handleChangeHuntingManager,
+  );
+  yield takeLatest(
+    huntingConstants.ACCEPT_HUNTING_MANAGER_CHANGE,
+    handleAcceptHuntingManagerChange,
+  );
+  yield takeLatest(
+    huntingConstants.DECLINE_HUNTING_MANAGER_CHANGE,
+    handleDeclineHuntingManagerChange,
   );
   yield takeLatest(
     huntingConstants.REMOVE_HUNTING_MEMBER,

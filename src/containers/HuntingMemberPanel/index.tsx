@@ -54,7 +54,6 @@ const HuntingMemberPanel = () => {
     [HuntingStatus.Started, HuntingStatus.Ended],
     status => status === huntingData?.status,
   );
-  console.tron.log(member); // member.acceptedAt
   const acceptedAt = member.acceptedAt
     ? format(new Date(member.acceptedAt), 'yyyy-MM-dd HH:mm')
     : '-';
@@ -68,6 +67,7 @@ const HuntingMemberPanel = () => {
   const memberIsGuest = member?.isGuest;
   const memberIsForeigner = member.user.nationality === NATIONALITY.foreigner;
   const memberPhone = member?.user?.phone;
+  const isManagerPending = member.id === huntingData.managerPending;
 
   const memberCanParticipate = useSelector(
     canParticipateOrManageNewHunt(huntingData, member?.user?.id),
@@ -86,6 +86,7 @@ const HuntingMemberPanel = () => {
   const showMakeManagerButton =
     iAmManagerOfThisHunting &&
     memberCanBecomeManager &&
+    !isManagerPending &&
     !memberIsMe &&
     !memberIsGuest &&
     member.status === UserStatus.Accepted &&
@@ -132,6 +133,77 @@ const HuntingMemberPanel = () => {
     >
       <>
         <Container>
+          {isManagerPending && (memberIsMe || iAmManagerOfThisHunting) && (
+            <>
+              <Label>Paskirtas tapti vadovu</Label>
+              <OptionButton
+                key={'confirmManager'}
+                text={'Tvirtinti vadovavimą'}
+                loading={loading && loadingOption === 'changeManager'}
+                disabled={!isConnected}
+                onPress={() => {
+                  setLoaderOnOption('changeManager');
+                  if (iAmManagerOfThisHunting) {
+                    navigation.navigate(routes.signatureModal, {
+                      signer: member.user,
+                      syncSelector: getOnSync.huntingMember,
+                      onSign: (signature: string) => {
+                        dispatch(
+                          huntingActions.acceptHuntingManagerChange(
+                            {
+                              huntingId: huntingData.id,
+                              signature,
+                            },
+                            {
+                              onFinish: () => {
+                                navigation.goBack();
+                              },
+                            },
+                          ),
+                        );
+                        navigation.goBack();
+                      },
+                    });
+                  } else {
+                    dispatch(
+                      huntingActions.acceptHuntingManagerChange(
+                        {
+                          huntingId: huntingData.id,
+                        },
+                        {
+                          onFinish: () => {
+                            navigation.goBack();
+                          },
+                        },
+                      ),
+                    );
+                  }
+                }}
+              />
+              <OptionButton
+                key={'declineManager'}
+                text={'Atšaukti vadovavimą'}
+                variant={Button.Variant.Danger}
+                loading={loading && loadingOption === 'changeManager'}
+                disabled={!isConnected}
+                onPress={() => {
+                  setLoaderOnOption('changeManager');
+                  dispatch(
+                    huntingActions.declineHuntingManagerChange(
+                      {
+                        huntingId: huntingData.id,
+                      },
+                      {
+                        onFinish: () => {
+                          navigation.goBack();
+                        },
+                      },
+                    ),
+                  );
+                }}
+              />
+            </>
+          )}
           {member.acceptedAt && (
             <>
               <Row>
@@ -286,21 +358,12 @@ const HuntingMemberPanel = () => {
                 } else {
                   navigation.goBack();
                   if (huntingData?.id && member?.id) {
-                    // TODO refactor navigation
-                    navigation.navigate(routes.signatureModal, {
-                      signer: member.user,
-                      syncSelector: getOnSync.huntingMember,
-                      onSign: (signature: string) => {
-                        dispatch(
-                          huntingActions.changeHuntingManager({
-                            huntingId: huntingData.id,
-                            managerId: member?.id,
-                            signature,
-                          }),
-                        );
-                        navigation.goBack();
-                      },
-                    });
+                    dispatch(
+                      huntingActions.changeHuntingManager({
+                        huntingId: huntingData.id,
+                        managerId: member?.id,
+                      }),
+                    );
                   }
                 }
               }}

@@ -7,6 +7,7 @@ import {
   ExtendedHuntingMemberData,
   getExtendedLootsByHunting,
 } from '@root/state/data/dataSelectors';
+import {UserStatus} from '@root/state/types';
 import {filter} from 'lodash';
 import React from 'react';
 import {useSelector} from 'react-redux';
@@ -28,7 +29,7 @@ const HuntingMemberCard: React.FC<HuntingMemberCardProps> = ({
   showStatus,
 }) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  const {user, isManager, createdBy, status, leftAt} = member;
+  const {user, isManager, isManagerPending, createdBy, status, leftAt} = member;
 
   const loots = useSelector(getExtendedLootsByHunting(hunting.id));
 
@@ -56,7 +57,13 @@ const HuntingMemberCard: React.FC<HuntingMemberCardProps> = ({
       leftHunting={!!leftAt}
       isManager={isManager}
       createdBy={createdBy}
-      status={showStatus && !isManager ? status : null}
+      status={
+        showStatus && !isManager
+          ? status
+          : null || isManagerPending
+          ? UserStatus.Invited
+          : null
+      }
       lootsCount={lootsTotal}
     />
   ) : null;

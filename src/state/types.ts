@@ -185,6 +185,7 @@ export interface HuntingData {
   type: HuntingType;
   status: HuntingStatus;
   manager: string;
+  managerPending?: string | null;
   huntingArea: string;
   tenant: string;
   notes: string | null;
