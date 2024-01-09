@@ -646,9 +646,9 @@ export enum FootprintFormType {
 }
 
 export enum FootprintObservationStatus {
-  PLANNED,
-  STARTED,
-  ENDED,
+  PLANNED = 'PLANNED',
+  STARTED = 'STARTED',
+  ENDED = 'ENDED',
 }
 
 export interface FootprintTrack {
@@ -657,6 +657,7 @@ export interface FootprintTrack {
 }
 export interface FootprintObservation {
   id: number;
+  huntingArea: number;
   footprintTrack: number;
   status: FootprintObservationStatus;
   eventTime: string;

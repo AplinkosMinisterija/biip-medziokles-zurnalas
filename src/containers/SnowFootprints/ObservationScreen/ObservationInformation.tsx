@@ -2,61 +2,30 @@ import BackButton from '@components/BackButton';
 import Button from '@components/Button';
 import Text from '@components/Text';
 import {useNavigation} from '@react-navigation/native';
-import {theme} from '@root/theme';
-import {convertStringToDate} from '@utils/time';
-import {format, getYear} from 'date-fns';
-import {lt} from 'date-fns/locale';
 import React from 'react';
-import {StatusBar, View} from 'react-native';
+import {SafeAreaView, StatusBar, View} from 'react-native';
 import styled from 'styled-components';
 
-//TODO change this to real status
-const StatusConfig: {
-  [key in string]: {color: string; text: string};
-} = {
-  ['Ended']: {
-    color: theme.colors.primary,
-    text: 'Stebėjimas pabaiktas',
-  },
-  ['Started']: {
-    color: theme.colors.primaryDark,
-    text: 'vyksta dabar',
-  },
-  ['Created']: {
-    color: theme.colors.primaryUltraLight,
-    text: 'neprasidėjęs stebėjimas',
-  },
-};
-
 interface Props {
-  extraHeader?: React.ReactElement;
   huntingAreaName: string;
   startDate: string;
   endDate: string;
   trail: string;
-  status: string;
+  endDateText?: string;
+  actionButtonText: string;
+  onActionButtonPress?: () => void;
 }
 
 const ObservationInformation: React.FC<Props> = ({
   startDate,
   endDate,
-  status,
+  endDateText,
   huntingAreaName,
+  actionButtonText,
+  onActionButtonPress,
+  trail,
 }) => {
   const navigation = useNavigation();
-  const startDateObj = convertStringToDate(startDate);
-  const endDateObj = endDate ? convertStringToDate(endDate) : null;
-
-  const eventTime =
-    format(startDateObj, 'HH:mm MMMM d', {locale: lt}) +
-    'd. ' +
-    getYear(startDateObj);
-
-  const eventEndTime = endDateObj
-    ? format(endDateObj, 'HH:mm MMMM d', {locale: lt}) +
-      'd. ' +
-      getYear(endDateObj)
-    : StatusConfig[status].text || '';
 
   return (
     <Container>
@@ -64,13 +33,17 @@ const ObservationInformation: React.FC<Props> = ({
       <Header>
         <BackButton onPress={() => navigation.goBack()} />
         <>
-          <StartButton
-            variant={Button.Variant.Secondary}
-            text={'Action.label'}
-            onPress={() => {}}
-            loading={false}
-            disabled={false}
-          />
+          {onActionButtonPress ? (
+            <ActionButton
+              variant={Button.Variant.Secondary}
+              text={actionButtonText}
+              onPress={() => {}}
+              loading={false}
+              disabled={false}
+            />
+          ) : (
+            <Text.L>{actionButtonText}</Text.L>
+          )}
         </>
       </Header>
       <InfoContainer>
@@ -81,7 +54,7 @@ const ObservationInformation: React.FC<Props> = ({
           <DatesContainer>
             <Row>
               <Dot />
-              <EventTime variant={Text.Variant.light}>{eventTime}</EventTime>
+              <EventTime variant={Text.Variant.light}>{startDate}</EventTime>
             </Row>
             <View>
               <MiniDot />
@@ -90,16 +63,21 @@ const ObservationInformation: React.FC<Props> = ({
             </View>
             <Row>
               <Dot />
-              <EventTime variant={Text.Variant.light}>{eventEndTime}</EventTime>
+              <EventTime variant={Text.Variant.light}>
+                {endDate ?? endDateText}
+              </EventTime>
             </Row>
           </DatesContainer>
+          <Text.M variant={Text.Variant.light} weight={Text.Weight.medium}>
+            {`Maršrutas: ${trail}`}
+          </Text.M>
         </Column>
       </InfoContainer>
     </Container>
   );
 };
 
-const Container = styled(View)`
+const Container = styled(SafeAreaView)`
   background-color: ${({theme}) => theme.colors.primaryDark};
   padding-top: ${({theme}) => `${theme.header}px`};
 `;
@@ -137,7 +115,7 @@ const Header = styled(View)`
   background-color: ${({theme}) => theme.colors.primaryDark};
 `;
 
-const StartButton = styled(Button)`
+const ActionButton = styled(Button)`
   width: 60%;
 `;
 

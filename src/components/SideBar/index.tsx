@@ -1,5 +1,6 @@
 import {routes} from '@containers/Router';
 import {DrawerActions, useNavigation} from '@react-navigation/native';
+import {appActions} from '@root/state/app/actions';
 import {
   getAppHomeScreenMode,
   getAppUpdateInfo,
@@ -20,6 +21,7 @@ import styled from 'styled-components';
 import {strings} from '../../strings';
 import AnimatedColorButton from '../AnimatedColorButton';
 import AppVersionText from '../AppVersionText';
+import SimpleSwitchBar from '../SimpleSwitchBar';
 import Avatar from './../Avatar';
 import ButtonRight from './../ButtonRight';
 import LogoutButton from './../LogoutButton';
@@ -77,7 +79,7 @@ const SideBar = () => {
             ))}
           </>
         )}
-        {/* <SimpleSwitchBar
+        <SimpleSwitchBar
           routes={switchOption}
           selectedKey={homeScreenMode}
           onSelect={(val: AppHomeScreenMode) => {
@@ -89,7 +91,7 @@ const SideBar = () => {
               navigation.navigate(routes.footPrintObservationList);
             }
           }}
-        /> */}
+        />
       </Menu>
       {!!appUpdateInfo && appUpdateInfo.needsUpdate && (
         <StyledAnimeButton

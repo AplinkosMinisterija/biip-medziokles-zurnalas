@@ -3,7 +3,9 @@ import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import Button, {ButtonVariant} from '@root/components/Button';
 import TargetIcon from '@root/components/svg/Target';
 import {RootStackParamList, routes} from '@root/containers/Router';
+import {FootprintObservationStatus} from '@root/state/types';
 import {theme} from '@root/theme';
+import {formatDateTimeLT} from '@root/utils/time';
 import React from 'react';
 import {View} from 'react-native';
 import styled from 'styled-components';
@@ -16,15 +18,46 @@ type ObservationRouteProp = RouteProp<
 
 const FootPrintObservationScreen = () => {
   const route: ObservationRouteProp = useRoute();
-  const {observationId} = route.params;
+  const {footPrint} = route.params;
   const navigation = useNavigation();
+
+  const StatusConfig: {
+    [key in string]: {
+      endDateText?: string;
+      actionButtonText: string;
+      onActionButtonPress?: () => void;
+    };
+  } = {
+    [FootprintObservationStatus.PLANNED]: {
+      endDateText: 'neprasidėjęs stebėjimas',
+      actionButtonText: 'Pradėti stebėjimą',
+      onActionButtonPress: () => {},
+    },
+    [FootprintObservationStatus.STARTED]: {
+      endDateText: 'Pradėti stebėjimą',
+      actionButtonText: 'Baigti stebėjimą',
+      onActionButtonPress: () => {},
+    },
+    [FootprintObservationStatus.ENDED]: {
+      actionButtonText: 'Stebėjimas pabaiktas',
+    },
+  };
+
+  const eventTime = footPrint.startedAt ?? footPrint.eventTime;
+  const eventStartTime = eventTime ? formatDateTimeLT(eventTime) : '-';
+
+  const eventEndTime = footPrint.endedAt
+    ? formatDateTimeLT(footPrint.endedAt)
+    : StatusConfig[footPrint.status].endDateText || '';
 
   return (
     <Wrapper>
       <ObservationInformation
-        status="Created"
-        startDate="2023-11-02 12:30"
-        endDate={null}
+        startDate={eventStartTime}
+        endDate={eventEndTime}
+        huntingAreaName="todo hunting area name"
+        trail="todo trail name"
+        {...StatusConfig[footPrint.status]}
       />
       <Container>
         <Row>

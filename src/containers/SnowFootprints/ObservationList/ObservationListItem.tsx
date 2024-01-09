@@ -1,23 +1,22 @@
-import PeopleIcon from '@components/svg/People';
-import TargetIcon from '@components/svg/Target';
 import Text from '@components/Text';
+import FootPrintIcon from '@root/components/svg/FootPrint';
+import {getExtendedHuntingArea, getMe} from '@root/state/data/dataSelectors';
 import {strings} from '@root/strings';
 import {theme} from '@root/theme';
-import {FootprintObservationStatus, UserData} from '@state/types';
+import {
+  ExtendedFootprintObservation,
+  FootprintObservationStatus,
+} from '@state/types';
 import {shortenName} from '@utils/formaters';
 import {format, getDate, getMonth} from 'date-fns';
 import React from 'react';
 import {TouchableOpacity, View} from 'react-native';
+import {useSelector} from 'react-redux';
 import styled from 'styled-components';
 
 interface Props {
-  organizer: UserData;
-  date: Date;
-  endDate?: Date | null;
   onPress: () => void;
-  huntingArea?: string;
-  status: FootprintObservationStatus;
-  isAdmin?: boolean;
+  footPrint: ExtendedFootprintObservation;
 }
 
 export const StatusConfig: {
@@ -37,21 +36,24 @@ export const StatusConfig: {
   },
 };
 
-const ObservationListItem: React.FC<Props> = ({
-  organizer,
-  date,
-  onPress,
-  status,
-  huntingArea,
-  isAdmin,
-}) => {
+const ObservationListItem: React.FC<Props> = ({footPrint, onPress}) => {
+  const date = new Date(footPrint.eventTime);
   const month = getMonth(date);
   const day = getDate(date);
   const eventTime = format(date, 'HH:mm');
 
-  const manager = isAdmin
-    ? `${strings.me}`
-    : `${shortenName(organizer?.firstName, organizer?.lastName)}`;
+  const myId = useSelector(getMe);
+  const huntingArea = useSelector(
+    getExtendedHuntingArea(footPrint.huntingArea.toString()),
+  );
+  console.tron.log(footPrint);
+  const manager =
+    myId === footPrint.createdBy?.id
+      ? `${strings.me}`
+      : `${shortenName(
+          footPrint.createdBy?.firstName,
+          footPrint.createdBy?.lastName,
+        )}`;
 
   return (
     <Container onPress={onPress}>
@@ -80,14 +82,20 @@ const ObservationListItem: React.FC<Props> = ({
                 <InfoItem>
                   {true && (
                     <LootInfoItem>
-                      <TargetIcon size={16} color={theme.colors.primaryDark} />
-                      <Label variant={Text.Variant.primaryDark}>33</Label>
+                      <Label
+                        variant={Text.Variant.primaryDark}
+                      >{`#${footPrint.id}`}</Label>
                     </LootInfoItem>
                   )}
                   {true && (
                     <InfoItem>
-                      <PeopleIcon size={16} color={theme.colors.primaryDark} />
-                      <Label variant={Text.Variant.primaryDark}>24</Label>
+                      <FootPrintIcon
+                        size={16}
+                        color={theme.colors.primaryDark}
+                      />
+                      <Label variant={Text.Variant.primaryDark}>
+                        {footPrint.recordsCount}
+                      </Label>
                     </InfoItem>
                   )}
                 </InfoItem>
@@ -95,13 +103,13 @@ const ObservationListItem: React.FC<Props> = ({
             </DataRow>
 
             <Text.M weight={Text.Weight.medium}>{manager}</Text.M>
-            <Text.S>{huntingArea}</Text.S>
+            <Text.S>{huntingArea.name}</Text.S>
           </Column>
         </MainContent>
-        {StatusConfig[status] ? (
-          <Marker color={StatusConfig[status]?.color}>
+        {StatusConfig[footPrint.status] ? (
+          <Marker color={StatusConfig[footPrint.status]?.color}>
             <Text.S variant={Text.Variant.light}>
-              {`${StatusConfig[status]?.text}`}
+              {`${StatusConfig[footPrint.status]?.text}`}
             </Text.S>
           </Marker>
         ) : null}

@@ -16,6 +16,7 @@ import {
 import {
   AnimalData,
   AppHomeScreenMode,
+  ExtendedFootprintObservation,
   SeasonData,
   StatEventData,
   UserData,
@@ -199,7 +200,7 @@ export type RootStackParamList = {
     mpvId: string;
   };
   [routes.footPrintObservation]: {
-    observationId: string | number;
+    footPrint: ExtendedFootprintObservation;
   };
   [routes.footPrintRecordWizard]: undefined;
   [routes.startObservationModal]: undefined;

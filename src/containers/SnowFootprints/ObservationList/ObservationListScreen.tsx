@@ -32,14 +32,12 @@ const ObservationListScreen = () => {
     item,
   }) => (
     <ObservationListItem
-      date={new Date(item.eventTime)}
-      status={item.status}
+      footPrint={item}
       onPress={() => {
         navigation.navigate(routes.footPrintObservation, {
-          observationId: item.id,
+          footPrint: item,
         });
       }}
-      organizer={item.createdBy}
     />
   );
 
@@ -58,15 +56,6 @@ const ObservationListScreen = () => {
           }}
         />
       )}
-      <SecondaryButton
-        variant={Button.Variant.Secondary}
-        text={'(DEBUG) Observation Screen'}
-        onPress={() => {
-          navigation.navigate(routes.footPrintObservation, {
-            observationId: '123',
-          });
-        }}
-      />
       {isEmpty(observations) && !onSync ? (
         <EmptyState title={'Stebėjimų nėra'} />
       ) : isEmpty(observations) && onSync ? (
@@ -89,7 +78,9 @@ const ObservationListScreen = () => {
           refreshControl={
             <RefreshControl
               refreshing={onSync}
-              onRefresh={() => {}}
+              onRefresh={() => {
+                // TODO handle pull to refresh
+              }}
               tintColor={theme.colors.primaryDark}
               colors={[theme.colors.primaryDark]}
             />
