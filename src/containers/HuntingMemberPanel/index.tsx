@@ -89,7 +89,8 @@ const HuntingMemberPanel = () => {
     !isManagerPending &&
     !memberIsMe &&
     !memberIsGuest &&
-    member.status === UserStatus.Accepted &&
+    (member.status === UserStatus.Accepted ||
+      huntingData.status === HuntingStatus.Created) &&
     !member.leftAt &&
     huntingData.status !== HuntingStatus.Ended &&
     memberCanParticipate;
