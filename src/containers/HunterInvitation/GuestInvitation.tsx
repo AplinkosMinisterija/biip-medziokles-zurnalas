@@ -4,11 +4,7 @@ import {getGuestInvitationPhoto} from '@root/state/app/appSelectors';
 import {getExtendedHunting} from '@root/state/data/dataSelectors';
 import {huntingActions} from '@root/state/huntings/actions';
 import {getOnSync} from '@root/state/sync/syncSelectors';
-import {
-  HuntingStatus,
-  MemberGuestInvitation,
-  NATIONALITY,
-} from '@root/state/types';
+import {MemberGuestInvitation, NATIONALITY} from '@root/state/types';
 import {useKeyboard} from '@utils/hooks';
 import {isIOS} from '@utils/layout';
 import {Formik} from 'formik';
@@ -53,43 +49,43 @@ const GuestInvitation = () => {
 
   const handleSubmitInvitation = (values: MemberGuestInvitation) => {
     if (hunting?.id) {
-      if (hunting.status === HuntingStatus.Started) {
-        navigation.goBack();
-        navigation.navigate(routes.signatureModal, {
-          signer: values,
-          syncSelector: getOnSync.huntingMember,
-          onSign: (signature: string) => {
-            dispatch(
-              huntingActions.inviteHuntingMemberWithSignature({
-                user:
-                  values.nationality === NATIONALITY.local
-                    ? {
-                        nationality: values.nationality,
-                        ticketNumber: values.ticketNumber,
-                      }
-                    : values,
-                huntingId: route.params.huntingId,
-                signature,
-              }),
-            );
-            navigation.goBack();
-          },
-        });
-      } else {
-        dispatch(
-          huntingActions.inviteHuntingMember({
-            user:
-              values.nationality === NATIONALITY.local
-                ? {
-                    nationality: values.nationality,
-                    ticketNumber: values.ticketNumber,
-                  }
-                : values,
-            huntingId: route.params.huntingId,
-          }),
-        );
-        navigation.goBack();
-      }
+      // if (hunting.status === HuntingStatus.Started) {
+      // navigation.goBack();
+      //   navigation.navigate(routes.signatureModal, {
+      //     signer: values,
+      //     syncSelector: getOnSync.huntingMember,
+      //     onSign: (signature: string) => {
+      //       dispatch(
+      //         huntingActions.inviteHuntingMemberWithSignature({
+      //           user:
+      //             values.nationality === NATIONALITY.local
+      //               ? {
+      //                   nationality: values.nationality,
+      //                   ticketNumber: values.ticketNumber,
+      //                 }
+      //               : values,
+      //           huntingId: route.params.huntingId,
+      //           signature,
+      //         }),
+      //       );
+      //       navigation.goBack();
+      //     },
+      //   });
+      // } else {
+      dispatch(
+        huntingActions.inviteHuntingMember({
+          user:
+            values.nationality === NATIONALITY.local
+              ? {
+                  nationality: values.nationality,
+                  ticketNumber: values.ticketNumber,
+                }
+              : values,
+          huntingId: route.params.huntingId,
+        }),
+      );
+      //   navigation.goBack();
+      // }
     }
   };
 
@@ -219,7 +215,8 @@ const GuestInvitation = () => {
                   }}
                 />
                 <CreateButton
-                  text={strings.create}
+                  variant={Button.Variant.PrimaryDark}
+                  text={'Pridėti'}
                   onPress={handleSubmit}
                   loading={loading}
                 />

@@ -185,6 +185,7 @@ export interface HuntingData {
   type: HuntingType;
   status: HuntingStatus;
   manager: string;
+  managerPending?: string | null;
   huntingArea: string;
   tenant: string;
   notes: string | null;
@@ -210,6 +211,12 @@ export interface HuntingAreaData {
   mpvId: string;
 }
 
+export enum HuntingAcceptMethod {
+  IVR = 'IVR',
+  APP = 'APP',
+  SIGNATURE = 'SIGNATURE',
+}
+
 export interface HuntingMemberData {
   id: string;
   hunting: string;
@@ -219,8 +226,9 @@ export interface HuntingMemberData {
   isGuest: boolean;
   createdBy: string | null;
   createdAt: string;
+  acceptedAt: string;
+  acceptMethod: HuntingAcceptMethod;
   deletedAt: string | null;
-  location: Array<string> | null;
   leftAt: string | null;
 }
 
@@ -249,7 +257,7 @@ export interface AnimalAttributes {
     name: string;
   };
   // Wolf attributes:
-  coordinates?: GeoCoordinate;
+  geom?: GeoMapFeatureCollection;
   hasDefects?: boolean;
   hasScabies?: boolean;
   appearanceNotes?: string;
@@ -621,11 +629,6 @@ export interface PendingLimitRequest {
   updatedAt: string;
 }
 
-export interface GeoCoordinate {
-  lat: number;
-  long: number;
-}
-
 export type MemberGuestInvitation = {
   nationality: NATIONALITY;
   firstName: string;
@@ -681,4 +684,27 @@ export interface FootprintRecord {
   photos?: Array<string>;
   comment?: string;
   location?: number[];
+}
+
+export interface GeoMapFeatureCollection {
+  type: string;
+  features: GeoFeature[];
+}
+
+export interface GeoFeature {
+  type: string;
+  geometry: {
+    type: string;
+    coordinates: number[];
+  };
+  properties?: any;
+}
+
+export interface HuntingMemberGeoData {
+  x: number;
+  y: number;
+  type?: 'current' | 'other';
+  huntingMemberId: number;
+  phone: string;
+  fullName: string;
 }

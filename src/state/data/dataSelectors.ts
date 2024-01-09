@@ -26,6 +26,7 @@ export interface ExtendedHuntingMemberData
   user: UserData;
   createdBy: UserData | null;
   isManager?: boolean;
+  isManagerPending?: boolean;
 }
 
 export interface ExtendedHuntingAreaData

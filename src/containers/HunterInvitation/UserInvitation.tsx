@@ -1,6 +1,5 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
 import UserCard from '@root/components/UserCard';
-import {getHunting} from '@root/state/data/dataSelectors';
 import {huntingActions} from '@root/state/huntings/actions';
 import {getOnSync} from '@root/state/sync/syncSelectors';
 import {State, UserData} from '@root/state/types';
@@ -34,7 +33,6 @@ const UserInvitation = () => {
   const members: UserData[] | undefined = useSelector(
     getNotInvitedHuntingAreaUsers(huntingId),
   );
-  const hunting = useSelector(getHunting(huntingId));
 
   const [keywordEntered, setKeywordEntered] = useState(false);
   const [searchResults, setSearchResults] = useState<UserData[]>([]);
@@ -72,7 +70,6 @@ const UserInvitation = () => {
           },
           {
             onFinish: () => {
-              navigation.goBack();
               navigation.navigate(routes.selectHunterLocation, {
                 userId: selectedMember.id,
                 huntingId,

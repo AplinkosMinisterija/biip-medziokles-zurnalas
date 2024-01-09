@@ -62,10 +62,10 @@ const LootInfoPanel = () => {
               strings.rightHornLabel,
               loot?.attributes?.horns?.right,
             )}
-          {!!loot?.attributes?.coordinates &&
+          {!!loot?.attributes?.geom &&
             renderInfoItem(
               'Koordinatės:',
-              `${loot?.attributes?.coordinates.long}, ${loot?.attributes?.coordinates.lat}`,
+              `${loot?.attributes?.geom.features[0].geometry.coordinates[0]}, ${loot?.attributes?.geom.features[0].geometry.coordinates[1]}`,
             )}
           {loot?.attributes?.wolfHuntingType &&
             renderInfoItem(

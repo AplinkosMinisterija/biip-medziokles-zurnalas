@@ -2,7 +2,7 @@ import Geolocation from '@react-native-community/geolocation';
 import Button from '@root/components/Button';
 import {Expanded, Padding} from '@root/components/layout';
 import Text from '@root/components/Text';
-import {GeoCoordinate} from '@root/state/types';
+import {GeoCoordinate, GeoMapFeatureCollection} from '@root/state/types';
 import {strings} from '@root/strings';
 import {theme} from '@root/theme';
 import React, {useEffect, useRef, useState} from 'react';
@@ -13,7 +13,7 @@ import styled from 'styled-components';
 interface Props {
   url: string;
   onBack: () => void;
-  onPress: (coords: GeoCoordinate) => void;
+  onPress: (coords: GeoMapFeatureCollection) => void;
   isLastStep: boolean;
 }
 
@@ -23,9 +23,8 @@ const GeoMap: React.FC<Props> = ({url, onBack, onPress, isLastStep}) => {
   const [initialLocation, setInitialLocation] = useState<GeoCoordinate | null>(
     null,
   );
-  const [currentLocation, setCurrentLocation] = useState<GeoCoordinate | null>(
-    null,
-  );
+  const [currentLocation, setCurrentLocation] =
+    useState<GeoMapFeatureCollection | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -36,7 +35,7 @@ const GeoMap: React.FC<Props> = ({url, onBack, onPress, isLastStep}) => {
             lat: info.coords.latitude,
           };
           setInitialLocation(coords);
-          setCurrentLocation(coords);
+          // setCurrentLocation(coords);
           setHasPermission(true);
         },
         _error => {},
@@ -44,7 +43,7 @@ const GeoMap: React.FC<Props> = ({url, onBack, onPress, isLastStep}) => {
     })();
   }, []);
 
-  if (!hasPermission || !initialLocation || !currentLocation)
+  if (!hasPermission || !initialLocation)
     return (
       <GeolocationInvalidView>
         <Padding bottomPadding={20}>
@@ -79,17 +78,19 @@ const GeoMap: React.FC<Props> = ({url, onBack, onPress, isLastStep}) => {
         originWhitelist={['https://*']}
         startInLoadingState={true}
         onMessage={async e => {
-          let response = JSON.parse(e.nativeEvent.data);
-          const location = response?.mapIframeMsg?.currentLocation;
-          if (location) {
-            setCurrentLocation({
-              long: location[0],
-              lat: location[1],
-            });
-          }
+          const response = JSON.parse(e.nativeEvent.data);
+          const data: GeoMapFeatureCollection = JSON.parse(
+            response?.mapIframeMsg?.data,
+          );
+          console.tron.log('got data from map', data);
+          setCurrentLocation(data);
         }}
         source={{
-          uri: `${url}&geom_current=[${initialLocation.long},${initialLocation.lat}]`,
+          uri: `${url}&zoom=${JSON.stringify({
+            x: initialLocation.lat,
+            y: initialLocation.long,
+          })}
+          `,
         }}
       />
       <PopUp extraFooter={90}>
@@ -100,6 +101,7 @@ const GeoMap: React.FC<Props> = ({url, onBack, onPress, isLastStep}) => {
             onPress={onBack}
           />
           <BottomButton
+            disabled={!currentLocation}
             variant={Button.Variant.PrimaryDark}
             text={isLastStep ? strings.common.save : strings.common.continue}
             onPress={() => {

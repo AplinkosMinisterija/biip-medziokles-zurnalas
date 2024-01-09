@@ -1,6 +1,7 @@
 import {api} from '@apis/api';
 import {routes} from '@containers/Router';
 import {goBack, navigate, pop} from '@utils/navigation';
+import {AxiosError} from 'axios';
 import {call, delay, put, takeLatest} from 'redux-saga/effects';
 import {strings} from '../../strings';
 import {appActions} from '../app/actions';
@@ -59,11 +60,21 @@ function* handleInviteHuntingMember({payload, options}: Action): any {
       yield delay(300);
       yield put(dataActions.getMainData());
       yield put(appActions.setGuestInvitationPhoto(null));
+      yield call(goBack);
       if (options?.onFinish) {
         yield call(options.onFinish, response);
       }
     }
   } catch (e) {
+    const error = e as AxiosError;
+    const message =
+      error.response?.status === 400
+        ? 'Bilieto numeris nerastas'
+        : 'Nepavyko pridėti svečią';
+    yield call(navigate, routes.huntingDialog, {
+      title: 'Klaida pridedant svečią',
+      message,
+    });
     yield put(appActions.handleError(e));
   } finally {
     yield put(syncActions.setOnSync.huntingMember(false));
@@ -117,7 +128,13 @@ function* handleUpdateHunterLocation({payload, options}: Action) {
 function* handleUpdateHuntingStatus({payload}: Action) {
   try {
     yield put(syncActions.setOnSync.updateStatus(true));
-    yield call(api.updateHunting, {id: payload.id, data: payload});
+    if (payload.status === HuntingStatus.Ready) {
+      yield call(api.startHuntingRegistration, payload.id);
+    } else if (payload.status === HuntingStatus.Started) {
+      yield call(api.startHunting, payload.id);
+    } else if (payload.status === HuntingStatus.Ended) {
+      yield call(api.endHunting, payload.id);
+    }
     yield put(dataActions.getMainData());
     yield delay(100);
     const messageText =
@@ -141,6 +158,15 @@ function* handleUpdateHuntingStatus({payload}: Action) {
       });
     }
   } catch (e) {
+    const error = e as AxiosError;
+    const message =
+      error.response?.status === 400
+        ? 'Šiuo metu dalyvaujate kitoje medžioklėje.'
+        : 'Ivyko klaida';
+    yield call(navigate, routes.huntingDialog, {
+      title: 'Nepavyko atlikti veiksmo',
+      message,
+    });
     yield put(appActions.handleError(e));
   } finally {
     yield put(syncActions.setOnSync.updateStatus(false));
@@ -148,19 +174,62 @@ function* handleUpdateHuntingStatus({payload}: Action) {
 }
 
 function* handleChangeHuntingManager({
-  payload: {huntingId, managerId, signature},
+  payload: {huntingId, managerId},
 }: Action) {
   try {
     yield put(syncActions.setOnSync.huntingMember(true));
-    yield call(api.updateHunting, {
-      data: {manager: managerId, signature},
-      id: huntingId,
+    yield call(api.changeHuntingManager, {
+      huntingMemberId: managerId,
+      huntingId,
     });
     yield delay(300);
     yield call(handleFetchMainData);
   } catch (e) {
     yield put(appActions.handleError(e));
   } finally {
+    yield put(syncActions.setOnSync.huntingMember(false));
+  }
+}
+
+function* handleAcceptHuntingManagerChange({
+  payload: {huntingId, signature},
+  options,
+}: Action) {
+  try {
+    yield put(syncActions.setOnSync.huntingMember(true));
+    yield call(api.acceptHuntingManagerChange, {
+      huntingId,
+      signature,
+    });
+    yield delay(300);
+    yield call(handleFetchMainData);
+  } catch (e) {
+    yield put(appActions.handleError(e));
+  } finally {
+    if (options?.onFinish) {
+      yield call(options.onFinish);
+    }
+    yield put(syncActions.setOnSync.huntingMember(false));
+  }
+}
+
+function* handleDeclineHuntingManagerChange({
+  payload: {huntingId},
+  options,
+}: Action) {
+  try {
+    yield put(syncActions.setOnSync.huntingMember(true));
+    yield call(api.cancelHuntingManagerChange, {
+      huntingId,
+    });
+    yield delay(300);
+    yield call(handleFetchMainData);
+  } catch (e) {
+    yield put(appActions.handleError(e));
+  } finally {
+    if (options?.onFinish) {
+      yield call(options.onFinish);
+    }
     yield put(syncActions.setOnSync.huntingMember(false));
   }
 }
@@ -231,6 +300,38 @@ function* handleUpdateHuntingMember({payload, options}: Action) {
   }
 }
 
+function* handleAcceptHuntingMember({payload, options}: Action) {
+  try {
+    yield put(syncActions.setOnSync.huntingMember(true));
+    yield call(api.acceptHuntingMember, payload);
+    yield delay(300);
+    yield call(handleFetchMainData);
+    if (options?.onFinish) {
+      yield call(options.onFinish);
+    }
+  } catch (e) {
+    const error = e as AxiosError;
+    yield put(appActions.handleError(e));
+    if (error.response?.status === 400) {
+      if (payload?.signature) {
+        // pasirasiai pas vadova
+        yield call(navigate, routes.huntingDialog, {
+          title: 'Negalite tvirtinti dalyvavimo',
+          message: 'Medžiotojas dalyvauja kitoje medžioklėje.',
+        });
+      } else {
+        // pats tvirtina dalyvavima
+        yield call(navigate, routes.huntingDialog, {
+          title: 'Negalite dalyvauti medžioklėje',
+          message: 'Šiuo metu dalyvaujate kitoje medžioklėje.',
+        });
+      }
+    }
+  } finally {
+    yield put(syncActions.setOnSync.huntingMember(false));
+  }
+}
+
 function* handleDeleteHunting(action: Action) {
   try {
     yield call(api.deleteHunting, action.payload);
@@ -260,6 +361,14 @@ export function* HuntingSaga() {
     handleChangeHuntingManager,
   );
   yield takeLatest(
+    huntingConstants.ACCEPT_HUNTING_MANAGER_CHANGE,
+    handleAcceptHuntingManagerChange,
+  );
+  yield takeLatest(
+    huntingConstants.DECLINE_HUNTING_MANAGER_CHANGE,
+    handleDeclineHuntingManagerChange,
+  );
+  yield takeLatest(
     huntingConstants.REMOVE_HUNTING_MEMBER,
     handleRemoveHuntingMember,
   );
@@ -268,6 +377,10 @@ export function* HuntingSaga() {
   yield takeLatest(
     huntingConstants.UPDATE_HUNTING_MEMBER,
     handleUpdateHuntingMember,
+  );
+  yield takeLatest(
+    huntingConstants.ACCEPT_HUNTING_MEMBER,
+    handleAcceptHuntingMember,
   );
   yield takeLatest(huntingConstants.DELETE_HUNTING, handleDeleteHunting);
   yield takeLatest(

@@ -13,7 +13,8 @@ export type HorizontalTabRoute<T> = {
 type Props<T> = {
   routes: HorizontalTabRoute<T>[];
   label?: string;
-  selected: HorizontalTabRoute<T>;
+  selected?: HorizontalTabRoute<T>;
+  selectedKey?: T;
   onSelect: (value: HorizontalTabRoute<T>) => void;
   style?: ViewStyle;
 };
@@ -21,14 +22,17 @@ type Props<T> = {
 const HorizontalTabs = function <T = string | boolean>({
   routes,
   selected,
+  selectedKey,
   onSelect,
   label,
   style,
 }: Props<T>) {
   const index = useMemo(() => {
-    const idx = routes.findIndex(route => route.key === selected.key);
+    const idx = routes.findIndex(
+      route => route.key === (selected ? selected.key : selectedKey),
+    );
     return idx === -1 ? 0 : idx;
-  }, [routes, selected]);
+  }, [routes, selected, selectedKey]);
 
   const optionWidth = useMemo(
     () => (getWidth() - 32) / routes.length,
@@ -45,7 +49,9 @@ const HorizontalTabs = function <T = string | boolean>({
         {routes.map(route => (
           <OptionWrapper key={route.title} onPress={() => onSelect(route)}>
             <Option>
-              <Category selected={selected.key === route.key}>
+              <Category
+                selected={(selected ? selected.key : selectedKey) === route.key}
+              >
                 {route.title}
               </Category>
             </Option>

@@ -199,6 +199,30 @@ class ApiClass {
     return response.data;
   };
 
+  startHuntingRegistration = async (id: string): Promise<any> => {
+    const response: AxiosResponse = await this.post(
+      `/api/huntings/${id}/startRegistration`,
+      {},
+    );
+    return response.data;
+  };
+
+  startHunting = async (id: string): Promise<any> => {
+    const response: AxiosResponse = await this.post(
+      `/api/huntings/${id}/start`,
+      {},
+    );
+    return response.data;
+  };
+
+  endHunting = async (id: string): Promise<any> => {
+    const response: AxiosResponse = await this.post(
+      `/api/huntings/${id}/end`,
+      {},
+    );
+    return response.data;
+  };
+
   deleteHunting = async ({
     huntingId,
   }: {
@@ -225,21 +249,21 @@ class ApiClass {
 
   updateHunterLocation = async ({
     memberId,
-    location,
+    geom,
   }: {
     memberId: string;
-    location: Array<string>;
+    geom: unknown;
   }): Promise<any> => {
     const response: AxiosResponse = await this.patch(
       `/api/huntingMembers/${memberId}`,
-      {location},
+      {geom},
     );
     return response.data;
   };
 
-  getHuntingMapMembers = async (huntingId: string): Promise<any> => {
+  getGeoPoints = async (huntingId: string): Promise<any> => {
     const response: AxiosResponse = await this.get(
-      `/api/huntings/${huntingId}/mapMembers`,
+      `/api/huntings/${huntingId}/geoPoints`,
     );
     return response.data;
   };
@@ -261,6 +285,60 @@ class ApiClass {
     const response: AxiosResponse = await this.patch(
       `/api/huntingMembers/${memberId}`,
       data,
+    );
+    return response.data;
+  };
+
+  acceptHuntingMember = async ({
+    memberId,
+    signature,
+  }: {
+    memberId: string;
+    signature?: string;
+  }): Promise<AxiosResponse> => {
+    const response: AxiosResponse = await this.post(
+      `/api/huntingMembers/${memberId}/accept`,
+      {signature},
+    );
+    return response.data;
+  };
+
+  changeHuntingManager = async ({
+    huntingMemberId,
+    huntingId,
+  }: {
+    huntingMemberId: number | string;
+    huntingId: number | string;
+  }): Promise<AxiosResponse> => {
+    const response: AxiosResponse = await this.post(
+      `/api/huntings/${huntingId}/managerChange`,
+      {manager: huntingMemberId},
+    );
+    return response.data;
+  };
+
+  cancelHuntingManagerChange = async ({
+    huntingId,
+  }: {
+    huntingId: number | string;
+  }): Promise<AxiosResponse> => {
+    const response: AxiosResponse = await this.post(
+      `/api/huntings/${huntingId}/cancelManagerChange`,
+      {},
+    );
+    return response.data;
+  };
+
+  acceptHuntingManagerChange = async ({
+    huntingId,
+    signature,
+  }: {
+    huntingId: number | string;
+    signature?: string;
+  }): Promise<AxiosResponse> => {
+    const response: AxiosResponse = await this.post(
+      `/api/huntings/${huntingId}/acceptManagerChange`,
+      {signature},
     );
     return response.data;
   };

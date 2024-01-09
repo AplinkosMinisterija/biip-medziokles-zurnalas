@@ -12,7 +12,7 @@ import {HuntingStatus, NATIONALITY, State, UserStatus} from '@root/state/types';
 import {theme} from '@root/theme';
 import {ExtendedHuntingData} from '@state/data/dataSelectors';
 import {formatPhoneNumber} from '@utils/format';
-import {format, isAfter} from 'date-fns';
+import {format} from 'date-fns';
 import {some} from 'lodash';
 import React, {useState} from 'react';
 import {Linking, View} from 'react-native';
@@ -54,11 +54,12 @@ const HuntingMemberPanel = () => {
     [HuntingStatus.Started, HuntingStatus.Ended],
     status => status === huntingData?.status,
   );
-  const huntingStart = huntingOngoingOrEnded
-    ? isAfter(new Date(huntingData.startDate), new Date(member.createdAt))
-      ? format(new Date(huntingData.startDate), 'yyyy-MM-dd HH:mm')
-      : format(new Date(member.createdAt), 'yyyy-MM-dd HH:mm')
-    : '';
+  const acceptedAt = member.acceptedAt
+    ? format(new Date(member.acceptedAt), 'yyyy-MM-dd HH:mm')
+    : '-';
+  const acceptMethod = member.acceptMethod
+    ? strings.acceptCaseType[member.acceptMethod]
+    : '-';
   const huntingStatus = huntingData?.status;
 
   //Selected member constants
@@ -66,6 +67,7 @@ const HuntingMemberPanel = () => {
   const memberIsGuest = member?.isGuest;
   const memberIsForeigner = member.user.nationality === NATIONALITY.foreigner;
   const memberPhone = member?.user?.phone;
+  const isManagerPending = member.id === huntingData.managerPending;
 
   const memberCanParticipate = useSelector(
     canParticipateOrManageNewHunt(huntingData, member?.user?.id),
@@ -84,9 +86,11 @@ const HuntingMemberPanel = () => {
   const showMakeManagerButton =
     iAmManagerOfThisHunting &&
     memberCanBecomeManager &&
+    !isManagerPending &&
     !memberIsMe &&
     !memberIsGuest &&
-    member.status === UserStatus.Accepted &&
+    (member.status === UserStatus.Accepted ||
+      huntingData.status === HuntingStatus.Created) &&
     !member.leftAt &&
     huntingData.status !== HuntingStatus.Ended &&
     memberCanParticipate;
@@ -130,12 +134,88 @@ const HuntingMemberPanel = () => {
     >
       <>
         <Container>
-          {(huntingStatus === HuntingStatus.Started ||
-            huntingStatus === HuntingStatus.Ended) && (
-            <Row>
-              <Label>Pradėjo medžioklę: </Label>
-              <Value>{huntingStart}</Value>
-            </Row>
+          {isManagerPending && (memberIsMe || iAmManagerOfThisHunting) && (
+            <>
+              <Label>Paskirtas tapti vadovu</Label>
+              <OptionButton
+                key={'confirmManager'}
+                text={'Tvirtinti vadovavimą'}
+                loading={loading && loadingOption === 'changeManager'}
+                disabled={!isConnected}
+                onPress={() => {
+                  setLoaderOnOption('changeManager');
+                  if (iAmManagerOfThisHunting) {
+                    navigation.navigate(routes.signatureModal, {
+                      signer: member.user,
+                      syncSelector: getOnSync.huntingMember,
+                      onSign: (signature: string) => {
+                        dispatch(
+                          huntingActions.acceptHuntingManagerChange(
+                            {
+                              huntingId: huntingData.id,
+                              signature,
+                            },
+                            {
+                              onFinish: () => {
+                                navigation.goBack();
+                              },
+                            },
+                          ),
+                        );
+                        navigation.goBack();
+                      },
+                    });
+                  } else {
+                    dispatch(
+                      huntingActions.acceptHuntingManagerChange(
+                        {
+                          huntingId: huntingData.id,
+                        },
+                        {
+                          onFinish: () => {
+                            navigation.goBack();
+                          },
+                        },
+                      ),
+                    );
+                  }
+                }}
+              />
+              <OptionButton
+                key={'declineManager'}
+                text={'Atšaukti vadovavimą'}
+                variant={Button.Variant.Danger}
+                loading={loading && loadingOption === 'changeManager'}
+                disabled={!isConnected}
+                onPress={() => {
+                  setLoaderOnOption('changeManager');
+                  dispatch(
+                    huntingActions.declineHuntingManagerChange(
+                      {
+                        huntingId: huntingData.id,
+                      },
+                      {
+                        onFinish: () => {
+                          navigation.goBack();
+                        },
+                      },
+                    ),
+                  );
+                }}
+              />
+            </>
+          )}
+          {member.acceptedAt && (
+            <>
+              <Row>
+                <Label>Pradėjo medžioklę: </Label>
+                <Value>{acceptedAt}</Value>
+              </Row>
+              <Row>
+                <Label>Patvirtinimo būdas: </Label>
+                <Value>{acceptMethod}</Value>
+              </Row>
+            </>
           )}
           {member.leftAt && (
             <Row>
@@ -215,13 +295,10 @@ const HuntingMemberPanel = () => {
                   syncSelector: getOnSync.huntingMember,
                   onSign: (signature: string) => {
                     dispatch(
-                      huntingActions.updateHuntingMember(
+                      huntingActions.acceptHuntingMember(
                         {
                           memberId: member.id,
-                          data: {
-                            status: UserStatus.Accepted,
-                            signature,
-                          },
+                          signature,
                         },
                         {onFinish: () => {}},
                       ),
@@ -282,21 +359,12 @@ const HuntingMemberPanel = () => {
                 } else {
                   navigation.goBack();
                   if (huntingData?.id && member?.id) {
-                    // TODO refactor navigation
-                    navigation.navigate(routes.signatureModal, {
-                      signer: member.user,
-                      syncSelector: getOnSync.huntingMember,
-                      onSign: (signature: string) => {
-                        dispatch(
-                          huntingActions.changeHuntingManager({
-                            huntingId: huntingData.id,
-                            managerId: member?.id,
-                            signature,
-                          }),
-                        );
-                        navigation.goBack();
-                      },
-                    });
+                    dispatch(
+                      huntingActions.changeHuntingManager({
+                        huntingId: huntingData.id,
+                        managerId: member?.id,
+                      }),
+                    );
                   }
                 }
               }}

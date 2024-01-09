@@ -79,7 +79,6 @@ const HuntingMembers = ({
   return (
     <Container>
       {huntingData.status !== HuntingStatus.Ended && joinButton}
-      {/* <SignatureCanvas /> */}
       <SectionList
         contentContainerStyle={{paddingBottom: theme.footer + 90}}
         sections={huntingMembersSectionList}

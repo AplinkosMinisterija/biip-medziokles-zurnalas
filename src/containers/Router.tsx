@@ -215,6 +215,7 @@ const Router = () => {
     homeScreenMode === AppHomeScreenMode.HUNTING
       ? routes.tabs
       : routes.footPrintObservationList;
+  console.tron.log(initialRoute);
   const TabNavigation = () => (
     <Tabs.Navigator tabBar={props => <CustomTabBar {...props} />}>
       <Tabs.Screen

@@ -31,11 +31,10 @@ const Confirmation = ({
   );
 
   const [termsConfirmed, setConfirmationTerms] = useState(false);
-  const [gunLicenseConfirmed, setConfirmationGunLicense] = useState(false);
 
   useEffect(() => {
-    confirmAllTerms(termsConfirmed && gunLicenseConfirmed);
-  }, [termsConfirmed, gunLicenseConfirmed]);
+    confirmAllTerms(termsConfirmed);
+  }, [termsConfirmed]);
 
   const date = convertStringToDate(huntingData?.startDate || new Date());
 
@@ -71,11 +70,6 @@ const Confirmation = ({
         label={strings[Confirmations.Terms]}
         selected={termsConfirmed}
         onPress={() => setConfirmationTerms(!termsConfirmed)}
-      />
-      <CheckboxCard
-        label={strings[Confirmations.GunLicense]}
-        selected={gunLicenseConfirmed}
-        onPress={() => setConfirmationGunLicense(!gunLicenseConfirmed)}
       />
     </ConfirmationWrapper>
   ) : null;

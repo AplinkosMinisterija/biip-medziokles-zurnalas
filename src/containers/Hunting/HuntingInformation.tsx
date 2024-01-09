@@ -4,7 +4,7 @@ import {convertStringToDate} from '@utils/time';
 import {format, getYear} from 'date-fns';
 import {lt} from 'date-fns/locale';
 import React, {useState} from 'react';
-import {StatusBar, TouchableOpacity, View} from 'react-native';
+import {SafeAreaView, StatusBar, TouchableOpacity, View} from 'react-native';
 import styled from 'styled-components';
 import DotsVerticalIcon from '../../components/svg/DotsVertical';
 import Text from '../../components/Text';
@@ -117,9 +117,9 @@ const HuntingInformation = ({
   ) : null;
 };
 
-const Container = styled(View)`
+const Container = styled(SafeAreaView)`
   background-color: ${({theme}) => theme.colors.primaryDark};
-  padding-top: ${({theme}) => `${theme.header}px`};
+  padding-top: 5px;
 `;
 
 const InfoContainer = styled(View)`
