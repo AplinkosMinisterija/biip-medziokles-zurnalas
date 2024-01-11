@@ -68,9 +68,7 @@ const ObservationInformation: React.FC<Props> = ({
               </EventTime>
             </Row>
           </DatesContainer>
-          <Text.M variant={Text.Variant.light} weight={Text.Weight.medium}>
-            {`Maršrutas: ${trail}`}
-          </Text.M>
+          <Text.M variant={Text.Variant.light}>{`Maršrutas: ${trail}`}</Text.M>
         </Column>
       </InfoContainer>
     </Container>

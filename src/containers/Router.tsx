@@ -200,7 +200,7 @@ export type RootStackParamList = {
     mpvId: string;
   };
   [routes.footPrintObservation]: {
-    footPrint: ExtendedFootprintObservation;
+    footprint: ExtendedFootprintObservation;
   };
   [routes.footPrintRecordWizard]: undefined;
   [routes.startObservationModal]: undefined;

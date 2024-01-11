@@ -1,7 +1,7 @@
 import Text from '@components/Text';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import Button, {ButtonVariant} from '@root/components/Button';
-import TargetIcon from '@root/components/svg/Target';
+import FootprintIcon from '@root/components/svg/Footprint';
 import {RootStackParamList, routes} from '@root/containers/Router';
 import {FootprintObservationStatus} from '@root/state/types';
 import {theme} from '@root/theme';
@@ -16,9 +16,9 @@ type ObservationRouteProp = RouteProp<
   routes.footPrintObservation
 >;
 
-const FootPrintObservationScreen = () => {
+const FootprintObservationScreen = () => {
   const route: ObservationRouteProp = useRoute();
-  const {footPrint} = route.params;
+  const {footprint} = route.params;
   const navigation = useNavigation();
 
   const StatusConfig: {
@@ -43,21 +43,21 @@ const FootPrintObservationScreen = () => {
     },
   };
 
-  const eventTime = footPrint.startedAt ?? footPrint.eventTime;
+  const eventTime = footprint.startedAt ?? footprint.eventTime;
   const eventStartTime = eventTime ? formatDateTimeLT(eventTime) : '-';
-
-  const eventEndTime = footPrint.endedAt
-    ? formatDateTimeLT(footPrint.endedAt)
-    : StatusConfig[footPrint.status].endDateText || '';
+  const trail = footprint.footprintTrack;
+  const eventEndTime = footprint.endedAt
+    ? formatDateTimeLT(footprint.endedAt)
+    : StatusConfig[footprint.status].endDateText || '';
 
   return (
     <Wrapper>
       <ObservationInformation
         startDate={eventStartTime}
         endDate={eventEndTime}
-        huntingAreaName="todo hunting area name"
-        trail="todo trail name"
-        {...StatusConfig[footPrint.status]}
+        huntingAreaName={footprint.huntingArea.name}
+        trail={`#${trail.marsrutoNr} ${trail.savivalda} ${trail.ilgisKm}km`}
+        {...StatusConfig[footprint.status]}
       />
       <Container>
         <Row>
@@ -70,8 +70,10 @@ const FootPrintObservationScreen = () => {
             width={'90%'}
           />
           <InfoItem>
-            <TargetIcon size={16} color={theme.colors.primaryDark} />
-            <Text.M variant={Text.Variant.primaryDark}> 23 </Text.M>
+            <FootprintIcon size={16} color={theme.colors.primaryDark} />
+            <Text.M variant={Text.Variant.primaryDark}>
+              {footprint.recordsCount}
+            </Text.M>
           </InfoItem>
         </Row>
       </Container>
@@ -101,4 +103,4 @@ const Row = styled(View)`
   min-height: 40px;
 `;
 
-export default FootPrintObservationScreen;
+export default FootprintObservationScreen;

@@ -1,7 +1,9 @@
 import {LimitRequestBody} from '@root/state/limitedAnimals/actions';
 import {
   DataState,
+  DBPagination,
   EventCategory,
+  ExtendedFootprintObservation,
   GuestInvitation,
   LootRegistrationData,
   LootUpdateData,
@@ -29,6 +31,11 @@ export interface HuntingEventsProps {
   huntingAreaId: string | null;
   page?: number;
   pageSize?: number;
+}
+
+export interface FootprintObservationsProps {
+  huntingArea?: number | string;
+  page: number;
 }
 
 class ApiClass {
@@ -441,6 +448,19 @@ class ApiClass {
       `/api/hunting/${id}/?populate=tenant,huntingArea,manager,managerUser,lootsCount`,
     );
     return response;
+  };
+
+  geFootprintObservations = async ({
+    huntingArea,
+    page = 1,
+  }: FootprintObservationsProps): Promise<
+    DBPagination<ExtendedFootprintObservation>
+  > => {
+    const query = huntingArea ? `&query[huntingArea]=${huntingArea}` : '';
+    const response: AxiosResponse = await this.get(
+      `/api/footprintObservations?page=${page}&sort=-id${query}&populate=createdBy,huntingArea,footprintTrack`,
+    );
+    return response.data;
   };
 }
 

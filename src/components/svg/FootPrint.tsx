@@ -2,7 +2,7 @@ import React from 'react';
 import Svg, {Path} from 'react-native-svg';
 import {Padding} from '../layout';
 
-const FootPrint = ({color = 'white', size = 17, bottomPadding = 2}) => {
+const Footprint = ({color = 'white', size = 17, bottomPadding = 2}) => {
   return (
     <Padding bottomPadding={bottomPadding}>
       <Svg width={size} height={size} viewBox="0 0 17 17">
@@ -47,4 +47,4 @@ const FootPrint = ({color = 'white', size = 17, bottomPadding = 2}) => {
   );
 };
 
-export default FootPrint;
+export default Footprint;

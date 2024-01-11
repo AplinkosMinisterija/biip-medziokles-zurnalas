@@ -26,12 +26,14 @@ export const queryClient = new QueryClient({
       staleTime: 60000,
       cacheTime: Infinity,
       keepPreviousData: true,
+      networkMode: 'offlineFirst',
     },
   },
 });
 
 const App = () => {
   const dispatch = useDispatch();
+
   const me = useSelector(getMyUser);
 
   const handleURL = (url: string | null) => {

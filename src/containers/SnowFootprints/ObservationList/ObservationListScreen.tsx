@@ -1,16 +1,17 @@
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
+import {api} from '@root/apis/api';
 import Button from '@root/components/Button';
 import EmptyState from '@root/components/EmptyState';
 import Header from '@root/components/Header';
 import {RootStackParamList, routes} from '@root/containers/Router';
 import {getSelectedHuntingAreaData} from '@root/state/huntingArea/huntingAreaSelectors';
-import {getAllFootprintObservations} from '@root/state/snowFootprints/footprintSelectors';
 import {getOnSync} from '@root/state/sync/syncSelectors';
 import {ExtendedFootprintObservation} from '@root/state/types';
 import {theme} from '@root/theme';
+import {useQuery} from '@tanstack/react-query';
 import {isEmpty} from 'lodash';
-import React from 'react';
+import React, {useState} from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -26,16 +27,25 @@ const ObservationListScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const selectedArea = useSelector(getSelectedHuntingAreaData);
   const onSync = useSelector(getOnSync.data);
-  const observations = useSelector(getAllFootprintObservations);
+  const [page, setPage] = useState(1);
+
+  const {data, isFetching, refetch} = useQuery({
+    queryKey: ['observations', page, selectedArea?.id],
+    queryFn: () =>
+      api.geFootprintObservations({huntingArea: selectedArea?.id, page}),
+  });
+
+  console.tron.log(data);
+  console.tron.log(data?.rows);
 
   const renderListItem: ListRenderItem<ExtendedFootprintObservation> = ({
     item,
   }) => (
     <ObservationListItem
-      footPrint={item}
+      footprint={item}
       onPress={() => {
         navigation.navigate(routes.footPrintObservation, {
-          footPrint: item,
+          footprint: item,
         });
       }}
     />
@@ -56,16 +66,16 @@ const ObservationListScreen = () => {
           }}
         />
       )}
-      {isEmpty(observations) && !onSync ? (
+      {isEmpty(data?.rows) && !onSync ? (
         <EmptyState title={'Stebėjimų nėra'} />
-      ) : isEmpty(observations) && onSync ? (
+      ) : isEmpty(data?.rows) && onSync ? (
         <LoadingContainer>
           <ActivityIndicator color={theme.colors.primaryDark} />
         </LoadingContainer>
       ) : (
         <StyledFlatList
           removeClippedSubviews={false}
-          data={observations}
+          data={data?.rows}
           keyExtractor={(item: ExtendedFootprintObservation, index: number) =>
             `${item?.id}_${index}`
           }
@@ -75,12 +85,16 @@ const ObservationListScreen = () => {
           }}
           showsVerticalScrollIndicator={false}
           renderItem={renderListItem}
+          onEndReached={() => {
+            if (data?.page && data?.page < data?.totalPages) {
+              setPage(data?.page + 1);
+            }
+          }}
+          onEndReachedThreshold={0.5}
           refreshControl={
             <RefreshControl
-              refreshing={onSync}
-              onRefresh={() => {
-                // TODO handle pull to refresh
-              }}
+              refreshing={onSync || isFetching}
+              onRefresh={refetch}
               tintColor={theme.colors.primaryDark}
               colors={[theme.colors.primaryDark]}
             />

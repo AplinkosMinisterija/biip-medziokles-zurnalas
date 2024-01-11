@@ -654,6 +654,15 @@ export enum FootprintObservationStatus {
 export interface FootprintTrack {
   id: number;
   huntingArea: number;
+  mpvId: number;
+  createDate: Date;
+  ilgisKm: number;
+  lastModified: Date;
+  marsrutoNr: string;
+  raad: string;
+  savivalda: string;
+  teritorija: string;
+  featureId: string;
 }
 export interface FootprintObservation {
   id: number;
@@ -671,8 +680,13 @@ export interface FootprintObservation {
 }
 
 export interface ExtendedFootprintObservation
-  extends Omit<FootprintObservation, 'createdBy'> {
+  extends Omit<
+    FootprintObservation,
+    'createdBy' | 'huntingArea' | 'footprintTrack'
+  > {
   createdBy: UserData;
+  huntingArea: HuntingAreaData;
+  footprintTrack: FootprintTrack;
 }
 
 export interface FootprintRecord {
@@ -708,4 +722,12 @@ export interface HuntingMemberGeoData {
   huntingMemberId: number;
   phone: string;
   fullName: string;
+}
+
+export interface DBPagination<T> {
+  rows: T[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
 }
