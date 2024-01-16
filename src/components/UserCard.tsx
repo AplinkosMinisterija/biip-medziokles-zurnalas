@@ -20,6 +20,7 @@ const StatusColor: {[key: string]: string} = {
 export type UserCardProps = {
   user: UserData;
   isManager?: boolean;
+  isGuest?: boolean;
   style?: ViewProps;
   status?: string | null | undefined;
   createdBy?: UserData | null;
@@ -29,6 +30,7 @@ export type UserCardProps = {
 const UserCard = ({
   user,
   isManager,
+  isGuest = false,
   style,
   createdBy,
   status,
@@ -63,7 +65,7 @@ const UserCard = ({
             </Text.XS>
           )}
           <AdditionalData>
-            {!!createdBy && createdBy.id !== user?.id && (
+            {!!createdBy && createdBy.id !== user?.id && isGuest && (
               <CreatedByUserWrapper>
                 <UserIcon size={14} color={theme.colors.primaryLight} />
                 <Text.S variant={Text.Variant.primary}>
