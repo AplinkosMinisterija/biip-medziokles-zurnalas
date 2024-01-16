@@ -8,6 +8,7 @@ interface HuntingUserCardProps extends UserCardProps {
   isLast?: boolean;
   activeOpacity?: number;
   leftHunting?: boolean;
+  isGuest?: boolean;
 }
 const HuntingUserCard: React.FC<HuntingUserCardProps> = ({
   isLast,

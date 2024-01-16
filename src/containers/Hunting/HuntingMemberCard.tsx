@@ -29,7 +29,15 @@ const HuntingMemberCard: React.FC<HuntingMemberCardProps> = ({
   showStatus,
 }) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  const {user, isManager, isManagerPending, createdBy, status, leftAt} = member;
+  const {
+    user,
+    isManager,
+    isManagerPending,
+    createdBy,
+    status,
+    leftAt,
+    isGuest,
+  } = member;
 
   const loots = useSelector(getExtendedLootsByHunting(hunting.id));
 
@@ -54,6 +62,7 @@ const HuntingMemberCard: React.FC<HuntingMemberCardProps> = ({
         })
       }
       user={user}
+      isGuest={isGuest}
       leftHunting={!!leftAt}
       isManager={isManager}
       createdBy={createdBy}

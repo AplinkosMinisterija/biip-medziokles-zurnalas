@@ -225,7 +225,7 @@ const HuntingMemberPanel = () => {
               </Value>
             </Row>
           )}
-          {!!member.createdBy && (
+          {!!member.createdBy && member.isGuest && (
             <Row>
               <Label>Pakvietė: </Label>
               <Value>{`${member.createdBy.firstName} ${member.createdBy.lastName}`}</Value>
