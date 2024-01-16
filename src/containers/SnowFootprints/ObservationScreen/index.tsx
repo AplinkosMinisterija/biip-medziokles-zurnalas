@@ -1,11 +1,15 @@
 import Text from '@components/Text';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {api} from '@root/apis/api';
 import Button, {ButtonVariant} from '@root/components/Button';
+import EmptyState from '@root/components/EmptyState';
 import FootprintIcon from '@root/components/svg/Footprint';
 import {RootStackParamList, routes} from '@root/containers/Router';
 import {FootprintObservationStatus} from '@root/state/types';
 import {theme} from '@root/theme';
 import {formatDateTimeLT} from '@root/utils/time';
+import {useMutation} from '@tanstack/react-query';
 import React from 'react';
 import {View} from 'react-native';
 import styled from 'styled-components';
@@ -19,7 +23,12 @@ type ObservationRouteProp = RouteProp<
 const FootprintObservationScreen = () => {
   const route: ObservationRouteProp = useRoute();
   const {footprint} = route.params;
-  const navigation = useNavigation();
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const startObservation = useMutation({
+    mutationFn: () => {
+      return api.startFootprintObservation(footprint.id);
+    },
+  });
 
   const StatusConfig: {
     [key in string]: {
@@ -31,7 +40,13 @@ const FootprintObservationScreen = () => {
     [FootprintObservationStatus.PLANNED]: {
       endDateText: 'neprasidėjęs stebėjimas',
       actionButtonText: 'Pradėti stebėjimą',
-      onActionButtonPress: () => {},
+      onActionButtonPress: () => {
+        navigation.navigate(routes.startObservationModal, {
+          observationId: footprint.id,
+        });
+        // console.tron.log('click');
+        // startObservation.mutate();
+      },
     },
     [FootprintObservationStatus.STARTED]: {
       endDateText: 'Pradėti stebėjimą',
@@ -60,22 +75,26 @@ const FootprintObservationScreen = () => {
         {...StatusConfig[footprint.status]}
       />
       <Container>
-        <Row>
-          <Button
-            text="Laba"
-            variant={ButtonVariant.Primary}
-            onPress={() => {
-              navigation.navigate(routes.footPrintRecordWizard);
-            }}
-            width={'90%'}
-          />
-          <InfoItem>
-            <FootprintIcon size={16} color={theme.colors.primaryDark} />
-            <Text.M variant={Text.Variant.primaryDark}>
-              {footprint.recordsCount}
-            </Text.M>
-          </InfoItem>
-        </Row>
+        {footprint.status === FootprintObservationStatus.PLANNED ? (
+          <EmptyState title="Stebėjimas neprasidėjęs" />
+        ) : (
+          <Row>
+            <Button
+              text="Laba"
+              variant={ButtonVariant.Primary}
+              onPress={() => {
+                navigation.navigate(routes.footPrintRecordWizard);
+              }}
+              width={'90%'}
+            />
+            <InfoItem>
+              <FootprintIcon size={16} color={theme.colors.primaryDark} />
+              <Text.M variant={Text.Variant.primaryDark}>
+                {footprint.recordsCount}
+              </Text.M>
+            </InfoItem>
+          </Row>
+        )}
       </Container>
     </Wrapper>
   );

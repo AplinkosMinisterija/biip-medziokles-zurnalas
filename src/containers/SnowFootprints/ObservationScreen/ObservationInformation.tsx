@@ -37,7 +37,7 @@ const ObservationInformation: React.FC<Props> = ({
             <ActionButton
               variant={Button.Variant.Secondary}
               text={actionButtonText}
-              onPress={() => {}}
+              onPress={onActionButtonPress}
               loading={false}
               disabled={false}
             />

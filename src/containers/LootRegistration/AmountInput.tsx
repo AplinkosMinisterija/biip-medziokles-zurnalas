@@ -7,14 +7,28 @@ type AmountInputProps = {
   onPress: (val: number) => void;
   label: string;
   value: number;
+  allowNegativeValues?: boolean;
 };
 
-const AmountInput = ({label, onPress, value}: AmountInputProps) => {
+const AmountInput = ({
+  label,
+  onPress,
+  value,
+  allowNegativeValues = false,
+}: AmountInputProps) => {
   return (
     <Wrapper>
       <Label>{label}</Label>
       <InputContainer>
-        <Button onPress={() => onPress(value - 1 > 0 ? value - 1 : 0)}>
+        <Button
+          onPress={() => {
+            if (allowNegativeValues) {
+              onPress(value - 1);
+            } else {
+              onPress(value - 1 > 0 ? value - 1 : 0);
+            }
+          }}
+        >
           <Action>{'-'}</Action>
         </Button>
         <Amount>{value}</Amount>

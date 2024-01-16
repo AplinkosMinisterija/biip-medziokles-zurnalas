@@ -203,7 +203,9 @@ export type RootStackParamList = {
     footprint: ExtendedFootprintObservation;
   };
   [routes.footPrintRecordWizard]: undefined;
-  [routes.startObservationModal]: undefined;
+  [routes.startObservationModal]: {
+    observationId: number;
+  };
 };
 
 const Router = () => {

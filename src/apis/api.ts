@@ -426,6 +426,22 @@ class ApiClass {
     return response.data;
   };
 
+  startFootprintObservation = async (id: number): Promise<any> => {
+    const response: AxiosResponse = await this.post(
+      `/api/footprintObservations/start/${id}`,
+      {},
+    );
+    return response.data;
+  };
+
+  endFootprintObservation = async (id: number): Promise<any> => {
+    const response: AxiosResponse = await this.post(
+      `/api/footprintObservations/end/${id}`,
+      {},
+    );
+    return response.data;
+  };
+
   getHuntingEvents = async ({
     scope,
     huntingAreaId,
