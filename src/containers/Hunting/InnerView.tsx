@@ -33,7 +33,7 @@ const HuntingInner = () => {
   const [selectedTab, setSelectedTab] = useState<string>(Selection.Members);
 
   const geoPoints = useQuery({
-    queryKey: ['geoPoints', route.params.huntingId, selectedTab],
+    queryKey: ['geoPoints', route.params.huntingId],
     refetchOnWindowFocus: true,
     queryFn: () => api.getGeoPoints(route.params.huntingId),
   });
@@ -70,6 +70,10 @@ const HuntingInner = () => {
   const showingMap = !!(
     selectedTab === Selection.Map && huntingData?.huntingArea?.id
   );
+
+  useEffect(() => {
+    geoPoints.refetch();
+  }, [showingMap, geoPoints]);
 
   return (
     <Wrapper>

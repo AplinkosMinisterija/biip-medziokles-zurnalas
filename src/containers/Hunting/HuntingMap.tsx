@@ -44,7 +44,7 @@ const HuntingMap = ({
   const dispatch = useDispatch();
   const navigation = useNavigation<any>();
 
-  const [isReloaded, setIsReloaded] = useState(true);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const [currentGeoPointData, setCurrentGeoPointData] =
     useState<GeoMapFeatureCollection | null>(null);
@@ -54,15 +54,13 @@ const HuntingMap = ({
   const loading = useSelector(getOnSync.hunterLocation);
 
   useEffect(() => {
-    if (webViewRef.current && points && points.length > 0) {
-      webViewRef.current.postMessage(
-        JSON.stringify({
-          points,
-        }),
+    if (webViewRef.current && points && points.length > 0 && isLoaded) {
+      webViewRef.current.injectJavaScript(
+        `window.postMessage(${JSON.stringify({points})})`,
       );
     }
-  }, [points, webViewRef]);
-  console.tron.log(url);
+  }, [points, webViewRef, isLoaded]);
+
   return url ? (
     <Container>
       <WebView
@@ -103,10 +101,7 @@ const HuntingMap = ({
           uri: url,
         }}
         onLoadEnd={() => {
-          if (!isReloaded) {
-            (webViewRef.current as any)?.reload();
-            setIsReloaded(true);
-          }
+          setIsLoaded(true);
         }}
       />
       {(!!selectedGeoPointMemberData || memberData) && (

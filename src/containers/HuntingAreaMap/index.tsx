@@ -1,5 +1,5 @@
-import {api} from '@apis/api';
 import {useRoute} from '@react-navigation/native';
+import {queryClient} from '@root/App';
 import {
   getExtendedHunting,
   getExtendedHuntingMember,
@@ -13,6 +13,7 @@ import HeaderClose from '../../components/HeaderClose';
 import {strings} from '../../strings';
 import HuntingMap from '../Hunting/HuntingMap';
 
+// Screen for hunting member point change on the map
 const HuntingAreaMap = () => {
   const route = useRoute<any>();
   const {memberId, closePrevView = false, huntingId} = route.params;
@@ -24,20 +25,24 @@ const HuntingAreaMap = () => {
   const member = useSelector(getExtendedHuntingMember(memberId));
 
   useEffect(() => {
-    if (huntingId) {
-      api.getGeoPoints(huntingId).then(res => {
-        const selectedIndex = res.findIndex(
-          (item: HuntingMemberGeoData) => item.huntingMemberId === memberId,
-        );
-        if (selectedIndex !== -1) {
-          setMemberGeoData(res[selectedIndex]);
-        }
-        setMapMembers(res.toSpliced(selectedIndex, 1));
-      });
-    }
-  }, [huntingId]);
+    const geoData = queryClient.getQueriesData<Array<HuntingMemberGeoData>>([
+      'geoPoints',
+      huntingData?.id,
+    ]);
 
-  // ${mapMembers ? `&points=${JSON.stringify(mapMembers)}` : ''}
+    if (geoData[0][1]) {
+      const geoList = [...geoData[0][1]];
+      const selectedIndex = geoList.findIndex(
+        (item: HuntingMemberGeoData) => item.huntingMemberId === memberId,
+      );
+      if (selectedIndex !== -1) {
+        setMemberGeoData(geoList[selectedIndex]);
+      }
+      geoList.splice(selectedIndex, 1);
+      setMapMembers(geoList);
+    }
+  }, []);
+
   return (
     <Container>
       <StatusBar barStyle="dark-content" />
