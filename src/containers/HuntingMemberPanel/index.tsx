@@ -103,7 +103,7 @@ const HuntingMemberPanel = () => {
   const showPhoneButton = !memberIsMe;
   const showLocationOnMapButton =
     iAmParticipating &&
-    memberCanParticipate &&
+    (memberCanParticipate || member.isManager) &&
     huntingStatus !== HuntingStatus.Ended &&
     !member.leftAt &&
     member.status !== UserStatus.Declined;

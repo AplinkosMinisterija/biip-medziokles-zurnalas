@@ -1,5 +1,6 @@
 import {api, AuthResponse, LoginResponse} from '@apis/api';
 import {routes} from '@containers/Router';
+import {queryClient} from '@root/App';
 import {isIOS} from '@utils/layout';
 import {pop, push} from '@utils/navigation';
 import {Linking} from 'react-native';
@@ -81,6 +82,7 @@ function* handleLogOut() {
     yield put(dataActions.reset());
     yield put(appActions.reset());
     yield fork(() => EncryptedStorage.clear());
+    yield fork(() => queryClient.removeQueries());
   } catch (e) {
     yield put(appActions.handleError(e));
   }

@@ -30,9 +30,9 @@ const TabView = () => {
   const route: HuntingRouteProps = useRoute();
   const huntingData = useSelector(getExtendedHunting(route.params.huntingId));
   const [selectedTab, setSelectedTab] = useState<string>(Selection.Members);
-  console.tron.log('huntingData', huntingData);
+
   const geoPoints = useQuery({
-    queryKey: ['geoPoints', route.params.huntingId, selectedTab],
+    queryKey: ['geoPoints', route.params.huntingId],
     refetchOnWindowFocus: true,
     queryFn: () => api.getGeoPoints(route.params.huntingId),
   });
@@ -77,6 +77,11 @@ const TabView = () => {
   const showingMap = !!(
     selectedTab === Selection.Map && huntingData?.huntingArea?.id
   );
+
+  useEffect(() => {
+    geoPoints.refetch();
+  }, [showingMap, geoPoints]);
+
   return (
     <Container>
       {huntingData ? (
