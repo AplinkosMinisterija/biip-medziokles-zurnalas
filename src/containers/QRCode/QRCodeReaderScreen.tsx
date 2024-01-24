@@ -94,14 +94,16 @@ const QRCodeReaderScreen: React.FC = () => {
           camera.current?.focus({x: nativeEvent.x, y: nativeEvent.y});
         }}
       >
-        <Camera
-          ref={camera}
-          style={StyleSheet.absoluteFill}
-          isActive={isFocused}
-          device={device}
-          frameProcessor={frameProcessor}
-          frameProcessorFps={2}
-        />
+        {isFocused && (
+          <Camera
+            ref={camera}
+            style={StyleSheet.absoluteFill}
+            isActive={isFocused}
+            device={device}
+            frameProcessor={isFocused ? frameProcessor : undefined}
+            frameProcessorFps={2}
+          />
+        )}
       </TapGestureHandler>
       <HeaderBack title={HEADER_TITLE} />
     </GestureHandlerRoot>
