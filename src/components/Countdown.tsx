@@ -1,8 +1,8 @@
 import {JSXNode} from '@root/types';
 import {getFormattedTimeValue} from '@utils/time';
 import {differenceInSeconds} from 'date-fns';
-import React, {memo, useEffect, useState} from 'react';
-import {View} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {AppState, View} from 'react-native';
 import styled from 'styled-components';
 import Text from './Text';
 
@@ -20,10 +20,23 @@ const Countdown = ({
   const minutes = Math.floor((timer % 3600) / 60);
   const seconds = Math.floor((timer % 3600) % 60);
 
+  const appState = useRef(AppState.currentState);
+  const [appStateVisible, setAppStateVisible] = useState(appState.current);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      appState.current = nextAppState;
+      setAppStateVisible(appState.current);
+    });
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
   useEffect(() => {
     const difference = differenceInSeconds(new Date(), date);
     setTimer(time - difference);
-  }, [date, time]);
+  }, [date, time, appStateVisible]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -50,7 +63,7 @@ const Countdown = ({
   ) : null;
 };
 
-export default memo(Countdown);
+export default Countdown;
 
 const Container = styled(View)`
   flex-direction: row;
