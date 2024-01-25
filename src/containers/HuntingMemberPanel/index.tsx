@@ -268,9 +268,8 @@ const HuntingMemberPanel = () => {
               disabled={!isConnected}
               onPress={() => {
                 setLoaderOnOption('confirmMyself');
-                // TODO refactor navigation
                 navigation.navigate(routes.huntingMemberConfirmationPanel, {
-                  member,
+                  confirmWithNextStep: false,
                   huntingId: huntingData.id,
                 });
               }}
@@ -289,21 +288,29 @@ const HuntingMemberPanel = () => {
               onPress={() => {
                 setLoaderOnOption('confirm');
                 navigation.goBack();
-                // TODO refactor navigation
-                navigation.navigate(routes.signatureModal, {
-                  signer: member.user,
-                  syncSelector: getOnSync.huntingMember,
-                  onSign: (signature: string) => {
-                    dispatch(
-                      huntingActions.acceptHuntingMember(
-                        {
-                          memberId: member.id,
-                          signature,
-                        },
-                        {onFinish: () => {}},
-                      ),
-                    );
-                    navigation.goBack();
+                navigation.navigate(routes.huntingMemberConfirmationPanel, {
+                  confirmWithNextStep: true,
+                  huntingId: huntingData.id,
+                  nextStep: () => {
+                    navigation.navigate(routes.signatureModal, {
+                      signer: member.user,
+                      syncSelector: getOnSync.huntingMember,
+                      onSign: (signature: string) => {
+                        dispatch(
+                          huntingActions.acceptHuntingMember(
+                            {
+                              memberId: member.id,
+                              signature,
+                            },
+                            {
+                              onFinish: () => {
+                                navigation.goBack();
+                              },
+                            },
+                          ),
+                        );
+                      },
+                    });
                   },
                 });
               }}

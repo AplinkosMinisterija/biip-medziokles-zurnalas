@@ -17,6 +17,7 @@ import {
   AnimalData,
   AppHomeScreenMode,
   SeasonData,
+  State,
   StatEventData,
   UserData,
 } from '@root/state/types';
@@ -134,7 +135,11 @@ export type RootStackParamList = {
     huntingData: ExtendedHuntingData;
     myMember: ExtendedHuntingMemberData;
   };
-  [routes.huntingMemberConfirmationPanel]: undefined;
+  [routes.huntingMemberConfirmationPanel]: {
+    huntingId: string;
+    confirmWithNextStep: boolean;
+    nextStep?: () => void;
+  };
   [routes.huntingMore]: {
     huntingId: string;
   };
@@ -189,8 +194,9 @@ export type RootStackParamList = {
   [routes.qrCodeReader]: undefined;
   [routes.qrScanResult]: undefined;
   [routes.signatureModal]: {
-    huntingId: string;
-    user?: UserData;
+    signer: UserData;
+    onSign: (signature: string) => void;
+    syncSelector?: (state: State) => boolean;
   };
   [routes.termsOfService]: undefined;
   [routes.footPrintObservationList]: undefined;
@@ -215,7 +221,6 @@ const Router = () => {
     homeScreenMode === AppHomeScreenMode.HUNTING
       ? routes.tabs
       : routes.footPrintObservationList;
-  console.tron.log(initialRoute);
   const TabNavigation = () => (
     <Tabs.Navigator tabBar={props => <CustomTabBar {...props} />}>
       <Tabs.Screen

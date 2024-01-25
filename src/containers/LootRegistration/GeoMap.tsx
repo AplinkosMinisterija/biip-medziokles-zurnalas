@@ -82,7 +82,6 @@ const GeoMap: React.FC<Props> = ({url, onBack, onPress, isLastStep}) => {
           const data: GeoMapFeatureCollection = JSON.parse(
             response?.mapIframeMsg?.data,
           );
-          console.tron.log('got data from map', data);
           setCurrentLocation(data);
         }}
         source={{
