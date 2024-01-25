@@ -10,7 +10,6 @@ function* handleCreateFootprintObservation(action: Action) {
   try {
     // yield put(syncActions.setOnSync.localFiles(true));
     const resp = yield call(api.createFootprintObservation, action.payload);
-    console.tron.log(resp);
     yield delay(300);
     yield call(handleFetchMainData);
     yield call(goBack);

@@ -136,7 +136,7 @@ const MenuTitle = styled(Text.M)`
 
 const StyledLogoutButton = styled(LogoutButton)`
   margin-top: 24px;
-  margin-bottom: 12px;
+  margin-bottom: 6px;
 `;
 
 const StyledBttonRignt = styled(ButtonRight)`

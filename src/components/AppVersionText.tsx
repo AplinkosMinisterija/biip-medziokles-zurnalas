@@ -22,6 +22,7 @@ const AppVersionText: React.FC = () => {
 
 const VersionText = styled(Text.XS)`
   color: ${({theme}) => theme.colors.primaryLight};
+  padding-bottom: 6px;
 `;
 
 export default AppVersionText;

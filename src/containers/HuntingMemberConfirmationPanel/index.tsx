@@ -1,10 +1,9 @@
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {getExtendedHunting} from '@root/state/data/dataSelectors';
 import {getMyHuntingMember} from '@root/state/huntingMembers/huntingMembersSelectors';
 import {huntingActions} from '@root/state/huntings/actions';
 import {getOnSync} from '@root/state/sync/syncSelectors';
 import {State} from '@root/state/types';
-import {map} from 'lodash';
 import React, {useState} from 'react';
 import {View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
@@ -13,6 +12,7 @@ import ActionsModal from '../../components/ActionsModal';
 import Button, {ButtonVariant} from '../../components/Button';
 import PhoneIcon from '../../components/svg/Phone';
 import {strings} from '../../strings';
+import {RootStackParamList, routes} from '../Router';
 import Confirmation from './Confirmation';
 
 type Option = {
@@ -28,8 +28,11 @@ type Options = {
 };
 
 const HuntingMemberConfirmationPanel = (): JSX.Element => {
-  const route: any = useRoute();
-  const {member, huntingId} = route.params;
+  const route =
+    useRoute<
+      RouteProp<RootStackParamList, routes.huntingMemberConfirmationPanel>
+    >();
+  const {huntingId, confirmWithNextStep, nextStep} = route.params;
 
   const navigation = useNavigation<any>();
   const dispatch = useDispatch();
@@ -80,26 +83,41 @@ const HuntingMemberConfirmationPanel = (): JSX.Element => {
         }
       },
     },
+    nextStepOption: {
+      key: 'nextStep',
+      text: 'Toliau',
+      disabled: !allTermsConfirmed || !isConnected,
+      onPress: () => {
+        navigation.goBack();
+        nextStep && nextStep();
+      },
+    },
   };
 
+  const renderOption = (option: Option, index?: number) => (
+    <OptionButton
+      key={option.key}
+      text={option.text}
+      loading={loading && option.key === loadingOption}
+      disabled={option.disabled || loading}
+      leftIcon={option.key === 'phone' ? <PhoneIcon /> : null}
+      onPress={() => handleOptionPress(option)}
+      variant={
+        option.variant
+          ? option.variant
+          : index === 0
+          ? Button.Variant.PrimaryDark
+          : Button.Variant.Primary
+      }
+    />
+  );
+
   const getAvailableOptions = () => {
-    return map(allOptions, (option: Option, index: number) => (
-      <OptionButton
-        key={option.key}
-        text={option.text}
-        loading={loading && option.key === loadingOption}
-        disabled={option.disabled || loading}
-        leftIcon={option.key === 'phone' ? <PhoneIcon /> : null}
-        onPress={() => handleOptionPress(option)}
-        variant={
-          option.variant
-            ? option.variant
-            : index === 0
-            ? Button.Variant.PrimaryDark
-            : Button.Variant.Primary
-        }
-      />
-    ));
+    if (confirmWithNextStep) {
+      return renderOption(allOptions.nextStepOption);
+    } else {
+      return renderOption(allOptions.confirmMyself);
+    }
   };
 
   return (
