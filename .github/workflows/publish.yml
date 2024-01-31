@@ -124,8 +124,6 @@ jobs:
 
       - name: Prepare build environment
         uses: ./.github/actions/prepare-android-build-environment
-        with:
-          fastlane-working-directory: android
 
       - name: Create upload keystore
         working-directory: android/app
