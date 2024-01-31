@@ -123,7 +123,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Prepare build environment
-        uses: ./.github/actions/prepare-build-environment
+        uses: ./.github/actions/prepare-android-build-environment
         with:
           fastlane-working-directory: android
 
