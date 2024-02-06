@@ -206,6 +206,7 @@ const Loot = ({
                   ...(hasCategory && {category}),
                   ...(hasHorns && {horns}),
                   ...(hasAge && {age}),
+                  ...(isExtraCase && {lootCase: selectedCase}),
                 },
               });
             }
