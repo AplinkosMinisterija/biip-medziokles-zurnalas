@@ -3,7 +3,11 @@ module.exports = {
     amd: true,
     node: true,
   },
-  extends: ['@react-native-community', 'prettier'],
+  extends: [
+    '@react-native-community',
+    'prettier',
+    'plugin:@tanstack/eslint-plugin-query/recommended',
+  ],
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint'],
   root: true,
@@ -18,6 +22,9 @@ module.exports = {
     JSX: 'readonly',
   },
   rules: {
+    '@tanstack/query/exhaustive-deps': 'error',
+    '@tanstack/query/no-rest-destructuring': 'warn',
+    '@tanstack/query/stable-query-client': 'error',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
     'react/jsx-key': 'off',

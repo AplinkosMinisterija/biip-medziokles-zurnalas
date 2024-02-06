@@ -124,7 +124,9 @@ const Events = (props: any) => {
   };
 
   const getData = () => {
+    console.tron.log('entered getData');
     if (!onSync) {
+      console.tron.log('no onSync so getting the Data');
       dispatch(dataActions.getMainData());
     }
   };

@@ -1,7 +1,10 @@
+import AsyncStorage from '@react-native-community/async-storage';
 import * as Sentry from '@sentry/react-native';
 import {appActions} from '@state/app/actions';
 import {getMyUser} from '@state/data/dataSelectors';
-import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
+import {createAsyncStoragePersister} from '@tanstack/query-async-storage-persister';
+import {QueryCache, QueryClient} from '@tanstack/react-query';
+import {PersistQueryClientProvider} from '@tanstack/react-query-persist-client';
 import React, {useEffect} from 'react';
 import {Linking, LogBox, StatusBar, View} from 'react-native';
 import 'react-native-gesture-handler';
@@ -21,13 +24,28 @@ if (__DEV__) {
 }
 
 export const queryClient = new QueryClient({
+  queryCache: new QueryCache({
+    onError: _error => {
+      // store.dispatch(
+      //   appActions.setMessage({
+      //     type: GlobalErrorSuccessAlertType.Error,
+      //     message: error.message,
+      //   }),
+      // );
+    },
+  }),
   defaultOptions: {
     queries: {
-      staleTime: 60000,
-      cacheTime: Infinity,
-      keepPreviousData: true,
+      gcTime: 1000 * 60 * 60 * 24, // 24 hours
+      networkMode: 'offlineFirst',
+      staleTime: 1000 * 20, // 20 seconds
+      retry: 2,
     },
   },
+});
+
+const asyncStoragePersister = createAsyncStoragePersister({
+  storage: AsyncStorage,
 });
 
 const App = () => {
@@ -68,12 +86,15 @@ const App = () => {
   }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{persister: asyncStoragePersister}}
+    >
       <Container>
         <StatusBar backgroundColor="#004550" barStyle="light-content" />
         <Router />
       </Container>
-    </QueryClientProvider>
+    </PersistQueryClientProvider>
   );
 };
 

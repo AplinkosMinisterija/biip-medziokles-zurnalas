@@ -425,7 +425,7 @@ class ApiClass {
     my = false,
     sort = 'status',
     page = 1,
-    pageSize = 200,
+    pageSize = 20,
   }: HuntingEventsProps): Promise<any> => {
     const huntingArea = huntingAreaId ? `"huntingArea":${huntingAreaId}` : '';
     const query = huntingArea ? `&query={${huntingArea}}` : '';

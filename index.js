@@ -1,13 +1,13 @@
 import 'react-native-reanimated';
 
-import App from './src/App';
-import {AppRegistry} from 'react-native';
-import {PersistGate} from 'redux-persist/integration/react';
-import {Provider} from 'react-redux';
 import React from 'react';
+import {AppRegistry} from 'react-native';
 import {ReduxNetworkProvider} from 'react-native-offline';
+import {Provider} from 'react-redux';
+import {PersistGate} from 'redux-persist/integration/react';
 import {ThemeProvider} from 'styled-components';
 import {name as appName} from './app.json';
+import App from './src/App';
 import {configureStore} from './src/state/store';
 import {theme} from './src/theme';
 
