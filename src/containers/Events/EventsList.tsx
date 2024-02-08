@@ -3,8 +3,8 @@ import {getSelectedHuntingArea} from '@root/state/app/appSelectors';
 import {ExtendedHuntingData} from '@root/state/data/dataSelectors';
 import {strings} from '@root/strings';
 import {theme} from '@root/theme';
-import React from 'react';
-import {FlatList, RefreshControl} from 'react-native';
+import React, {useEffect} from 'react';
+import {ActivityIndicator, FlatList, RefreshControl} from 'react-native';
 import {useSelector} from 'react-redux';
 import styled from 'styled-components';
 import EventCard from './EventCard';
@@ -15,21 +15,32 @@ interface Props {
   refreshing?: boolean;
   handleEventCardPress: (id: string) => void;
   onRefresh: () => void;
+  onEndReached?: () => void;
+  isFetchingNextPage?: boolean;
 }
 
 const EventsList: React.FC<Props> = ({
   data,
   myId,
   refreshing = false,
+  isFetchingNextPage = false,
   onRefresh,
   handleEventCardPress,
+  onEndReached,
 }) => {
+  console.tron.log('refreshing', refreshing);
   const selectedArea = useSelector(getSelectedHuntingArea);
+  useEffect(() => {}, [refreshing]);
   return (
     <StyledFlatList
       ListEmptyComponent={() => (
         <EmptyState title={strings.emptyState.huntingHistory} />
       )}
+      ListFooterComponent={() => {
+        if (isFetchingNextPage) {
+          return <ActivityIndicator size={'large'} />;
+        }
+      }}
       removeClippedSubviews={false}
       data={data}
       keyExtractor={(item: ExtendedHuntingData, index: number) => index}
@@ -39,6 +50,7 @@ const EventsList: React.FC<Props> = ({
       }}
       extraData={data}
       showsVerticalScrollIndicator={false}
+      onEndReached={onEndReached}
       renderItem={({item}: any) => (
         <EventCard
           id={item.id}

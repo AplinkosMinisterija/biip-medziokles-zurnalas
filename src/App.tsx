@@ -3,7 +3,7 @@ import * as Sentry from '@sentry/react-native';
 import {appActions} from '@state/app/actions';
 import {getMyUser} from '@state/data/dataSelectors';
 import {createAsyncStoragePersister} from '@tanstack/query-async-storage-persister';
-import {QueryCache, QueryClient} from '@tanstack/react-query';
+import {QueryClient} from '@tanstack/react-query';
 import {PersistQueryClientProvider} from '@tanstack/react-query-persist-client';
 import React, {useEffect} from 'react';
 import {Linking, LogBox, StatusBar, View} from 'react-native';
@@ -24,16 +24,6 @@ if (__DEV__) {
 }
 
 export const queryClient = new QueryClient({
-  queryCache: new QueryCache({
-    onError: _error => {
-      // store.dispatch(
-      //   appActions.setMessage({
-      //     type: GlobalErrorSuccessAlertType.Error,
-      //     message: error.message,
-      //   }),
-      // );
-    },
-  }),
   defaultOptions: {
     queries: {
       gcTime: 1000 * 60 * 60 * 24, // 24 hours

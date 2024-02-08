@@ -1,29 +1,26 @@
-// example typed query key factory usage
+import {api, HuntingEventsProps} from '@root/apis/api';
+import {useInfiniteQuery} from '@tanstack/react-query';
 
-/*
-const todoKeys = {
-  // ✅ all keys are arrays with exactly one object
-  all: [{scope: 'todos'}] as const,
-  lists: () => [{...todoKeys.all[0], entity: 'list'}] as const,
-  list: (state: State, sorting: Sorting) =>
-    [{...todoKeys.lists()[0], state, sorting}] as const,
+// hunt event key factory
+const huntEventKeys = {
+  all: [{entity: 'huntEvent'}] as const,
+  list: (props: HuntingEventsProps) =>
+    [{...huntEventKeys.all[0], ...props}] as const,
 };
 
-const fetchTodos = async ({
-  // ✅ extract named properties from the queryKey
-  queryKey: [{ state, sorting }],
-}: QueryFunctionContext<ReturnType<typeof todoKeys['list']>>) => {
-  const response = await axios.get(`todos/${state}?sorting=${sorting}`)
-  return response.data
-}
-
-export const useTodos = () => {
-  const { state, sorting } = useTodoParams()
-
-  return useQuery({
-    queryKey: todoKeys.list(state, sorting),
-    queryFn: fetchTodos
-  })
-}
-
-*/
+// to infinity and beyond!
+export const useInfiniteHuntEvents = (props: HuntingEventsProps) => {
+  return useInfiniteQuery({
+    queryKey: [huntEventKeys.list(props)],
+    queryFn: ({pageParam}) =>
+      api.getHuntingEvents({
+        ...props,
+        page: pageParam,
+      }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, _pages) => {
+      const {page, totalPages} = lastPage;
+      return page < totalPages ? page + 1 : undefined;
+    },
+  });
+};
