@@ -222,10 +222,7 @@ const Router = () => {
       ? routes.tabs
       : routes.footPrintObservationList;
   const TabNavigation = () => (
-    <Tabs.Navigator
-      detachInactiveScreens={false}
-      tabBar={props => <CustomTabBar {...props} />}
-    >
+    <Tabs.Navigator tabBar={props => <CustomTabBar {...props} />}>
       <Tabs.Screen
         name={routes.events}
         key={routes.events}
@@ -273,10 +270,7 @@ const Router = () => {
   return (
     <NavigationContainer ref={navigationRef}>
       <Stack.Navigator
-        // detachInactiveScreens={false}
-        // detachPreviousScreen={false}
         screenOptions={{
-          // detachPreviousScreen: false,
           headerShown: false,
         }}
       >

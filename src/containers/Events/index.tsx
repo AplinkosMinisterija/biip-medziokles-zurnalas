@@ -135,8 +135,6 @@ const Events = (props: any) => {
     }
   };
 
-  console.tron.log('huntingsFromState', huntingsFromState);
-
   const renderEventList = () => {
     switch (selectedEventCategory.key) {
       case EventCategory.today:

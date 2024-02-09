@@ -97,7 +97,6 @@ export const getHuntingHistoryNoSections = (
       [],
     );
     if (showMyHuntingEventsOnly) {
-      console.tron.log(data);
       return data.filter(event => event?.isMyHunting);
     }
     return data;

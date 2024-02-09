@@ -1,12 +1,12 @@
+import {useIsFocused} from '@react-navigation/native';
 import EmptyState from '@root/components/EmptyState';
 import {getSelectedHuntingArea} from '@root/state/app/appSelectors';
 import {ExtendedHuntingData} from '@root/state/data/dataSelectors';
 import {strings} from '@root/strings';
-import {theme} from '@root/theme';
-import React, {useEffect} from 'react';
-import {ActivityIndicator, FlatList, RefreshControl} from 'react-native';
+import {FlashList} from '@shopify/flash-list';
+import React from 'react';
+import {ActivityIndicator} from 'react-native';
 import {useSelector} from 'react-redux';
-import styled from 'styled-components';
 import EventCard from './EventCard';
 
 interface Props {
@@ -28,11 +28,12 @@ const EventsList: React.FC<Props> = ({
   handleEventCardPress,
   onEndReached,
 }) => {
-  console.tron.log('refreshing', refreshing);
   const selectedArea = useSelector(getSelectedHuntingArea);
-  useEffect(() => {}, [refreshing]);
+  const isFocused = useIsFocused();
+
   return (
-    <StyledFlatList
+    <FlashList
+      estimatedItemSize={129}
       ListEmptyComponent={() => (
         <EmptyState title={strings.emptyState.huntingHistory} />
       )}
@@ -43,10 +44,9 @@ const EventsList: React.FC<Props> = ({
       }}
       removeClippedSubviews={false}
       data={data}
-      keyExtractor={(item: ExtendedHuntingData, index: number) => index}
+      keyExtractor={(item: ExtendedHuntingData) => item.id}
       contentContainerStyle={{
         paddingBottom: 150,
-        width: '100%',
       }}
       extraData={data}
       showsVerticalScrollIndicator={false}
@@ -71,20 +71,10 @@ const EventsList: React.FC<Props> = ({
           violation={item.violation}
         />
       )}
-      refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-          tintColor={theme.colors.primaryDark}
-          colors={[theme.colors.primaryDark]}
-        />
-      }
+      refreshing={isFocused && refreshing}
+      onRefresh={onRefresh}
     />
   );
 };
-
-const StyledFlatList = styled<any>(FlatList)`
-  margin-top: 5px;
-`;
 
 export default EventsList;
