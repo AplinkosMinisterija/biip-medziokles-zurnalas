@@ -40,7 +40,7 @@ export const strings: any = {
   violation: {
     LIMIT: 'Viršytas limitas',
     PERIOD: 'Sumedžiotas ne termino metu',
-    OTHER_ANIMAL: 'Šiuo metu nemedžiojamas gyvunas',
+    OTHER_ANIMAL: 'Šiuo metu nemedžiojamas gyvūnas',
     CAR_ACCIDENT: 'Sužalotas autoįvykio metu',
     SICK_OR_HURT: 'Sužalotas ar akivaizdžiai sergantis',
   },
