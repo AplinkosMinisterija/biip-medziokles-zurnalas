@@ -5,7 +5,7 @@ import Header from '@components/Header';
 import PeriodPicker from '@components/PeriodPicker';
 import SectionHeader from '@containers/Events/SectionHeader';
 import {RootStackParamList, routes} from '@containers/Router';
-import {useNavigation} from '@react-navigation/native';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {dataActions} from '@root/state/data/actions';
 import {
@@ -37,6 +37,7 @@ const Limits = (props: any) => {
   const dispatch = useDispatch();
 
   const onSync = useSelector(getOnSync.data);
+  const isFocused = useIsFocused();
 
   const getData = () => {
     dispatch(dataActions.getMainData());
@@ -151,7 +152,7 @@ const Limits = (props: any) => {
             )}
             refreshControl={
               <RefreshControl
-                refreshing={onSync}
+                refreshing={isFocused && onSync}
                 onRefresh={getData}
                 tintColor={theme.colors.primaryDark}
                 colors={[theme.colors.primaryDark]}

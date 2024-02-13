@@ -1,3 +1,4 @@
+import {useIsFocused} from '@react-navigation/native';
 import Button from '@root/components/Button';
 import {dataActions} from '@root/state/data/actions';
 import {
@@ -36,6 +37,7 @@ const HuntingMembers = ({
   const dispatch = useDispatch();
 
   const onSync = useSelector(getOnSync.data);
+  const isFocused = useIsFocused();
 
   const getData = () => {
     dispatch(dataActions.getMainData());
@@ -100,7 +102,7 @@ const HuntingMembers = ({
         renderSectionHeader={({section}) => <Title>{section.title}</Title>}
         refreshControl={
           <RefreshControl
-            refreshing={onSync}
+            refreshing={isFocused && onSync}
             onRefresh={getData}
             tintColor={theme.colors.primaryDark}
             colors={[theme.colors.primaryDark]}

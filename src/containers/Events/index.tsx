@@ -1,5 +1,4 @@
 import {useIsFocused} from '@react-navigation/native';
-import {api} from '@root/apis/api';
 import CustomSwitch from '@root/components/CustomSwitch';
 import HorizontalTabs, {
   HorizontalTabRoute,
@@ -22,8 +21,8 @@ import {notificationsSelectors} from '@root/state/notifications/notificationSele
 import {getOnSync} from '@root/state/sync/syncSelectors';
 import {EventCategory} from '@root/state/types';
 import {getMyTenantUser} from '@state/tenantUsers/tenantUsersSelectors';
-import {useQuery} from '@tanstack/react-query';
 import {isIOS} from '@utils/layout';
+import _ from 'lodash';
 import React, {useEffect, useState} from 'react';
 import {StatusBar, View} from 'react-native';
 import {
@@ -37,6 +36,7 @@ import Header from '../../components/Header';
 import {strings} from '../../strings';
 import {routes} from '../Router';
 import EventsList from './EventsList';
+import {useInfiniteHuntEvents} from './queries';
 
 const optionRoutes: HorizontalTabRoute<EventCategory>[] = [
   {key: EventCategory.today, title: 'Šiandien'},
@@ -60,30 +60,18 @@ const Events = (props: any) => {
 
   const huntingsFromState = useSelector(getHuntingHistoryNoSections);
 
-  const eventsPastQuery = useQuery({
-    queryKey: ['huntingEventsPast', showMyHuntingEventsOnly, selectedArea],
-    refetchOnWindowFocus: true,
-    enabled: selectedEventCategory.key === EventCategory.past,
-    queryFn: () =>
-      api.getHuntingEvents({
-        scope: EventCategory.past,
-        my: showMyHuntingEventsOnly,
-        huntingAreaId: selectedArea,
-        sort: '-startDate',
-      }),
+  const eventsPastQuery = useInfiniteHuntEvents({
+    scope: EventCategory.past,
+    my: showMyHuntingEventsOnly,
+    huntingAreaId: selectedArea,
+    sort: '-startDate',
   });
 
-  const eventsFutureQuery = useQuery({
-    queryKey: ['huntingEventsFuture', showMyHuntingEventsOnly, selectedArea],
-    refetchOnWindowFocus: true,
-    enabled: selectedEventCategory.key === EventCategory.future,
-    queryFn: () =>
-      api.getHuntingEvents({
-        scope: EventCategory.future,
-        my: showMyHuntingEventsOnly,
-        huntingAreaId: selectedArea,
-        sort: 'startDate',
-      }),
+  const eventsFutureQuery = useInfiniteHuntEvents({
+    scope: EventCategory.future,
+    my: showMyHuntingEventsOnly,
+    huntingAreaId: selectedArea,
+    sort: 'startDate',
   });
 
   const getNotificationPermissionAsked: boolean = useSelector(
@@ -162,21 +150,35 @@ const Events = (props: any) => {
       case EventCategory.future:
         return (
           <EventsList
-            data={eventsFutureQuery.data?.data?.rows}
+            data={_.flatMap(
+              eventsFutureQuery?.data?.pages ?? [],
+              page => page.rows,
+            )}
             myId={myId}
             // refreshing={eventsFutureQuery.isFetching}
+            isFetchingNextPage={eventsFutureQuery.isFetchingNextPage}
             onRefresh={eventsFutureQuery.refetch}
             handleEventCardPress={handleEventCardPress}
+            onEndReached={() =>
+              !eventsFutureQuery.isFetching && eventsFutureQuery.fetchNextPage()
+            }
           />
         );
       case EventCategory.past:
         return (
           <EventsList
-            data={eventsPastQuery.data?.data?.rows}
+            data={_.flatMap(
+              eventsPastQuery?.data?.pages ?? [],
+              page => page.rows,
+            )}
             myId={myId}
             // refreshing={eventsPastQuery.isFetching}
+            isFetchingNextPage={eventsPastQuery.isFetchingNextPage}
             onRefresh={eventsPastQuery.refetch}
             handleEventCardPress={handleEventCardPress}
+            onEndReached={() =>
+              !eventsPastQuery.isFetching && eventsPastQuery.fetchNextPage()
+            }
           />
         );
     }

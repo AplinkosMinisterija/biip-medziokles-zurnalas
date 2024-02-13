@@ -1,11 +1,7 @@
 import Button from '@components/Button';
 import Logo from '@components/svg/Logo';
 import TextField from '@components/TextField';
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
 import AppVersionText from '@root/components/AppVersionText';
-import QRCodeIcon from '@root/components/svg/QRCode';
-import Text from '@root/components/Text';
 import {config, DEV_OR_STG} from '@root/config';
 import {getOnSync} from '@root/state/sync/syncSelectors';
 import {strings} from '@root/strings';
@@ -15,7 +11,6 @@ import React, {useRef} from 'react';
 import {
   Keyboard,
   KeyboardAvoidingView,
-  Pressable,
   SafeAreaView,
   TextInput,
   TouchableWithoutFeedback,
@@ -23,7 +18,6 @@ import {
 import {useDispatch, useSelector} from 'react-redux';
 import styled from 'styled-components';
 import * as Yup from 'yup';
-import {RootStackParamList, routes} from '../Router';
 
 const ValidationSchema = Yup.object().shape({
   username: Yup.string().required(strings.error.required),
@@ -41,7 +35,6 @@ const initValues: FormValues = {
 };
 
 const Login = () => {
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const passwordRef = useRef<TextInput>();
   const dispatch = useDispatch();
   const loading = useSelector(getOnSync.user);
@@ -107,14 +100,14 @@ const Login = () => {
               </>
             )}
           </Formik>
-          <QRCodeButton
+          {/* <QRCodeButton
             onPress={() => {
               navigation.navigate(routes.qrScanResult);
             }}
           >
             <QRCodeIcon />
             <QRCodeText>{'Medžioklės lapo skaitytuvas'}</QRCodeText>
-          </QRCodeButton>
+          </QRCodeButton> */}
         </ContentWrapper>
       </Content>
       <AppVersionText />
@@ -152,17 +145,17 @@ const ContentWrapper = styled(KeyboardAvoidingView)`
   flex: 1;
 `;
 
-const QRCodeButton = styled(Pressable)`
-  margin-top: 80px;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-`;
+// const QRCodeButton = styled(Pressable)`
+//   margin-top: 80px;
+//   flex-direction: column;
+//   justify-content: center;
+//   align-items: center;
+// `;
 
-const QRCodeText = styled(Text.M)`
-  margin-top: 5px;
-  font-weight: 700;
-  color: white;
-`;
+// const QRCodeText = styled(Text.M)`
+//   margin-top: 5px;
+//   font-weight: 700;
+//   color: white;
+// `;
 
 export default Login;

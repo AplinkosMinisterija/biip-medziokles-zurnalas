@@ -1,3 +1,4 @@
+import {ExtendedHuntingData} from '@root/state/data/dataSelectors';
 import {LimitRequestBody} from '@root/state/limitedAnimals/actions';
 import {
   DataState,
@@ -16,6 +17,14 @@ export interface LoginResponse {
   refreshToken?: string;
 }
 
+export interface PaginatedData<T> {
+  rows: Array<T>;
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
 export interface AuthResponse {
   tisket: string;
   host: string;
@@ -26,7 +35,7 @@ export interface HuntingEventsProps {
   scope: EventCategory;
   my?: boolean;
   sort?: string;
-  huntingAreaId: string | null;
+  huntingAreaId?: string | null;
   page?: number;
   pageSize?: number;
 }
@@ -121,11 +130,9 @@ class ApiClass {
     return response.data;
   };
 
-  refreshAccessToken = async (
-    reftreshToken: string,
-  ): Promise<LoginResponse> => {
+  refreshAccessToken = async (refreshToken: string): Promise<LoginResponse> => {
     const response: AxiosResponse = await this.post('/auth/refresh', {
-      token: reftreshToken,
+      token: refreshToken,
     });
     return response.data;
   };
@@ -425,8 +432,8 @@ class ApiClass {
     my = false,
     sort = 'status',
     page = 1,
-    pageSize = 200,
-  }: HuntingEventsProps): Promise<any> => {
+    pageSize = 20,
+  }: HuntingEventsProps): Promise<PaginatedData<ExtendedHuntingData>> => {
     const huntingArea = huntingAreaId ? `"huntingArea":${huntingAreaId}` : '';
     const query = huntingArea ? `&query={${huntingArea}}` : '';
     const response: AxiosResponse = await this.get(
@@ -434,8 +441,9 @@ class ApiClass {
         my || !huntingAreaId ? ',my' : ''
       }${query}&page=${page}&pageSize=${pageSize}&populate=tenant,huntingArea,manager,managerUser&sort=${sort}`,
     );
-    return response;
+    return response.data;
   };
+
   getHunting = async (id: string | number): Promise<any> => {
     const response: AxiosResponse = await this.get(
       `/api/hunting/${id}/?populate=tenant,huntingArea,manager,managerUser,lootsCount`,
