@@ -51,6 +51,7 @@ jobs:
         run: bundle exec fastlane ios ci
         working-directory: ios
         env:
+          FASTLANE_TEAM_ID: ${{ secrets.FASTLANE_TEAM_ID }}
           APP_STORE_CONNECT_API_KEY_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_KEY_ID }}
           APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}
           APP_STORE_CONNECT_API_KEY_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY_KEY }}
