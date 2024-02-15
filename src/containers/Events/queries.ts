@@ -3,9 +3,8 @@ import {useInfiniteQuery} from '@tanstack/react-query';
 
 // hunt event key factory
 const huntEventKeys = {
-  all: [{entity: 'huntEvent'}] as const,
-  list: (props: HuntingEventsProps) =>
-    [{...huntEventKeys.all[0], ...props}] as const,
+  all: ['huntEvent'] as const,
+  list: (props: HuntingEventsProps) => [...huntEventKeys.all, {props}] as const,
 };
 
 // to infinity and beyond!
