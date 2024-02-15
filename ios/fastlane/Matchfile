@@ -1,0 +1,18 @@
+git_url(ENV["MATCH_GIT_URL"])
+
+storage_mode("git")
+
+type("development") # The default type, can be: appstore, adhoc, enterprise or development
+
+app_identifier(["com.mobile.medziokles-zurnalas"])
+
+# Set this to true if match should only read existing certificates and profiles
+# and not create new ones.
+readonly(true)
+
+# Optional: Define the platform to use, can be 'ios', 'macos', or 'tvos'.
+# For React Native projects, you'll typically use 'ios'.
+platform("ios")
+
+# The docs are available on https://docs.fastlane.tools/actions/match
+

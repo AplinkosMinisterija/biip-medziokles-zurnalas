@@ -33,6 +33,31 @@ jobs:
           KEY_ALIAS: androiddebugkey
           KEY_PASSWORD: android
 
+  build-ios:
+    name: Build iOS
+    runs-on: macos-14
+    timeout-minutes: 20
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Prepare build environment
+        uses: ./.github/actions/prepare-ios-build-environment
+
+      - name: iOS build test
+        run: bundle exec fastlane ios ci
+        working-directory: ios
+        env:
+          APP_STORE_CONNECT_API_KEY_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_KEY_ID }}
+          APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}
+          APP_STORE_CONNECT_API_KEY_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY_KEY }}
+          MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+
   actionlint:
     name: Lint GitHub Actions workflows
     runs-on: ubuntu-latest
