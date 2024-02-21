@@ -35,14 +35,14 @@ jobs:
 
   build-ios:
     name: Build iOS
-    runs-on: ${{ matrix.os }}
+    runs-on: macos-14
     timeout-minutes: 20
     permissions:
       contents: read
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [macos-latest, macos-13, macos-14]
+    #    strategy:
+    #      fail-fast: false
+    #      matrix:
+    #        os: [macos-13, macos-14]
     env:
       FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 120
     steps:
