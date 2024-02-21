@@ -26,7 +26,7 @@ platform :ios do
   desc "Release to TestFlight for internal testing"
   lane :internal_testing do
        app_store_connect_api_key
-       build(type: "development")
+       build(type: "appstore")
        upload_to_testflight
   end
 end
