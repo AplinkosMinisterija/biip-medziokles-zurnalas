@@ -43,7 +43,8 @@ jobs:
       fail-fast: false
       matrix:
         os: [macos-latest, macos-13, macos-14]
-
+    env:
+      FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 120
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
