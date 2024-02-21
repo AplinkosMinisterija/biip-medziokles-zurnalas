@@ -6,8 +6,14 @@ platform :ios do
 	if is_ci
 		setup_ci
 	end
-	sync_code_signing
+	sync_code_signing(
+	    type: "development",
+	    readonly: true
+	)
 	update_code_signing_settings
-	build_app
+	build_ios_app(
+        export_method: "development",
+        silent: true
+	)
   end
 end
