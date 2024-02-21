@@ -12,11 +12,12 @@ platform :ios do
 	    type: type,
 	    readonly: true
 	)
-	update_code_signing_settings
+	disable_automatic_code_signing(path: "mobile_medziotojas.xcodeproj")
 	build_ios_app(
         export_method: export_method,
         silent: false
 	)
+	enable_automatic_code_signing(path: "mobile_medziotojas.xcodeproj")
   end
 
   desc "Continuous integration"
