@@ -15,7 +15,7 @@ platform :ios do
 	update_code_signing_settings
 	build_ios_app(
         export_method: export_method,
-        silent: true
+        silent: false
 	)
   end
 
