@@ -20,3 +20,8 @@ runs:
     - name: Install dependencies
       run: yarn install --immutable --immutable-cache --check-cache
       shell: bash
+
+    - name: Install iOS pods
+      run: bundle exec pod install
+      working-directory: ios
+      shell: bash
