@@ -35,10 +35,13 @@ jobs:
 
   build-ios:
     name: Build iOS
-    runs-on: macos-14
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     permissions:
       contents: read
+    strategy:
+      matrix:
+        os: [macos-latest, macos-13, macos-14]
 
     steps:
       - name: Checkout code
