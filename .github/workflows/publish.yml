@@ -51,7 +51,7 @@ jobs:
       # For version-name based on CalVer (Calendar Versioning) e.g. 23.11.27-123.
       - name: Set CalVer version name
         id: version-name
-        run: echo "version-name=$(date +"%y.%m.%d")-${{ steps.version-code.outputs.version-code }}" >> "${GITHUB_OUTPUT}"
+        run: echo "version-name=$(date +"%y.%m.%d")" >> "${GITHUB_OUTPUT}"
 
       - name: Set to run Firebase publish
         id: firebase
