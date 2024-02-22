@@ -1,4 +1,4 @@
-name: Prepare Android build environment
+name: Prepare iOS build environment
 description: Prepare application's build environment
 
 runs:
