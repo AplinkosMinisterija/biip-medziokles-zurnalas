@@ -43,52 +43,12 @@ PODS:
     - GoogleUtilities/Environment (~> 7.7)
     - nanopb (< 2.30910.0, >= 2.30908.0)
     - PromisesObjC (< 3.0, >= 1.2)
-  - GoogleMLKit/BarcodeScanning (3.2.0):
-    - GoogleMLKit/MLKitCore
-    - MLKitBarcodeScanning (~> 2.2.0)
-  - GoogleMLKit/MLKitCore (3.2.0):
-    - MLKitCommon (~> 8.0.0)
-  - GoogleToolboxForMac/DebugUtils (2.3.2):
-    - GoogleToolboxForMac/Defines (= 2.3.2)
-  - GoogleToolboxForMac/Defines (2.3.2)
-  - GoogleToolboxForMac/Logger (2.3.2):
-    - GoogleToolboxForMac/Defines (= 2.3.2)
-  - "GoogleToolboxForMac/NSData+zlib (2.3.2)":
-    - GoogleToolboxForMac/Defines (= 2.3.2)
-  - "GoogleToolboxForMac/NSDictionary+URLArguments (2.3.2)":
-    - GoogleToolboxForMac/DebugUtils (= 2.3.2)
-    - GoogleToolboxForMac/Defines (= 2.3.2)
-    - "GoogleToolboxForMac/NSString+URLArguments (= 2.3.2)"
-  - "GoogleToolboxForMac/NSString+URLArguments (2.3.2)"
   - GoogleUtilities/Environment (7.7.0):
     - PromisesObjC (< 3.0, >= 1.2)
   - GoogleUtilities/Logger (7.7.0):
     - GoogleUtilities/Environment
   - GoogleUtilities/UserDefaults (7.7.0):
     - GoogleUtilities/Logger
-  - GoogleUtilitiesComponents (1.1.0):
-    - GoogleUtilities/Logger
-  - GTMSessionFetcher/Core (1.7.2)
-  - MLImage (1.0.0-beta3)
-  - MLKitBarcodeScanning (2.2.0):
-    - MLKitCommon (~> 8.0)
-    - MLKitVision (~> 4.2)
-  - MLKitCommon (8.0.0):
-    - GoogleDataTransport (~> 9.0)
-    - GoogleToolboxForMac/Logger (~> 2.1)
-    - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
-    - "GoogleToolboxForMac/NSDictionary+URLArguments (~> 2.1)"
-    - GoogleUtilities/UserDefaults (~> 7.0)
-    - GoogleUtilitiesComponents (~> 1.0)
-    - GTMSessionFetcher/Core (~> 1.1)
-    - Protobuf (~> 3.12)
-  - MLKitVision (4.2.0):
-    - GoogleToolboxForMac/Logger (~> 2.1)
-    - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
-    - GTMSessionFetcher/Core (~> 1.1)
-    - MLImage (= 1.0.0-beta3)
-    - MLKitCommon (~> 8.0)
-    - Protobuf (~> 3.12)
   - nanopb (2.30908.0):
     - nanopb/decode (= 2.30908.0)
     - nanopb/encode (= 2.30908.0)
@@ -99,7 +59,6 @@ PODS:
   - Permission-Notifications (3.10.1):
     - RNPermissions
   - PromisesObjC (2.1.1)
-  - Protobuf (3.21.12)
   - RCT-Folly (2021.06.28.00-v2):
     - boost
     - DoubleConversion
@@ -460,13 +419,6 @@ PODS:
   - RNSVG (13.14.0):
     - React-Core
   - Sentry/HybridSDK (7.31.5)
-  - vision-camera-code-scanner (0.2.0):
-    - GoogleMLKit/BarcodeScanning
-    - React-Core
-  - VisionCamera (2.16.7):
-    - React
-    - React-callinvoker
-    - React-Core
   - Yoga (1.14.0)
 
 DEPENDENCIES:
@@ -532,8 +484,6 @@ DEPENDENCIES:
   - RNScreens (from `../node_modules/react-native-screens`)
   - "RNSentry (from `../node_modules/@sentry/react-native`)"
   - RNSVG (from `../node_modules/react-native-svg`)
-  - vision-camera-code-scanner (from `../node_modules/vision-camera-code-scanner`)
-  - VisionCamera (from `../node_modules/react-native-vision-camera`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -545,18 +495,9 @@ SPEC REPOS:
     - FirebaseInstallations
     - fmt
     - GoogleDataTransport
-    - GoogleMLKit
-    - GoogleToolboxForMac
     - GoogleUtilities
-    - GoogleUtilitiesComponents
-    - GTMSessionFetcher
-    - MLImage
-    - MLKitBarcodeScanning
-    - MLKitCommon
-    - MLKitVision
     - nanopb
     - PromisesObjC
-    - Protobuf
     - Sentry
 
 EXTERNAL SOURCES:
@@ -682,10 +623,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@sentry/react-native"
   RNSVG:
     :path: "../node_modules/react-native-svg"
-  vision-camera-code-scanner:
-    :path: "../node_modules/vision-camera-code-scanner"
-  VisionCamera:
-    :path: "../node_modules/react-native-vision-camera"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -703,20 +640,11 @@ SPEC CHECKSUMS:
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
   glog: 3d02b25ca00c2d456734d0bcff864cbc62f6ae1a
   GoogleDataTransport: 1c8145da7117bd68bbbed00cf304edb6a24de00f
-  GoogleMLKit: 0017a6a8372e1a182139b9def4d89be5d87ca5a7
-  GoogleToolboxForMac: 8bef7c7c5cf7291c687cf5354f39f9db6399ad34
   GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
-  GoogleUtilitiesComponents: 679b2c881db3b615a2777504623df6122dd20afe
-  GTMSessionFetcher: 5595ec75acf5be50814f81e9189490412bad82ba
-  MLImage: 489dfec109f21da8621b28d476401aaf7a0d4ff4
-  MLKitBarcodeScanning: d92fe1911001ec36870162c5a0eb206f612b7169
-  MLKitCommon: f6da6c5659618c070b50a80db01248ebe2964175
-  MLKitVision: 96c96571190b7f63eddf4a12068ce8a8689e0d2c
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   Permission-Camera: 9b70902f34a83c10e198d2d01f0e453e58842776
   Permission-Notifications: 817390e18898f34adad940cd4141e771e77086ea
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
-  Protobuf: 120350fc38646e2dedc26f49ecba778184ea1de2
   RCT-Folly: b9d9fe1fc70114b751c076104e52f3b1b5e5a95a
   RCTRequired: b9e53f0512019150020156fa0dacd6583ab838be
   RCTTypeSafety: 04b72202bef8302802610dee70bb9407a245b64c
@@ -771,8 +699,6 @@ SPEC CHECKSUMS:
   RNSentry: 4ea90ea061624364637e8077d965bf2e50478066
   RNSVG: d00c8f91c3cbf6d476451313a18f04d220d4f396
   Sentry: 4c9babff9034785067c896fd580b1f7de44da020
-  vision-camera-code-scanner: dda884a7f3ec8243a2a6d6489b91860648371bca
-  VisionCamera: 2b2fa4e0e024d86e67ae7d24e9d5b76fcaab7877
   Yoga: 8a90b50af67eaa9fe94fd03e550bfeab06096873
 
 PODFILE CHECKSUM: a5eb04ce7e6b275d120042d4e1b684002342d284

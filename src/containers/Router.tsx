@@ -92,8 +92,6 @@ export enum routes {
   selectHunterLocation = 'selectHunterLocation',
   usersHuntingList = 'usersHuntingList',
   qrCodeDisplay = 'qrCodeDisplay',
-  qrCodeReader = 'qrCodeReader',
-  qrScanResult = 'qrScanResult',
   signatureModal = 'signatureModal',
   termsOfService = 'termsOfService',
   footPrintObservationList = 'footPrintObservationList',
@@ -191,8 +189,6 @@ export type RootStackParamList = {
   [routes.qrCodeDisplay]: {
     huntingMemberId: string;
   };
-  [routes.qrCodeReader]: undefined;
-  [routes.qrScanResult]: undefined;
   [routes.signatureModal]: {
     signer: UserData;
     onSign: (signature: string) => void;
@@ -569,17 +565,6 @@ const Router = () => {
             />
           </>
         )}
-        <Stack.Screen
-          name={routes.qrCodeReader}
-          component={QRCode.QRCodeReaderScreen}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name={routes.qrScanResult}
-          component={QRCode.QRScanResultScreen}
-        />
       </Stack.Navigator>
       <GlobalErrorSuccessAlert />
       <GlobalConfirmationModal />
