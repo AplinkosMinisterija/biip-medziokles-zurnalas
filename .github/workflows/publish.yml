@@ -37,6 +37,8 @@ jobs:
       version-code: ${{ steps.version-code.outputs.version-code }}
       version-name: ${{ steps.version-name.outputs.version-name }}
 
+      run-publish-testflight: ${{ steps.testflight.outputs.run-publish-testflight || false }}
+
       run-publish-firebase: ${{ steps.firebase.outputs.run-publish-firebase || false }}
       run-publish-google-play: ${{ steps.google-play.outputs.run-publish-google-play || false }}
       google-play-track: ${{ steps.google-play.outputs.google-play-track }}
@@ -61,6 +63,11 @@ jobs:
         run: |
           echo "run-publish-google-play=true" >> "${GITHUB_OUTPUT}"
           echo "google-play-track=${{ inputs.type || 'beta' }}" >> "${GITHUB_OUTPUT}"
+
+      - name: Set to run TestFlight publish
+        id: testflight
+        if: ${{ inputs.type == 'beta' || (github.event_name == 'push' && github.ref_name == 'main') }}
+        run: echo "run-publish-testflight=true" >> "${GITHUB_OUTPUT}"
 
   publish-android-firebase:
     name: Publish Android to Firebase
@@ -148,6 +155,41 @@ jobs:
           KEY_ALIAS: ${{ vars.ANDROID_UPLOAD_KEY_ALIAS }}
           KEY_STORE_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEY_STORE_PASSWORD }}
           KEY_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEY_PASSWORD }}
+
+          APP_ENV: ${{ vars.APP_ENVIRONMENT }}
+          BASE_URL: ${{ vars.APP_API_BASE_URL }}
+
+  publish-ios-test-flight:
+    name: Publish iOS to TestFlight
+    runs-on: macos-14
+    timeout-minutes: 20
+    needs: config
+    if: fromJSON(needs.config.outputs.run-publish-testflight)
+    environment: ios-testflight
+    env:
+      FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 120
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Prepare build environment
+        uses: ./.github/actions/prepare-ios-build-environment
+
+      - name: Fastlane publish to TestFlight
+        run: bundle exec fastlane ios publish_testflight
+        working-directory: ios
+        env:
+          FASTLANE_TEAM_ID: ${{ secrets.FASTLANE_TEAM_ID }}
+          APP_STORE_CONNECT_API_KEY_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_KEY_ID }}
+          APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}
+          APP_STORE_CONNECT_API_KEY_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY_KEY }}
+          MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+
+          VERSION_NAME: ${{ needs.config.outputs.version-name }}
+          VERSION_CODE: ${{ needs.config.outputs.version-code }}
+          RELEASE_NOTES: ${{ needs.config.outputs.release-notes }}
 
           APP_ENV: ${{ vars.APP_ENVIRONMENT }}
           BASE_URL: ${{ vars.APP_API_BASE_URL }}

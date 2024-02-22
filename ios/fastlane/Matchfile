@@ -8,6 +8,8 @@ app_identifier(["com.mobile.medziokles-zurnalas"])
 # and not create new ones.
 readonly(true)
 
+skip_docs(true)
+
 # Optional: Define the platform to use, can be 'ios', 'macos', or 'tvos'.
 # For React Native projects, you'll typically use 'ios'.
 platform("ios")

@@ -8,16 +8,15 @@ platform :ios do
 	if is_ci
 		setup_ci
 	end
-	sync_code_signing(
-	    type: type,
-	    readonly: true
-	)
-	disable_automatic_code_signing(path: "mobile_medziotojas.xcodeproj")
-	build_ios_app(
-	    workspace: "mobile_medziotojas.xcworkspace",
-        export_method: export_method,
-        silent: false
-	)
+	sync_code_signing(type: type, readonly: true)
+
+	update_code_signing_settings()
+	build_ios_app(export_method: export_method, silent: true)
+  end
+
+  private_lane :increment_version do |options|
+	increment_build_number(build_number: ENV['VERSION_CODE'])
+	increment_version_number(version_number: ENV['VERSION_NAME'])
   end
 
   desc "Continuous integration"
@@ -26,9 +25,10 @@ platform :ios do
   end
 
   desc "Release to TestFlight for internal testing"
-  lane :internal_testing do
+  lane :publish_testflight do
        app_store_connect_api_key
+       increment_version
        build(type: "appstore", export_method: "app-store")
-       upload_to_testflight
+       upload_to_testflight(changelog: ENV['RELEASE_NOTES'])
   end
 end

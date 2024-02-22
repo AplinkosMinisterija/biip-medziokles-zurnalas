@@ -39,10 +39,6 @@ jobs:
     timeout-minutes: 20
     permissions:
       contents: read
-    #    strategy:
-    #      fail-fast: false
-    #      matrix:
-    #        os: [macos-13, macos-14]
     env:
       FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 120
     steps:
@@ -52,14 +48,10 @@ jobs:
       - name: Prepare build environment
         uses: ./.github/actions/prepare-ios-build-environment
 
-      - name: iOS build test
-        run: bundle exec fastlane ios internal_testing
+      - name: Build iOS
+        run: bundle exec fastlane ios ci
         working-directory: ios
         env:
-          FASTLANE_TEAM_ID: ${{ secrets.FASTLANE_TEAM_ID }}
-          APP_STORE_CONNECT_API_KEY_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_KEY_ID }}
-          APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}
-          APP_STORE_CONNECT_API_KEY_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY_KEY }}
           MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
           MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
