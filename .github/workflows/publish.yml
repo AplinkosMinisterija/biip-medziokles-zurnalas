@@ -48,7 +48,7 @@ jobs:
         id: version-code
         run: echo "version-code=${{ github.run_number }}" >> "${GITHUB_OUTPUT}"
 
-      # For version-name based on CalVer (Calendar Versioning) e.g. 23.11.27-123.
+      # For version-name based on CalVer (Calendar Versioning) e.g. 23.11.27.
       - name: Set CalVer version name
         id: version-name
         run: echo "version-name=$(date +"%y.%m.%d")" >> "${GITHUB_OUTPUT}"
