@@ -33,6 +33,30 @@ jobs:
           KEY_ALIAS: androiddebugkey
           KEY_PASSWORD: android
 
+  build-ios:
+    name: Build iOS
+    runs-on: macos-14
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    env:
+      FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 120
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Prepare build environment
+        uses: ./.github/actions/prepare-ios-build-environment
+
+      - name: Build iOS
+        run: bundle exec fastlane ios ci
+        working-directory: ios
+        env:
+          FASTLANE_TEAM_ID: ${{ secrets.FASTLANE_TEAM_ID }}
+          MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+
   actionlint:
     name: Lint GitHub Actions workflows
     runs-on: ubuntu-latest
