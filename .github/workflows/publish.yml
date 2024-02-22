@@ -15,6 +15,7 @@ on:
           - firebase-development
           - firebase-staging
           - firebase-production
+          - testflight
           - beta
           - production
       release-notes:
@@ -66,7 +67,7 @@ jobs:
 
       - name: Set to run TestFlight publish
         id: testflight
-        if: ${{ inputs.type == 'beta' || (github.event_name == 'push' && github.ref_name == 'main') }}
+        if: ${{ inputs.type == 'testflight' || (github.event_name == 'push' && github.ref_name == 'main') }}
         run: echo "run-publish-testflight=true" >> "${GITHUB_OUTPUT}"
 
   publish-android-firebase:
