@@ -52,6 +52,7 @@ jobs:
         run: bundle exec fastlane ios ci
         working-directory: ios
         env:
+          FASTLANE_TEAM_ID: ${{ secrets.FASTLANE_TEAM_ID }}
           MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
           MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
