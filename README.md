@@ -70,9 +70,17 @@ workflow and select type `production`. This is only allowed for the main branch.
 The main branch of the repository is automatically deployed to the Google Play beta. Any changes pushed to the main
 branch will trigger a new deployment.
 
-### Firebase App Distribution
+### Internal testing
 
-To deploy any branch to the Firebase App Distribution, use the `Publish` GitHub workflow with a type starting
+#### iOS - TestFlight
+
+For iOS internal testing, we utilize TestFlight for distribution. To deploy any branch to TestFlight, simply initiate the Publish
+GitHub workflow with type `testflight`. Furthermore, any changes merged into the main branch automatically
+trigger a new deployment to TestFlight.
+
+#### Android - Firebase App Distribution
+
+For Android internal testing, we leverage Firebase App Distribution. To deploy any branch to the Firebase App Distribution, use the `Publish` GitHub workflow with a type starting
 with `firebase` (e.g., `firebase-staging`). Select the suffix based on the API for which you want to publish the app
 version, e.g., `firebase-development` uses the development API.
 
