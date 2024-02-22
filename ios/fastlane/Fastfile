@@ -2,6 +2,7 @@ default_platform(:ios)
 
 platform :ios do
   private_lane :build do |options|
+    configuration = (options[:configuration] || "Release")
     type = (options[:type] || "development")
     export_method = (options[:export_method] || "development")
 
@@ -11,7 +12,7 @@ platform :ios do
 	sync_code_signing(type: type, readonly: true)
 
 	update_code_signing_settings()
-	build_ios_app(export_method: export_method, silent: true)
+	build_ios_app(export_method: export_method, silent: true, configuration: configuration)
   end
 
   private_lane :increment_version do |options|
@@ -21,7 +22,7 @@ platform :ios do
 
   desc "Continuous integration"
   lane :ci do
-       build(type: "development", export_method: "development")
+       build(type: "development", export_method: "development", configuration: "Debug")
   end
 
   desc "Release to TestFlight for internal testing"
