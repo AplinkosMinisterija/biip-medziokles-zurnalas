@@ -4,7 +4,7 @@ module.exports = {
     node: true,
   },
   extends: [
-    '@react-native-community',
+    '@react-native',
     'prettier',
     'plugin:@tanstack/eslint-plugin-query/recommended',
   ],
