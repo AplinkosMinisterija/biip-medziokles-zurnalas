@@ -175,6 +175,8 @@ jobs:
 
       - name: Prepare build environment
         uses: ./.github/actions/prepare-ios-build-environment
+        with:
+          match-git-private-key-content: ${{ secrets.MATCH_GIT_PRIVATE_KEY }}
 
       - name: Fastlane publish to TestFlight
         run: bundle exec fastlane ios publish_testflight
@@ -185,7 +187,7 @@ jobs:
           APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}
           APP_STORE_CONNECT_API_KEY_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY_KEY }}
           MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
-          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+          MATCH_GIT_PRIVATE_KEY: 'match-git-key.pem'
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
 
           VERSION_NAME: ${{ needs.config.outputs.version-name }}
