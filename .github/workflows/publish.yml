@@ -175,6 +175,7 @@ jobs:
 
       - name: Prepare build environment
         uses: ./.github/actions/prepare-ios-build-environment
+        id: ios-build-environment
         with:
           match-git-private-key-content: ${{ secrets.MATCH_GIT_PRIVATE_KEY }}
 
@@ -187,7 +188,7 @@ jobs:
           APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}
           APP_STORE_CONNECT_API_KEY_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY_KEY }}
           MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
-          MATCH_GIT_PRIVATE_KEY: 'match-git-key.pem'
+          MATCH_GIT_PRIVATE_KEY: ${{ needs.ios-build-environment.outputs.match-git-private-key-path }}
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
 
           VERSION_NAME: ${{ needs.config.outputs.version-name }}
