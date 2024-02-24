@@ -41,6 +41,8 @@ runs:
     - name: Generate Git private key for Match
       env:
         MATCH_GIT_PRIVATE_KEY: ${{ inputs.match-git-private-key-content }}
-      run: echo "$MATCH_GIT_PRIVATE_KEY" > match-git-key.pem
+      run: |
+        echo "$MATCH_GIT_PRIVATE_KEY" > match-git-key.pem
+        chmod 400 match-git-key.pem
       working-directory: ios
       shell: bash
