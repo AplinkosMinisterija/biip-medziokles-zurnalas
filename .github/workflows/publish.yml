@@ -188,7 +188,7 @@ jobs:
           APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}
           APP_STORE_CONNECT_API_KEY_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY_KEY }}
           MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
-          MATCH_GIT_PRIVATE_KEY: ${{ needs.ios-build-environment.outputs.match-git-private-key-path }}
+          MATCH_GIT_PRIVATE_KEY: ${{ steps.ios-build-environment.outputs.match-git-private-key-path }}
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
 
           VERSION_NAME: ${{ needs.config.outputs.version-name }}
