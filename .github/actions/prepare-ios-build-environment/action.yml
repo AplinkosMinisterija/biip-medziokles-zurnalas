@@ -1,5 +1,15 @@
-name: Prepare Android build environment
+name: Prepare iOS build environment
 description: Prepare application's build environment
+
+inputs:
+  match-git-private-key-content:
+    description: 'Required input to set Match git private key content'
+    required: true
+
+outputs:
+  match-git-private-key-path:
+    description: 'Match GIT private key path'
+    value: ${{ steps.match-git-key.outputs.match-git-private-key-path }}
 
 runs:
   using: composite
@@ -30,5 +40,16 @@ runs:
 
     - name: Install iOS pods
       run: pod install
+      working-directory: ios
+      shell: bash
+
+    - name: Generate Git private key for Match
+      id: match-git-key
+      env:
+        MATCH_GIT_PRIVATE_KEY: ${{ inputs.match-git-private-key-content }}
+      run: |
+        echo "$MATCH_GIT_PRIVATE_KEY" > match-git-key.pem
+        chmod 400 match-git-key.pem
+        echo "match-git-private-key-path=$(realpath match-git-key.pem)" >> "${GITHUB_OUTPUT}"
       working-directory: ios
       shell: bash
