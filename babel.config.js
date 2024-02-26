@@ -28,12 +28,6 @@ module.exports = {
       },
     ],
     [
-      'react-native-reanimated/plugin',
-      {
-        globals: ['__scanCodes'],
-      },
-    ],
-    [
       'module:react-native-dotenv',
       {
         APP_ENV: 'DEVELOPMENT',
@@ -43,5 +37,6 @@ module.exports = {
         DEV_PASSWORD: null,
       },
     ],
+    ['react-native-reanimated/plugin'],
   ],
 };
