@@ -957,7 +957,7 @@ PODS:
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
-  - react-native-netinfo (11.3.0):
+  - react-native-netinfo (9.3.6):
     - React-Core
   - react-native-notifications (5.1.0):
     - React-Core
@@ -1492,7 +1492,7 @@ SPEC CHECKSUMS:
   react-native-geolocation: ef66fb798d96284c6043f0b16c15d9d1d4955db4
   react-native-html-to-pdf: 4c5c6e26819fe202971061594058877aa9b25265
   react-native-image-picker: e3b3e0b18a3a33c16a98e4e9c291327a9c3d6f36
-  react-native-netinfo: 299dad906cdbf3b67bcc6f693c807f98bdd127cc
+  react-native-netinfo: f80db8cac2151405633324cb645c60af098ee461
   react-native-notifications: 4601a5a8db4ced6ae7cfc43b44d35fe437ac50c4
   react-native-safe-area-context: b97eb6f9e3b7f437806c2ce5983f479f8eb5de4b
   react-native-webview: dc191e100e5db2dbd3bc28793c789b95934904ca

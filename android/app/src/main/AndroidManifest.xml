@@ -13,7 +13,7 @@
   android:icon="@mipmap/ic_launcher"
   android:roundIcon="@mipmap/ic_launcher_round"
   android:allowBackup="false"
-  android:theme="@style/BootTheme"
+  android:theme="@style/AppTheme"
   android:usesCleartextTraffic="true"
   >
     <activity 
@@ -23,7 +23,8 @@
     android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode" 
     android:launchMode="singleTask" 
     android:windowSoftInputMode="adjustPan"
-    android:screenOrientation="portrait">
+    android:screenOrientation="portrait"
+    android:theme="@style/BootTheme">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
         <category android:name="android.intent.category.LAUNCHER"/>

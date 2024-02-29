@@ -1,4 +1,4 @@
-import crashlytics from '@react-native-firebase/crashlytics';
+// import crashlytics from '@react-native-firebase/crashlytics';
 import * as Sentry from '@sentry/react-native';
 import {getAppUpdateInfo} from '@state/app/appSelectors';
 import {differenceInHours} from 'date-fns';
@@ -57,7 +57,7 @@ function* handleAppError({error, data}: any) {
         }),
       );
       Sentry.captureMessage(error);
-      crashlytics().recordError(error);
+      // crashlytics().recordError(error);
     }
   } catch (e) {
     // console.log(e);
@@ -110,9 +110,8 @@ function* watchAppState(): any {
 
 function* checkAppUpdate() {
   try {
-    const updateInfo: CheckVersionResponse | null = yield select(
-      getAppUpdateInfo,
-    );
+    const updateInfo: CheckVersionResponse | null =
+      yield select(getAppUpdateInfo);
     const lastCheckedInHours =
       updateInfo && updateInfo.lastChecked
         ? differenceInHours(new Date(), new Date(updateInfo.lastChecked))

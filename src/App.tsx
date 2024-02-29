@@ -19,7 +19,7 @@ LogBox.ignoreLogs([
 
 if (__DEV__) {
   import('./state/ReactotronConfig').then(() => {
-    // console.log('Reactotron Configured')
+    console.log('Reactotron Configured');
   });
 }
 
@@ -82,7 +82,7 @@ const App = () => {
     >
       <Container>
         <StatusBar backgroundColor="#004550" barStyle="light-content" />
-        <Router />
+        {/* <Router /> */}
       </Container>
     </PersistQueryClientProvider>
   );
@@ -92,4 +92,4 @@ const Container = styled(View)`
   flex: 1;
 `;
 
-export default Sentry.wrap(App);
+export default App;
