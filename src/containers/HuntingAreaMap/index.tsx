@@ -4,7 +4,7 @@ import {
   getExtendedHuntingMember,
 } from '@root/state/data/dataSelectors';
 import {HuntingMemberGeoData} from '@root/state/types';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {StatusBar, View} from 'react-native';
 import {useSelector} from 'react-redux';
 import styled from 'styled-components';
@@ -17,27 +17,26 @@ import {useGeoPoints} from '../Hunting/queries';
 const HuntingAreaMap = () => {
   const route = useRoute<any>();
   const {memberId, closePrevView = false, huntingId} = route.params;
-  const [mapMembers, setMapMembers] = useState<Array<HuntingMemberGeoData>>([]);
-  const [memberGeoData, setMemberGeoData] =
-    useState<HuntingMemberGeoData | null>(null);
 
   const huntingData = useSelector(getExtendedHunting(huntingId));
   const member = useSelector(getExtendedHuntingMember(memberId));
   const geoPoints = useGeoPoints(huntingId);
 
-  useEffect(() => {
+  const geo = useMemo(() => {
     if (geoPoints.data) {
       const geoList = [...geoPoints.data];
       const selectedIndex = geoList.findIndex(
         (item: HuntingMemberGeoData) => item.huntingMemberId === memberId,
       );
-      if (selectedIndex !== -1) {
-        setMemberGeoData(geoList[selectedIndex]);
-      }
+      const selectedGeoData =
+        selectedIndex !== -1 ? geoList[selectedIndex] : null;
       geoList.splice(selectedIndex, 1);
-      setMapMembers(geoList);
+      return {
+        geoList,
+        selectedGeoData,
+      };
     }
-  });
+  }, [geoPoints.data]);
 
   return (
     <Container>
@@ -46,15 +45,15 @@ const HuntingAreaMap = () => {
       {huntingData?.huntingArea?.id && (
         <Wrapper>
           <HuntingMap
-            points={mapMembers}
+            points={geo?.geoList}
             url={`https://maps.biip.lt/medziokle?mpvId=${
               huntingData.huntingArea.mpvId
             }&draw=true
             ${
-              memberGeoData
+              geo?.selectedGeoData
                 ? `&zoom=${JSON.stringify({
-                    x: memberGeoData.x,
-                    y: memberGeoData.y,
+                    x: geo?.selectedGeoData.x,
+                    y: geo?.selectedGeoData.y,
                   })}`
                 : ''
             }`}
