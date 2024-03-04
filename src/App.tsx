@@ -82,7 +82,7 @@ const App = () => {
     >
       <Container>
         <StatusBar backgroundColor="#004550" barStyle="light-content" />
-        {/* <Router /> */}
+        <Router />
       </Container>
     </PersistQueryClientProvider>
   );
