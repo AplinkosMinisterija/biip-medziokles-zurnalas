@@ -1,5 +1,4 @@
 import {useRoute} from '@react-navigation/native';
-import {queryClient} from '@root/App';
 import {
   getExtendedHunting,
   getExtendedHuntingMember,
@@ -12,6 +11,7 @@ import styled from 'styled-components';
 import HeaderClose from '../../components/HeaderClose';
 import {strings} from '../../strings';
 import HuntingMap from '../Hunting/HuntingMap';
+import {useGeoPoints} from '../Hunting/queries';
 
 // Screen for hunting member point change on the map
 const HuntingAreaMap = () => {
@@ -23,15 +23,11 @@ const HuntingAreaMap = () => {
 
   const huntingData = useSelector(getExtendedHunting(huntingId));
   const member = useSelector(getExtendedHuntingMember(memberId));
+  const geoPoints = useGeoPoints(huntingId);
 
   useEffect(() => {
-    const geoData = queryClient.getQueriesData<Array<HuntingMemberGeoData>>([
-      'geoPoints',
-      huntingData?.id,
-    ]);
-
-    if (geoData[0][1]) {
-      const geoList = [...geoData[0][1]];
+    if (geoPoints.data) {
+      const geoList = [...geoPoints.data];
       const selectedIndex = geoList.findIndex(
         (item: HuntingMemberGeoData) => item.huntingMemberId === memberId,
       );
@@ -41,7 +37,7 @@ const HuntingAreaMap = () => {
       geoList.splice(selectedIndex, 1);
       setMapMembers(geoList);
     }
-  }, []);
+  });
 
   return (
     <Container>
