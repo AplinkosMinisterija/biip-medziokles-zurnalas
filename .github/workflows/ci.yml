@@ -33,6 +33,11 @@ jobs:
           KEY_ALIAS: androiddebugkey
           KEY_PASSWORD: android
 
+          SENTRY_ORG: biip
+          SENTRY_PROJECT: biip-medziokle-mobile
+          SENTRY_URL: https://sentry.biip.lt
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
   build-ios:
     name: Build iOS
     runs-on: macos-14
@@ -59,6 +64,11 @@ jobs:
           MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
           MATCH_GIT_PRIVATE_KEY: ${{ steps.ios-build-environment.outputs.match-git-private-key-path }}
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+
+          SENTRY_ORG: biip
+          SENTRY_PROJECT: biip-medziokle-mobile
+          SENTRY_URL: https://sentry.biip.lt
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
   actionlint:
     name: Lint GitHub Actions workflows
