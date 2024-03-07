@@ -114,6 +114,11 @@ jobs:
           KEY_STORE_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEY_STORE_PASSWORD }}
           KEY_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEY_PASSWORD }}
 
+          SENTRY_ORG: biip
+          SENTRY_PROJECT: biip-medziokle-mobile
+          SENTRY_URL: https://sentry.biip.lt
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
           APP_ENV: ${{ vars.APP_ENVIRONMENT }}
           BASE_URL: ${{ vars.APP_API_BASE_URL }}
 
@@ -157,6 +162,11 @@ jobs:
           KEY_STORE_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEY_STORE_PASSWORD }}
           KEY_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEY_PASSWORD }}
 
+          SENTRY_ORG: biip
+          SENTRY_PROJECT: biip-medziokle-mobile
+          SENTRY_URL: https://sentry.biip.lt
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
           APP_ENV: ${{ vars.APP_ENVIRONMENT }}
           BASE_URL: ${{ vars.APP_API_BASE_URL }}
 
@@ -169,6 +179,7 @@ jobs:
     environment: ios-testflight
     env:
       FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 120
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -194,6 +205,11 @@ jobs:
           VERSION_NAME: ${{ needs.config.outputs.version-name }}
           VERSION_CODE: ${{ needs.config.outputs.version-code }}
           RELEASE_NOTES: ${{ needs.config.outputs.release-notes }}
+
+          SENTRY_ORG: biip
+          SENTRY_PROJECT: biip-medziokle-mobile
+          SENTRY_URL: https://sentry.biip.lt
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
           APP_ENV: ${{ vars.APP_ENVIRONMENT }}
           BASE_URL: ${{ vars.APP_API_BASE_URL }}
