@@ -1,7 +1,7 @@
 import 'react-native-reanimated';
 
 import React from 'react';
-import {AppRegistry} from 'react-native';
+import {AppRegistry, SafeAreaView, Text} from 'react-native';
 import {ReduxNetworkProvider} from 'react-native-offline';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
@@ -14,15 +14,18 @@ import {theme} from './src/theme';
 const {store, persistor} = configureStore();
 
 const Application = () => (
-  <ThemeProvider theme={theme}>
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <ReduxNetworkProvider>
-          <App />
-        </ReduxNetworkProvider>
-      </PersistGate>
-    </Provider>
-  </ThemeProvider>
+  <SafeAreaView>
+    <Text>Hello World</Text>
+  </SafeAreaView>
+  // <ThemeProvider theme={theme}>
+  //   <Provider store={store}>
+  //     <PersistGate loading={null} persistor={persistor}>
+  //       <ReduxNetworkProvider>
+  //         <App />
+  //       </ReduxNetworkProvider>
+  //     </PersistGate>
+  //   </Provider>
+  // </ThemeProvider>
 );
 
 AppRegistry.registerComponent(appName, () => Application);
