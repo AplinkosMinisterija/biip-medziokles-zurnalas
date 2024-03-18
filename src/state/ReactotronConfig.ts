@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {queryClient} from '@root/App';
+import queryClient from '@root/queryClient';
 import {NativeModules} from 'react-native';
 import Reactotron, {networking} from 'reactotron-react-native';
 import {QueryClientManager, reactotronReactQuery} from 'reactotron-react-query';

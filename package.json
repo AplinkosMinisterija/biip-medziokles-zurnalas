@@ -6,6 +6,7 @@
     "android": "adb reverse tcp:9090 tcp:9090 && react-native run-android",
     "assembleRelease": "cd android && ./gradlew assembleRelease",
     "ios": "react-native run-ios",
+    "iosProd": "npx react-native run-ios --mode Release --simulator=\"iPhone 15\"",
     "ios7": "react-native run-ios --simulator=\"iPhone 7\"",
     "ios11": "react-native run-ios --simulator=\"iPhone 11\"",
     "ios14": "react-native run-ios --simulator=\"iPhone 14\"",

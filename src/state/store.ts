@@ -25,9 +25,7 @@ const persistorConfig = {
 
 export const configureStore = () => {
   try {
-    const sagaMiddleware = createSagaMiddleware({
-      sagaMonitor: Reactotron.createSagaMonitor(),
-    });
+    const sagaMiddleware = createSagaMiddleware();
     const rootReducer: any = combineReducers({
       app: AppReducer,
       auth: AuthReducer,
@@ -45,15 +43,12 @@ export const configureStore = () => {
 
     const store = createStore(
       persistedReducer,
-      compose(
-        applyMiddleware(networkMiddleware, sagaMiddleware),
-        Reactotron.createEnhancer(),
-      ),
+      compose(applyMiddleware(networkMiddleware, sagaMiddleware)),
     );
     const persistor = persistStore(store);
 
     sagaMiddleware.run(rootSaga);
-    console.tron = Reactotron;
+
     storeRegistry.register(store);
     return {store, persistor};
   } catch (e) {
