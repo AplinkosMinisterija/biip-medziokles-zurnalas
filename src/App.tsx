@@ -16,7 +16,6 @@ import {PersistGate} from 'redux-persist/integration/react';
 import {ThemeProvider} from 'styled-components';
 import {configureStore} from './state/store';
 import {theme} from './theme';
-import RNBootSplash from 'react-native-bootsplash';
 
 LogBox.ignoreLogs([
   "[react-native-gesture-handler] Seems like you're using an old API with gesture components, check out new Gestures system!",
@@ -28,7 +27,9 @@ if (__DEV__) {
   });
 }
 
-const {store, persistor} = configureStore();
+const {store, persistor} = __DEV__
+  ? require('./state/storeDebug.ts').configureStore()
+  : configureStore();
 
 const asyncStoragePersister = createAsyncStoragePersister({
   storage: AsyncStorage,
@@ -58,7 +59,6 @@ const Application = () => {
 
     return () => subscription.remove();
   }, []);
-  // return <Text style={{margin: 50, fontSize: 30}}>Hello</Text>;
 
   return (
     <Container>
@@ -69,9 +69,6 @@ const Application = () => {
 };
 
 const App = () => {
-  useEffect(() => {
-    RNBootSplash.hide({fade: true});
-  }, []);
   return (
     <ThemeProvider theme={theme}>
       <PersistQueryClientProvider

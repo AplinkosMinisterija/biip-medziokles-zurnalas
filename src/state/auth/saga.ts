@@ -19,7 +19,6 @@ function* handleLogin(action: Action) {
     yield put(syncActions.setOnSync.user(true));
     const params = action.payload;
     const response: LoginResponse = yield call(api.login, params);
-    console.tron.log(response);
     yield call(api.setAccessToken, response.token);
 
     yield put(authActions.syncFinish(true));

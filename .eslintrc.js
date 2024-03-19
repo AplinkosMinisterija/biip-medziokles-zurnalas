@@ -40,6 +40,7 @@ module.exports = {
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': 'off',
     'react-hooks/exhaustive-deps': 'warn',
+    'reactotron/no-tron-in-production': 'error',
     eqeqeq: 'off',
   },
 };
