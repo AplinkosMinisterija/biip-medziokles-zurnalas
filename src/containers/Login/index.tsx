@@ -100,14 +100,6 @@ const Login = () => {
               </>
             )}
           </Formik>
-          {/* <QRCodeButton
-            onPress={() => {
-              navigation.navigate(routes.qrScanResult);
-            }}
-          >
-            <QRCodeIcon />
-            <QRCodeText>{'Medžioklės lapo skaitytuvas'}</QRCodeText>
-          </QRCodeButton> */}
         </ContentWrapper>
       </Content>
       <AppVersionText />
@@ -144,18 +136,5 @@ const ContentWrapper = styled(KeyboardAvoidingView)`
   padding: 0 24px;
   flex: 1;
 `;
-
-// const QRCodeButton = styled(Pressable)`
-//   margin-top: 80px;
-//   flex-direction: column;
-//   justify-content: center;
-//   align-items: center;
-// `;
-
-// const QRCodeText = styled(Text.M)`
-//   margin-top: 5px;
-//   font-weight: 700;
-//   color: white;
-// `;
 
 export default Login;

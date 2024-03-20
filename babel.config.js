@@ -1,5 +1,5 @@
 module.exports = {
-  presets: ['module:metro-react-native-babel-preset'],
+  presets: ['module:@react-native/babel-preset'],
   plugins: [
     [
       'module-resolver',
@@ -28,12 +28,6 @@ module.exports = {
       },
     ],
     [
-      'react-native-reanimated/plugin',
-      {
-        globals: ['__scanCodes'],
-      },
-    ],
-    [
       'module:react-native-dotenv',
       {
         APP_ENV: 'DEVELOPMENT',
@@ -43,5 +37,6 @@ module.exports = {
         DEV_PASSWORD: null,
       },
     ],
+    ['react-native-reanimated/plugin'],
   ],
 };

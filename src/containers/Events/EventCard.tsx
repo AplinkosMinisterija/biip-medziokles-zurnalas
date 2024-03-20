@@ -7,7 +7,7 @@ import {
   isToday,
   startOfDay,
 } from 'date-fns';
-import ltLTLocale from 'date-fns/locale/lt';
+import {lt} from 'date-fns/locale';
 import React from 'react';
 import {TouchableOpacity, View} from 'react-native';
 import styled from 'styled-components';
@@ -76,7 +76,7 @@ const EventCard: React.FC<EventCardInterface> = ({
   const eventEndTime = endDate
     ? isSameDay(date, endDate)
       ? format(endDate, 'HH:mm')
-      : format(endDate, 'MMM d, HH:mm', {locale: ltLTLocale})
+      : format(endDate, 'MMM d, HH:mm', {locale: lt})
     : null;
 
   const isTodayEnded =

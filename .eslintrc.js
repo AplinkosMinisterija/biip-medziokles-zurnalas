@@ -4,7 +4,7 @@ module.exports = {
     node: true,
   },
   extends: [
-    '@react-native-community',
+    '@react-native',
     'prettier',
     'plugin:@tanstack/eslint-plugin-query/recommended',
   ],
@@ -40,6 +40,7 @@ module.exports = {
     'no-shadow': 'off',
     '@typescript-eslint/no-shadow': 'off',
     'react-hooks/exhaustive-deps': 'warn',
+    'reactotron/no-tron-in-production': 'error',
     eqeqeq: 'off',
   },
 };

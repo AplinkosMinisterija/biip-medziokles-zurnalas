@@ -15,5 +15,3 @@ export const config = {
   DEV_EMAIL: process.env.DEV_EMAIL,
   DEV_PASSWORD: process.env.DEV_PASSWORD,
 };
-
-console.log('config', config);

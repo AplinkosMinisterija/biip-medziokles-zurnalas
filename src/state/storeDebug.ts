@@ -16,6 +16,8 @@ import {OfflineReducer} from './offline/reducer';
 import {rootSaga} from './sagas';
 import {SyncReducer} from './sync/reducer';
 
+const Reactotron = __DEV__ ? require('./ReactotronConfig.ts').default : null;
+
 const persistorConfig = {
   key: '@biip_medziokle:state',
   storage,
@@ -23,7 +25,13 @@ const persistorConfig = {
 };
 
 export const configureStore = () => {
-  const sagaMiddleware = createSagaMiddleware();
+  const sagaMiddleware = createSagaMiddleware(
+    __DEV__
+      ? {
+          sagaMonitor: Reactotron.createSagaMonitor(),
+        }
+      : {},
+  );
   const rootReducer: any = combineReducers({
     app: AppReducer,
     auth: AuthReducer,
@@ -41,11 +49,18 @@ export const configureStore = () => {
 
   const store = createStore(
     persistedReducer,
-    compose(applyMiddleware(networkMiddleware, sagaMiddleware)),
+    compose(
+      applyMiddleware(networkMiddleware, sagaMiddleware),
+      __DEV__ ? Reactotron.createEnhancer() : undefined,
+    ),
   );
   const persistor = persistStore(store);
 
   sagaMiddleware.run(rootSaga);
+
+  if (__DEV__) {
+    console.tron = Reactotron;
+  }
 
   storeRegistry.register(store);
   return {store, persistor};

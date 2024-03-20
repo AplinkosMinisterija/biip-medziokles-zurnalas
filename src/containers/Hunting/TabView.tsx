@@ -1,4 +1,3 @@
-import {api} from '@apis/api';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import EmptyState from '@root/components/EmptyState';
 import HuntingTabViewHeader from '@root/components/headers/HuntingTabViewHeader';
@@ -8,12 +7,10 @@ import {huntingActions} from '@root/state/huntings/actions';
 import {getOnSync} from '@root/state/sync/syncSelectors';
 import {HuntingStatus} from '@root/state/types';
 import {formatHuntingMembersList} from '@root/utils/format';
-import {useQuery} from '@tanstack/react-query';
 import React, {useEffect, useState} from 'react';
 import {StatusBar, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import styled from 'styled-components';
-import FullScreenLoader from '../../components/FullScreenLoader';
 import {strings} from '../../strings';
 import {routes, TabsParamList} from '../Router';
 import HuntingInformation from './HuntingInformation';
@@ -21,6 +18,7 @@ import HuntingLoots from './HuntingLoots';
 import HuntingMap from './HuntingMap';
 import HuntingMembers from './HuntingMembers';
 import HuntingTabs, {Selection} from './HuntingTabs';
+import {useGeoPoints} from './queries';
 
 type HuntingRouteProps = RouteProp<TabsParamList, routes.hunting>;
 
@@ -31,11 +29,7 @@ const TabView = () => {
   const huntingData = useSelector(getExtendedHunting(route.params.huntingId));
   const [selectedTab, setSelectedTab] = useState<string>(Selection.Members);
 
-  const geoPoints = useQuery({
-    queryKey: ['geoPoints', route.params.huntingId],
-    refetchOnWindowFocus: true,
-    queryFn: () => api.getGeoPoints(route.params.huntingId),
-  });
+  const geoPoints = useGeoPoints(route.params.huntingId);
 
   useEffect(() => {
     route.params.tab && setSelectedTab(route.params.tab);
@@ -165,10 +159,6 @@ const MapWrapper = styled(View)`
 const Content = styled(View)`
   flex: 1;
   background-color: ${({theme}) => theme.colors.almostWhite};
-`;
-
-const Loader = styled(FullScreenLoader)`
-  background-color: ${({theme}) => theme.colors.white};
 `;
 
 export default TabView;

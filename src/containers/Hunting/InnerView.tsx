@@ -1,4 +1,3 @@
-import {api} from '@apis/api';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import BackButton from '@root/components/BackButton';
 import EmptyState from '@root/components/EmptyState';
@@ -9,7 +8,6 @@ import {strings} from '@root/strings';
 import {theme} from '@root/theme';
 import {formatHuntingMembersList} from '@root/utils/format';
 import {HuntingStatus} from '@state/types';
-import {useQuery} from '@tanstack/react-query';
 import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, StatusBar, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
@@ -22,6 +20,7 @@ import HuntingLoots from './HuntingLoots';
 import HuntingMap from './HuntingMap';
 import HuntingMembers from './HuntingMembers';
 import HuntingTabs, {Selection} from './HuntingTabs';
+import {useGeoPoints} from './queries';
 
 type HuntingInnerRouteProp = RouteProp<RootStackParamList, routes.huntingInner>;
 
@@ -32,11 +31,7 @@ const HuntingInner = () => {
   const navigation = useNavigation<any>();
   const [selectedTab, setSelectedTab] = useState<string>(Selection.Members);
 
-  const geoPoints = useQuery({
-    queryKey: ['geoPoints', route.params.huntingId],
-    refetchOnWindowFocus: true,
-    queryFn: () => api.getGeoPoints(route.params.huntingId),
-  });
+  const geoPoints = useGeoPoints(huntingId);
 
   useEffect(() => {
     tab && setSelectedTab(tab);
@@ -65,7 +60,7 @@ const HuntingInner = () => {
     return () => {
       clearInterval(interval);
     };
-  }, [huntingData]);
+  }, [huntingData, dispatch]);
 
   const showingMap = !!(
     selectedTab === Selection.Map && huntingData?.huntingArea?.id

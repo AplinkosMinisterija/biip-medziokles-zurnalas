@@ -1,5 +1,5 @@
-import AsyncStorage from '@react-native-community/async-storage';
-import {queryClient} from '@root/App';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import queryClient from '@root/queryClient';
 import {NativeModules} from 'react-native';
 import Reactotron, {networking} from 'reactotron-react-native';
 import {QueryClientManager, reactotronReactQuery} from 'reactotron-react-query';
@@ -8,7 +8,7 @@ import sagaPlugin from 'reactotron-redux-saga';
 import {Env} from '../config';
 
 let scriptHostname;
-if (Env.DEVELOPMENT) {
+if (__DEV__) {
   const scriptURL = NativeModules.SourceCode.scriptURL;
   scriptHostname = scriptURL.split('://')[1].split(':')[0];
 }
@@ -18,13 +18,12 @@ const queryClientManager = new QueryClientManager({
 });
 
 const reactotron = (Reactotron as any)
-  .setAsyncStorageHandler(AsyncStorage)
   .configure({
-    host: scriptHostname,
     onDisconnect: () => {
       queryClientManager.unsubscribe();
     },
   })
+  .setAsyncStorageHandler(AsyncStorage)
   .useReactNative()
   .use(reactotronRedux())
   .use(
