@@ -41,7 +41,6 @@ const Login = () => {
   const eVartaiLoading = useSelector(getOnSync.login);
 
   const handleSubmit = (values: {username: string; password: string}) => {
-    console.tron.log('submited login');
     dispatch(authActions.login(values));
   };
 

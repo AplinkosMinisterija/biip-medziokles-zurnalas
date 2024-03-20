@@ -21,7 +21,7 @@ export function* rootSaga() {
     SettingsSaga(),
     NotificationsSaga(),
     OfflineSagas(),
-    LocalFilesSaga(),
+    // LocalFilesSaga(),
     LimitedAnimalsSaga(),
     SnowFootprintSaga(),
     //@ts-ignore

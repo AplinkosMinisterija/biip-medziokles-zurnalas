@@ -1,6 +1,6 @@
 import {api, AuthResponse, LoginResponse} from '@apis/api';
 import {routes} from '@containers/Router';
-import {queryClient} from '@root/App';
+import queryClient from '@root/queryClient';
 import {isIOS} from '@utils/layout';
 import {pop, push} from '@utils/navigation';
 import {Linking} from 'react-native';
@@ -19,7 +19,6 @@ function* handleLogin(action: Action) {
     yield put(syncActions.setOnSync.user(true));
     const params = action.payload;
     const response: LoginResponse = yield call(api.login, params);
-    console.tron.log(response);
     yield call(api.setAccessToken, response.token);
 
     yield put(authActions.syncFinish(true));
