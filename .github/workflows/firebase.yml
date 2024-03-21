@@ -2,6 +2,9 @@ name: Publish to Firebase
 run-name: 'Publish Firebase: for ${{ inputs.platform }} with ${{ inputs.api }} API (${{ github.run_number }})'
 
 on:
+  push:
+    branches:
+      - firebase-publish-for-ios
   workflow_dispatch:
     inputs:
       platform:
@@ -37,7 +40,7 @@ jobs:
     timeout-minutes: 5
     outputs:
       release-notes: ${{ inputs.release-notes }}
-      api: ${{ inputs.api }}
+      api: development
 
       version-code: ${{ steps.version-code.outputs.version-code }}
       version-name: ${{ steps.version-name.outputs.version-name }}
@@ -106,7 +109,7 @@ jobs:
     runs-on: macos-14
     timeout-minutes: 30
     needs: config
-    if: inputs.platform == 'both' || inputs.platform == 'ios'
+    #    if: inputs.platform == 'both' || inputs.platform == 'ios'
     environment: ios-firebase-${{ needs.config.outputs.api }}
     env:
       FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: 120
