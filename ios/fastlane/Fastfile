@@ -16,11 +16,11 @@ platform :ios do
 	    export_method: export_method,
 	    silent: true,
 	    configuration: configuration,
-	    export_options: {
-            provisioningProfiles: {
-              "com.mobile.medziokles-zurnalas" => "match AdHoc com.mobile.medziokles-zurnalas"
-            }
-	    }
+# 	    export_options: {
+#             provisioningProfiles: {
+#               "com.mobile.medziokles-zurnalas" => "match AdHoc com.mobile.medziokles-zurnalas"
+#             }
+# 	    }
     )
   end
 
@@ -45,7 +45,7 @@ platform :ios do
   desc "Release to Firebase for internal testing"
   lane :publish_firebase do
        increment_version
-       build(type: "adhoc", export_method: "ad-hoc")
+       build(type: "development", export_method: "development", configuration: "Debug")
        firebase_app_distribution(
         app: ENV['FIREBASE_APP_ID'],
         groups: 'IOS PRODUCTION',
