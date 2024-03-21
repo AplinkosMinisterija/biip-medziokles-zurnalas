@@ -25,11 +25,22 @@ platform :ios do
        build(type: "development", export_method: "development", configuration: "Debug")
   end
 
-  desc "Release to TestFlight for internal testing"
+  desc "Release to TestFlight"
   lane :publish_testflight do
        app_store_connect_api_key
        increment_version
        build(type: "appstore", export_method: "app-store")
        upload_to_testflight(changelog: ENV['RELEASE_NOTES'])
+  end
+
+  desc "Release to Firebase for internal testing"
+  lane :publish_firebase do
+       increment_version
+       build(type: "adhoc", export_method: "ad-hoc")
+       firebase_app_distribution(
+        app: ENV['FIREBASE_APP_ID'],
+        groups: 'IOS PRODUCTION',
+        release_notes: ENV['RELEASE_NOTES']
+       )
   end
 end
