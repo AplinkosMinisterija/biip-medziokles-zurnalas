@@ -12,7 +12,16 @@ platform :ios do
 	sync_code_signing(type: type, readonly: true)
 
 	update_code_signing_settings()
-	build_ios_app(export_method: export_method, silent: true, configuration: configuration)
+	build_ios_app(
+	    export_method: export_method,
+	    silent: true,
+	    configuration: configuration,
+# 	    export_options: {
+#             provisioningProfiles: {
+#               "com.mobile.medziokles-zurnalas" => "match AdHoc com.mobile.medziokles-zurnalas"
+#             }
+# 	    }
+    )
   end
 
   private_lane :increment_version do |options|
@@ -25,11 +34,22 @@ platform :ios do
        build(type: "development", export_method: "development", configuration: "Debug")
   end
 
-  desc "Release to TestFlight for internal testing"
+  desc "Release to TestFlight"
   lane :publish_testflight do
        app_store_connect_api_key
        increment_version
        build(type: "appstore", export_method: "app-store")
        upload_to_testflight(changelog: ENV['RELEASE_NOTES'])
+  end
+
+  desc "Release to Firebase for internal testing"
+  lane :publish_firebase do
+       increment_version
+       build(type: "development", export_method: "development", configuration: "Debug")
+       firebase_app_distribution(
+        app: ENV['FIREBASE_APP_ID'],
+        groups: 'IOS PRODUCTION',
+        release_notes: ENV['RELEASE_NOTES']
+       )
   end
 end
