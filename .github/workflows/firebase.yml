@@ -124,6 +124,13 @@ jobs:
         with:
           match-git-private-key-content: ${{ secrets.MATCH_GIT_PRIVATE_KEY }}
 
+      - name: Create Firebase required files
+        working-directory: ios
+        run: |
+          echo "$FIREBASE_SERVICE_CREDENTIALS_FILE_CONTENT" > firebase-credentials.json
+        env:
+          FIREBASE_SERVICE_CREDENTIALS_FILE_CONTENT: ${{ secrets.FIREBASE_SERVICE_CREDENTIALS_FILE_CONTENT }}
+
       - name: Fastlane publish to TestFlight
         run: bundle exec fastlane ios publish_firebase
         working-directory: ios
