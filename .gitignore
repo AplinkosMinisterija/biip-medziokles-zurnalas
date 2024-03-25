@@ -22,6 +22,11 @@ DerivedData
 *.xcuserstate
 ios/.xcode.env.local
 
+# this files break CI/CD for some reason. Let's just skip commiting bcs they are generated anyway. 
+# Hope it wont break anything in the future
+ios/mobile_medziotojas.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
+ios/mobile_medziotojas.xcworkspace/xcshareddata/swiftpm/Package.resolved
+
 # Android/IntelliJ
 #
 build/

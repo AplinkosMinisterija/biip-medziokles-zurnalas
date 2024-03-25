@@ -11,5 +11,7 @@
       <item name="bootSplashLogo">@mipmap/bootsplash_logo</item>
       <item name="postSplashScreenTheme">@style/AppTheme</item>
     </style>
-
+    <style name="DatePickerTheme" parent="DatePickerBaseTheme">
+      <item name="android:textSize">25sp</item>
+    </style>
 </resources>

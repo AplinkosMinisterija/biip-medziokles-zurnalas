@@ -47,9 +47,9 @@ const Application = () => {
 
   useEffect(() => {
     dispatch(appActions.checkAppUpdate());
-    const subscription = Linking.addEventListener('url', evt =>
-      handleURL(evt?.url),
-    );
+    const subscription = Linking.addEventListener('url', evt => {
+      handleURL(evt?.url);
+    });
 
     Linking.getInitialURL()
       .then(initUrl => {

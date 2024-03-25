@@ -54,7 +54,7 @@
     "react-native-blob-util": "^0.19.6",
     "react-native-bootsplash": "^5.4.1",
     "react-native-check-version": "^1.1.1",
-    "react-native-date-picker": "^4.3.6",
+    "react-native-date-picker": "^5.0.0",
     "react-native-device-info": "^10.12.1",
     "react-native-encrypted-storage": "^4.0.2",
     "react-native-file-viewer": "^2.1.5",

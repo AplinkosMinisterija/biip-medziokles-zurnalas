@@ -5,7 +5,7 @@ import {amITenantAdminByHunting} from '@root/state/tenantUsers/tenantUsersSelect
 import {AnimalFormTypes, State} from '@root/state/types';
 import {convertStringToDate} from '@utils/time';
 import {format} from 'date-fns';
-import differenceInMinutes from 'date-fns/differenceInMinutes';
+import {differenceInMinutes} from 'date-fns';
 import React, {useEffect, useState} from 'react';
 import {TouchableOpacity, View} from 'react-native';
 import {SvgUri} from 'react-native-svg';
@@ -57,8 +57,8 @@ const AnimalCard: React.FC<AnimalCardProps> = ({lootData}) => {
     ? isWolfFormCompleted
       ? routes.lootInfo
       : amIAdminByHunting || isMyLoot
-      ? routes.additionalLootInformation
-      : routes.lootInfo
+        ? routes.additionalLootInformation
+        : routes.lootInfo
     : routes.lootInfo;
   let additionalInfo =
     !!gender || !!age
@@ -93,8 +93,8 @@ const AnimalCard: React.FC<AnimalCardProps> = ({lootData}) => {
                 lootData.offline
                   ? theme.colors.yellow
                   : lootData.violation
-                  ? theme.colors.secondary
-                  : theme.colors.primaryLight
+                    ? theme.colors.secondary
+                    : theme.colors.primaryLight
               }
             />
           )}
@@ -240,8 +240,8 @@ const ImageWrapper = styled(View)<{
     isOffline
       ? `${theme.colors.yellow}1A`
       : isViolation
-      ? `${theme.colors.secondary}1A`
-      : '#edf1f2'};
+        ? `${theme.colors.secondary}1A`
+        : '#edf1f2'};
   opacity: ${({blurred, isOffline}) => (blurred && !isOffline ? 0.5 : 1)};
 `;
 

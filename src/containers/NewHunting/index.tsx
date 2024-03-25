@@ -118,7 +118,6 @@ const NewHunting = ({route: {params: {huntingId} = {}}}: NewHuntingProps) => {
               is24hourSource="locale"
               style={isIOS ? {flex: 1} : undefined}
               minimumDate={new Date()}
-              textColor={'black'}
               locale="lt"
               minuteInterval={15}
             />
