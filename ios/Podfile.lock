@@ -908,7 +908,7 @@ PODS:
     - React-debug
   - react-native-blob-util (0.19.6):
     - React-Core
-  - react-native-date-picker (4.3.6):
+  - react-native-date-picker (5.0.0):
     - React-Core
   - react-native-device-brightness (1.2.7):
     - React
@@ -1429,7 +1429,7 @@ SPEC CHECKSUMS:
   React-logger: 0a57b68dd2aec7ff738195f081f0520724b35dab
   React-Mapbuffer: 114be72666d7e3e317c1a36fb566cd3ad712fcc8
   react-native-blob-util: d8fa1a7f726867907a8e43163fdd8b441d4489ea
-  react-native-date-picker: c28ccf1b3bc3de3bc6a785792a393fee49677f89
+  react-native-date-picker: 656d78c3f8a5e79bc1642b8d1c587ce10aab2195
   react-native-device-brightness: 886cfbfb49a32b6de4ccfc1f720776dc5f381d24
   react-native-encrypted-storage: db300a3f2f0aba1e818417c1c0a6be549038deb7
   react-native-geolocation: ef66fb798d96284c6043f0b16c15d9d1d4955db4
