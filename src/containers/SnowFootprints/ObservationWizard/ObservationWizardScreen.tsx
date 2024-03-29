@@ -97,7 +97,6 @@ const ObservationWizardScreen: React.FC<Props> = ({route}) => {
               is24hourSource="locale"
               style={isIOS ? {flex: 1} : undefined}
               minimumDate={new Date()}
-              textColor={'black'}
               locale="lt"
               minuteInterval={15}
             />

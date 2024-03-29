@@ -75,7 +75,6 @@ const PeriodFilter = () => {
               date={filterFromDate ? fromDate : toDate}
               style={isIOS ? {flex: 1} : undefined}
               locale="lt"
-              textColor={'black'}
             />
           </DatePickerWrapper>
         </Container>
