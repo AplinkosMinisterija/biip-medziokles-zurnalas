@@ -26,6 +26,8 @@ import LogoutButton from './../LogoutButton';
 import Text from './../Text';
 import TicketNumber from './../TicketData';
 import TenantUserMenu from './TenantUserMenu';
+import PrivacyPolicyText from '../PrivacyPolicyText';
+import {Row} from '../layout';
 
 const SideBar = () => {
   const navigation = useNavigation<any>();
@@ -104,7 +106,10 @@ const SideBar = () => {
         />
       )}
       <StyledLogoutButton />
-      <AppVersionText />
+      <FooterWrapper>
+        <AppVersionText />
+        <PrivacyPolicyText />
+      </FooterWrapper>
     </Container>
   );
 };
@@ -150,6 +155,11 @@ const StyledAnimeButton = styled(AnimatedColorButton)`
   border-radius: 8px;
   padding: 10px;
   margin: 8px 0;
+`;
+
+const FooterWrapper = styled(Row)`
+  justify-content: space-around;
+  flex-wrap: wrap;
 `;
 
 export default SideBar;
