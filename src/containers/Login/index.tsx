@@ -2,6 +2,8 @@ import Button from '@components/Button';
 import Logo from '@components/svg/Logo';
 import TextField from '@components/TextField';
 import AppVersionText from '@root/components/AppVersionText';
+import {Row} from '@root/components/layout';
+import PrivacyPolicyText from '@root/components/PrivacyPolicyText';
 import {config, DEV_OR_STG} from '@root/config';
 import {getOnSync} from '@root/state/sync/syncSelectors';
 import {strings} from '@root/strings';
@@ -102,7 +104,10 @@ const Login = () => {
           </Formik>
         </ContentWrapper>
       </Content>
-      <AppVersionText />
+      <FooterWrapper>
+        <AppVersionText />
+        <PrivacyPolicyText />
+      </FooterWrapper>
     </Container>
   );
 };
@@ -135,6 +140,11 @@ const ContentWrapper = styled(KeyboardAvoidingView)`
   align-items: center;
   padding: 0 24px;
   flex: 1;
+`;
+
+const FooterWrapper = styled(Row)`
+  justify-content: space-around;
+  flex-wrap: wrap;
 `;
 
 export default Login;
