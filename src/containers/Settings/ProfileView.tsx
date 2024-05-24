@@ -24,6 +24,7 @@ import Text from '../../components/Text';
 import {strings} from '../../strings';
 import MemberInfo from './MemberInfo';
 import MemberRoles from './MemberRoles';
+import TicketNumber from '@root/components/TicketData';
 type Props = {
   params: {userId: string; tenantId: string; ownerProfile: string};
 };
@@ -43,6 +44,8 @@ const Profile = () => {
   const tenantUser = useSelector(getTenantUser(userId, tenantId));
   const tenantUserHuntingAreas =
     tenantUser?.huntingAreas?.map(ha => ha.id) || [];
+  const ticketNumber = user?.ticketNumber;
+
 
   //connected user constants
   const myTenantUser = useSelector(getMyTenantUserByTenant(tenantId));
@@ -190,6 +193,7 @@ const Profile = () => {
               isManager={false}
             />
             <Text.M>{`${firstName} ${lastName}`}</Text.M>
+            <TicketNumber ticketNumber={ticketNumber} />
           </UserInfo>
           <MemberInfo email={email} phone={phone} />
           {!isEmpty(tenantUserHuntingAreas) && (

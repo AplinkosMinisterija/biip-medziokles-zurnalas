@@ -2,14 +2,17 @@ module.exports = {
   env: {
     amd: true,
     node: true,
+    "jest": true
   },
   extends: [
     '@react-native',
     'prettier',
     'plugin:@tanstack/eslint-plugin-query/recommended',
+    'plugin:jest/recommended',
+    "plugin:@typescript-eslint/recommended"
   ],
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint'],
+  plugins: ['@typescript-eslint','jest'],
   root: true,
   parserOptions: {
     ecmaVersion: 2021, // Allows for the parsing of modern ECMAScript features
@@ -20,6 +23,7 @@ module.exports = {
   },
   globals: {
     JSX: 'readonly',
+    jets: true
   },
   rules: {
     '@tanstack/query/exhaustive-deps': 'error',
