@@ -145,7 +145,7 @@ class ApiClass {
     data: any;
   }): Promise<AxiosResponse> => {
     const response: AxiosResponse = await this.patch(
-      `/api/users/${userId}`,
+      `/users/${userId}`,
       data,
     );
     return response.data;
@@ -161,14 +161,14 @@ class ApiClass {
     permissions: any;
   }): Promise<AxiosResponse> => {
     const response: AxiosResponse = await this.patch(
-      `/api/tenantUsers/${tenantUserId}`,
+      `/tenantUsers/${tenantUserId}`,
       {...data, permissions},
     );
     return response.data;
   };
 
   removeTenantUser = async (tenantUserId: string) => {
-    const response = await api.delete(`/api/tenantUsers/${tenantUserId}`);
+    const response = await api.delete(`/tenantUsers/${tenantUserId}`);
     return response.data;
   };
 
@@ -182,7 +182,7 @@ class ApiClass {
     const updateData =
       os === 'ios' ? {iosToken: token} : {firebaseToken: token};
     const response: AxiosResponse = await this.patch(
-      `/api/auth/me`,
+      `/auth/me`,
       updateData,
     );
     return response.data;
@@ -194,13 +194,13 @@ class ApiClass {
     notes?: string;
     huntingArea?: string;
   }): Promise<any> => {
-    const response: AxiosResponse = await this.post('/api/huntings', params);
+    const response: AxiosResponse = await this.post('/huntings', params);
     return response.data;
   };
 
   updateHunting = async ({id, data}: {id: string; data: any}): Promise<any> => {
     const response: AxiosResponse = await this.patch(
-      `/api/huntings/${id}`,
+      `/huntings/${id}`,
       data,
     );
     return response.data;
@@ -208,7 +208,7 @@ class ApiClass {
 
   startHuntingRegistration = async (id: string): Promise<any> => {
     const response: AxiosResponse = await this.post(
-      `/api/huntings/${id}/startRegistration`,
+      `/huntings/${id}/startRegistration`,
       {},
     );
     return response.data;
@@ -216,7 +216,7 @@ class ApiClass {
 
   startHunting = async (id: string): Promise<any> => {
     const response: AxiosResponse = await this.post(
-      `/api/huntings/${id}/start`,
+      `/huntings/${id}/start`,
       {},
     );
     return response.data;
@@ -224,7 +224,7 @@ class ApiClass {
 
   endHunting = async (id: string): Promise<any> => {
     const response: AxiosResponse = await this.post(
-      `/api/huntings/${id}/end`,
+      `/huntings/${id}/end`,
       {},
     );
     return response.data;
@@ -236,19 +236,19 @@ class ApiClass {
     huntingId: string;
   }): Promise<AxiosResponse> => {
     const response: AxiosResponse = await this.delete(
-      `/api/huntings/${huntingId}`,
+      `/huntings/${huntingId}`,
     );
     return response.data;
   };
 
   registerLoot = async ({data}: {data: LootRegistrationData}): Promise<any> => {
-    const response: AxiosResponse = await this.post('/api/loots', data);
+    const response: AxiosResponse = await this.post('/loots', data);
     return response.data;
   };
 
   updateLoot = async ({data}: {data: LootUpdateData}): Promise<any> => {
     const response: AxiosResponse = await this.patch(
-      `/api/loots/${data.id}`,
+      `/loots/${data.id}`,
       data,
     );
     return response.data;
@@ -262,7 +262,7 @@ class ApiClass {
     geom: unknown;
   }): Promise<any> => {
     const response: AxiosResponse = await this.patch(
-      `/api/huntingMembers/${memberId}`,
+      `/huntingMembers/${memberId}`,
       {geom},
     );
     return response.data;
@@ -270,14 +270,14 @@ class ApiClass {
 
   getGeoPoints = async (huntingId: string): Promise<any> => {
     const response: AxiosResponse = await this.get(
-      `/api/huntings/${huntingId}/geoPoints`,
+      `/huntings/${huntingId}/geoPoints`,
     );
     return response.data;
   };
 
   removeHuntingMember = async ({member}: {member: string}): Promise<any> => {
     const response: AxiosResponse = await this.delete(
-      `/api/huntingMembers/${member}`,
+      `/huntingMembers/${member}`,
     );
     return response.data;
   };
@@ -290,7 +290,7 @@ class ApiClass {
     data: any;
   }): Promise<AxiosResponse> => {
     const response: AxiosResponse = await this.patch(
-      `/api/huntingMembers/${memberId}`,
+      `/huntingMembers/${memberId}`,
       data,
     );
     return response.data;
@@ -304,7 +304,7 @@ class ApiClass {
     signature?: string;
   }): Promise<AxiosResponse> => {
     const response: AxiosResponse = await this.post(
-      `/api/huntingMembers/${memberId}/accept`,
+      `/huntingMembers/${memberId}/accept`,
       {signature},
     );
     return response.data;
@@ -318,7 +318,7 @@ class ApiClass {
     huntingId: number | string;
   }): Promise<AxiosResponse> => {
     const response: AxiosResponse = await this.post(
-      `/api/huntings/${huntingId}/managerChange`,
+      `/huntings/${huntingId}/managerChange`,
       {manager: huntingMemberId},
     );
     return response.data;
@@ -330,7 +330,7 @@ class ApiClass {
     huntingId: number | string;
   }): Promise<AxiosResponse> => {
     const response: AxiosResponse = await this.post(
-      `/api/huntings/${huntingId}/cancelManagerChange`,
+      `/huntings/${huntingId}/cancelManagerChange`,
       {},
     );
     return response.data;
@@ -344,20 +344,20 @@ class ApiClass {
     signature?: string;
   }): Promise<AxiosResponse> => {
     const response: AxiosResponse = await this.post(
-      `/api/huntings/${huntingId}/acceptManagerChange`,
+      `/huntings/${huntingId}/acceptManagerChange`,
       {signature},
     );
     return response.data;
   };
 
   getMainData = async (): Promise<any> => {
-    const response: AxiosResponse = await this.get('/api/state/user');
+    const response: AxiosResponse = await this.get('/state/user');
     return response;
   };
 
   getPatchData = async (dadState: string): Promise<any> => {
     const response: AxiosResponse = await this.get(
-      `/api/state/user?dadPatch=true&dadState=${dadState || ''}`,
+      `/state/user?dadPatch=true&dadState=${dadState || ''}`,
     );
     return response;
   };
@@ -369,7 +369,7 @@ class ApiClass {
     user: string | GuestInvitation;
     huntingId: string;
   }): Promise<DataState> => {
-    const response: AxiosResponse = await this.post(`/api/huntingMembers`, {
+    const response: AxiosResponse = await this.post(`/huntingMembers`, {
       user,
       hunting: huntingId,
     });
@@ -389,7 +389,7 @@ class ApiClass {
     };
   }): Promise<AxiosResponse> => {
     const response: AxiosResponse = await this.post(
-      `/api/tenantUsers/invite`,
+      `/tenantUsers/invite`,
       params,
     );
     return response.data;
@@ -397,7 +397,7 @@ class ApiClass {
 
   requestLimits = async (params: LimitRequestBody): Promise<AxiosResponse> => {
     const response: AxiosResponse = await this.post(
-      `/api/limitsRequests/request`,
+      `/limitsRequests/request`,
       params,
     );
     return response.data;
@@ -407,7 +407,7 @@ class ApiClass {
     termsId: string | number,
   ): Promise<AxiosResponse> => {
     const response: AxiosResponse = await this.post(
-      `/api/termsOfService/agree`,
+      `/termsOfService/agree`,
       {
         id: termsId,
       },
@@ -420,7 +420,7 @@ class ApiClass {
     eventTime: string;
   }): Promise<any> => {
     const response: AxiosResponse = await this.post(
-      '/api/footprintObservations',
+      '/footprintObservations',
       params,
     );
     return response.data;
@@ -437,7 +437,7 @@ class ApiClass {
     const huntingArea = huntingAreaId ? `"huntingArea":${huntingAreaId}` : '';
     const query = huntingArea ? `&query={${huntingArea}}` : '';
     const response: AxiosResponse = await this.get(
-      `/api/huntings/?scope=${scope}${
+      `/huntings/?scope=${scope}${
         my || !huntingAreaId ? ',my' : ''
       }${query}&page=${page}&pageSize=${pageSize}&populate=tenant,huntingArea,manager,managerUser&sort=${sort}`,
     );
@@ -446,7 +446,7 @@ class ApiClass {
 
   getHunting = async (id: string | number): Promise<any> => {
     const response: AxiosResponse = await this.get(
-      `/api/hunting/${id}/?populate=tenant,huntingArea,manager,managerUser,lootsCount`,
+      `/hunting/${id}/?populate=tenant,huntingArea,manager,managerUser,lootsCount`,
     );
     return response;
   };

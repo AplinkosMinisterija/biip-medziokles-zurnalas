@@ -27,7 +27,7 @@ export function* rootSaga() {
     //@ts-ignore
     fork(networkSaga, {
       pingInterval: 20000,
-      pingServerUrl: `${config.BASE_URL}/public/ping`,
+      pingServerUrl: `${config.BASE_URL}/ping`,
       httpMethod: 'GET',
     }),
   ]);
