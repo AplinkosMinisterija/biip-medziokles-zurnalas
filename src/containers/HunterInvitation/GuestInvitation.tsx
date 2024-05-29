@@ -1,10 +1,12 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {appActions} from '@root/state/app/actions';
-import {getGuestInvitationPhoto} from '@root/state/app/appSelectors';
 import {getExtendedHunting} from '@root/state/data/dataSelectors';
 import {huntingActions} from '@root/state/huntings/actions';
 import {getOnSync} from '@root/state/sync/syncSelectors';
-import {MemberGuestInvitation, NATIONALITY} from '@root/state/types';
+import {
+  GuestInvitation as MemberGuestInvitation,
+  NATIONALITY,
+} from '@root/state/types';
 import {useKeyboard} from '@utils/hooks';
 import {isIOS} from '@utils/layout';
 import {Formik} from 'formik';
@@ -41,7 +43,6 @@ const GuestInvitation = () => {
   const route = useRoute<any>();
   const {huntingId} = route.params;
   const dispatch = useDispatch();
-  const photo: string | null = useSelector(getGuestInvitationPhoto);
   const navigation = useNavigation<any>();
   const openKeyboard = useKeyboard();
   const loading = useSelector(getOnSync.huntingMember);
@@ -49,29 +50,6 @@ const GuestInvitation = () => {
 
   const handleSubmitInvitation = (values: MemberGuestInvitation) => {
     if (hunting?.id) {
-      // if (hunting.status === HuntingStatus.Started) {
-      // navigation.goBack();
-      //   navigation.navigate(routes.signatureModal, {
-      //     signer: values,
-      //     syncSelector: getOnSync.huntingMember,
-      //     onSign: (signature: string) => {
-      //       dispatch(
-      //         huntingActions.inviteHuntingMemberWithSignature({
-      //           user:
-      //             values.nationality === NATIONALITY.local
-      //               ? {
-      //                   nationality: values.nationality,
-      //                   ticketNumber: values.ticketNumber,
-      //                 }
-      //               : values,
-      //           huntingId: route.params.huntingId,
-      //           signature,
-      //         }),
-      //       );
-      //       navigation.goBack();
-      //     },
-      //   });
-      // } else {
       dispatch(
         huntingActions.inviteHuntingMember({
           user:
@@ -84,14 +62,7 @@ const GuestInvitation = () => {
           huntingId: route.params.huntingId,
         }),
       );
-      //   navigation.goBack();
-      // }
     }
-  };
-
-  const handeleProtoView = () => {
-    dispatch(appActions.setGuestInvitationPhoto(photo));
-    navigation.navigate(routes.imagePreview);
   };
 
   return (
@@ -104,8 +75,8 @@ const GuestInvitation = () => {
             firstName: '',
             lastName: '',
             ticketNumber: '',
-            personalCode: '',
             email: '',
+            document: '',
           } as MemberGuestInvitation
         }
         validationSchema={ValidationSchema}
@@ -139,7 +110,7 @@ const GuestInvitation = () => {
                     <StyledTextField
                       name="name"
                       label={strings.name}
-                      value={values.firstName}
+                      value={values.firstName || ''}
                       onChangeText={(value: string) => {
                         setFieldError('firstName', '');
                         handleChange('firstName')(value);
@@ -150,7 +121,7 @@ const GuestInvitation = () => {
                     <StyledTextField
                       name="lastName"
                       label={strings.lastName}
-                      value={values.lastName}
+                      value={values.lastName || ''}
                       onChangeText={(value: string) => {
                         setFieldError('lastName', '');
                         handleChange('lastName')(value);
@@ -182,7 +153,7 @@ const GuestInvitation = () => {
                     <StyledTextField
                       name="email"
                       label={strings.email}
-                      value={values.email}
+                      value={values.email || ''}
                       onChangeText={(value: string) => {
                         setFieldError('email', '');
                         handleChange('email')(value);
@@ -194,11 +165,18 @@ const GuestInvitation = () => {
                       Medžioklės bilieto nuotrauka
                     </Text.M>
                     <ImageSelection
-                      value={photo}
+                      value={values.document}
                       onChange={(value: any) => {
-                        dispatch(appActions.setGuestInvitationPhoto(value));
+                        handleChange('document')(value);
                       }}
-                      onPressPhoto={handeleProtoView}
+                      onPressPhoto={() => {
+                        navigation.navigate(routes.imagePreview, {
+                          image: values.document,
+                          onDeletePress: () => {
+                            handleChange('document')('');
+                          },
+                        });
+                      }}
                     />
                   </>
                 )}
@@ -208,10 +186,9 @@ const GuestInvitation = () => {
               <FooterContainer>
                 <CleanButton
                   variant={Button.Variant.PrimaryLight}
-                  text={strings.clean}
+                  text={strings.common.cancel}
                   onPress={() => {
-                    handleReset();
-                    dispatch(appActions.setGuestInvitationPhoto(null));
+                    navigation.goBack();
                   }}
                 />
                 <CreateButton

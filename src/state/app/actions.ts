@@ -10,7 +10,6 @@ export const appConstants = {
   CHECK_APP_UPDATE_RESPONSE: 'app_CHECK_APP_UPDATE_RESPONSE',
   SET_SELECTED_HUNTING_AREA: 'app_SET_SELECTED_HUNTING_AREA',
   SET_IS_MY_HUNTINGS_EVENT_FILTER: 'app_SET_IS_MY_HUNTINGS_EVENT_FILTER',
-  SET_GUEST_INVITATION_PHOTO: 'hunting_SET_GUEST_INVITATION_DATA',
   SET_MESSAGE: 'hunting_SET_MESSAGE',
   HANDLE_ERROR: 'hunting_HANDLE_ERROR',
   SAVE_DEVICE_TOKEN: 'app_SAVE_DEVICE_TOKEN',
@@ -18,7 +17,6 @@ export const appConstants = {
   SHOW_CONFIRMATION_MODAL: 'app_SHOW_CONFIRMATION_MODAL',
   CLOSE_CONFIRMATION_MODAL: 'app_CLOSE_CONFIRMATION_MODAL',
   NOTIFICATION_PERMISSION_ASKED: 'app_NOTIFICATION_PERMISSION_ASKED',
-  SET_CONNECTED: 'app_SET_CONNECTED',
   SET_APP_HOME_SCREEN: 'app_SET_APP_HOME_SCREEN',
   RESET: 'app_reset',
 };
@@ -30,10 +28,6 @@ export const appActions = {
   }),
   setIsMyHuntingsEventFilter: (payload: boolean) => ({
     type: appConstants.SET_IS_MY_HUNTINGS_EVENT_FILTER,
-    payload,
-  }),
-  setGuestInvitationPhoto: (payload: string | any) => ({
-    type: appConstants.SET_GUEST_INVITATION_PHOTO,
     payload,
   }),
   setMessage: (payload: {
@@ -68,10 +62,6 @@ export const appActions = {
   }),
   reset: () => ({
     type: appConstants.RESET,
-  }),
-  setConnected: (payload: boolean) => ({
-    type: appConstants.SET_CONNECTED,
-    payload,
   }),
   checkAppUpdate: () => ({
     type: appConstants.CHECK_APP_UPDATE,

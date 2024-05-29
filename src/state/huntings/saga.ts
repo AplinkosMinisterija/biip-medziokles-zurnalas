@@ -59,7 +59,6 @@ function* handleInviteHuntingMember({payload, options}: Action): any {
       const response = yield call(api.inviteHuntingMember, payload);
       yield delay(300);
       yield put(dataActions.getMainData());
-      yield put(appActions.setGuestInvitationPhoto(null));
       yield call(goBack);
       if (options?.onFinish) {
         yield call(options.onFinish, response);
@@ -100,7 +99,6 @@ function* handleInviteHuntingMemberWithSignature({payload}: Action): any {
       );
       yield delay(300);
       yield put(dataActions.getMainData());
-      yield put(appActions.setGuestInvitationPhoto(null));
     }
   } catch (e) {
     yield put(appActions.handleError(e));
@@ -141,8 +139,8 @@ function* handleUpdateHuntingStatus({payload}: Action) {
       payload.status === HuntingStatus.Ready
         ? strings.huntingRegistrationStarted
         : payload.status === HuntingStatus.Started
-        ? strings.huntingStarted
-        : strings.huntingEnded;
+          ? strings.huntingStarted
+          : strings.huntingEnded;
 
     yield put(
       appActions.setMessage({
