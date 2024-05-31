@@ -96,9 +96,6 @@ function* watchAppState(): any {
         yield put(dataActions.getMainData());
         yield take(dataConstants.SET_MAIN_DATA);
         yield put(notificationsActions.checkIfRegisteredForNotifications());
-        yield delay(100);
-        yield removeAllDeliveredNotifications();
-        yield removeBadgeiOS();
       }
     }
   } catch (e) {

@@ -7,7 +7,7 @@ import {
   registerNotificationEvents,
   setNotificationChannel,
 } from '@utils/notifications/NotificationsService';
-import {call, delay, put, select, take, takeLatest} from 'redux-saga/effects';
+import {call, delay, put, select, take, takeLeading} from 'redux-saga/effects';
 import {appActions} from '../app/actions';
 import {getDeviceToken} from '../app/appSelectors';
 import {authConstants} from '../auth/actions';
@@ -96,20 +96,20 @@ function* handleOpenedNotification({payload}: any) {
 }
 
 export function* NotificationsSaga() {
-  yield takeLatest(
+  yield takeLeading(
     notificationsConstants.INIT_NOTIFICATIONS,
     initPushNotifications,
   );
-  yield takeLatest(
+  yield takeLeading(
     notificationsConstants.CHECK_IF_REGISTERED,
     handleNotificationRegistration,
   );
-  yield takeLatest(
+  yield takeLeading(
     // @ts-ignore
     notificationsConstants.GET_NOTIFICATIONS_TOKEN,
     handleNotificationsToken,
   );
-  yield takeLatest(
+  yield takeLeading(
     notificationsConstants.ON_NOTIFICATION_OPEN,
     handleOpenedNotification,
   );
