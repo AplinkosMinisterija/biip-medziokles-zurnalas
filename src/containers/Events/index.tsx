@@ -79,13 +79,6 @@ const Events = (props: any) => {
   );
 
   useEffect(() => {
-    getData();
-    isIOS
-      ? dispatch(notificationsActions.initNotifications())
-      : handleNotificationPermission();
-  }, []);
-
-  useEffect(() => {
     if (selectedEventCategory.key === EventCategory.future) {
       eventsFutureQuery.refetch();
     }
@@ -106,10 +99,20 @@ const Events = (props: any) => {
               dispatch(appActions.setNotificationPermissionAsked());
             }
           });
+        } else if (status === 'granted') {
+          dispatch(notificationsActions.initNotifications());
+          dispatch(appActions.setNotificationPermissionAsked());
         }
       });
     }
   };
+
+  useEffect(() => {
+    getData();
+    isIOS
+      ? dispatch(notificationsActions.initNotifications())
+      : handleNotificationPermission();
+  }, []);
 
   const getData = () => {
     if (!onSync) {

@@ -16,10 +16,6 @@ import {
   takeLatest,
 } from 'redux-saga/effects';
 import {strings} from '../../strings';
-import {
-  removeAllDeliveredNotifications,
-  removeBadgeiOS,
-} from '../../utils/notifications/NotificationsService';
 import {authActions} from '../auth/actions';
 import {selectLoginStatus} from '../auth/authSelectors';
 import {handleAccessTokenUpdate} from '../auth/saga';

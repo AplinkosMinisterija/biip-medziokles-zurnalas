@@ -31,7 +31,8 @@ function* initPushNotifications() {
 function* handleNotificationRegistration() {
   try {
     const isRegisteredNotifications: boolean = yield isRegistered();
-    if (!isRegisteredNotifications) {
+    const deviceToken: string | null = yield select(getDeviceToken);
+    if (!isRegisteredNotifications || deviceToken == null) {
       yield initPushNotifications();
     }
   } catch (e) {
@@ -45,7 +46,9 @@ function* handleNotificationsToken({
   payload: {os: string; token: string};
 }) {
   try {
+    console.tron.log('token', token);
     const deviceToken: string | null = yield select(getDeviceToken);
+    console.tron.log('deviceToken', deviceToken);
     if (deviceToken !== token) {
       yield call(api.updateNotificationToken, {os, token});
       yield put(appActions.saveDeviceToken(token));

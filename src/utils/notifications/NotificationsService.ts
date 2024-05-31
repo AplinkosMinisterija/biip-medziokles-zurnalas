@@ -13,16 +13,25 @@ export const isRegistered = () =>
   });
 
 export const registerRemoteNotifications = () => {
-  console.tron.log('registerRemoteNotifications');
-  Notifications.registerRemoteNotifications();
-
-  Notifications.events().registerRemoteNotificationsRegistered(event => {
-    storeRegistry.getStore().dispatch(
-      notificationsActions.getNotificationsToken({
-        os: Platform.OS,
-        token: event.deviceToken,
-      }),
+  console.tron.log('before registration');
+  Notifications.isRegisteredForRemoteNotifications().then(registered => {
+    //move check logic from here I guess, into saga
+    console.tron.log(
+      `registerRemoteNotifications: ${registered ? 'already registered' : 'registering'}`,
     );
+
+    if (registered) return;
+
+    Notifications.registerRemoteNotifications();
+
+    Notifications.events().registerRemoteNotificationsRegistered(event => {
+      storeRegistry.getStore().dispatch(
+        notificationsActions.getNotificationsToken({
+          os: Platform.OS,
+          token: event.deviceToken,
+        }),
+      );
+    });
   });
 };
 
@@ -31,7 +40,7 @@ export const registerNotificationEvents = () => {
 
   Notifications.events().registerNotificationReceivedForeground(
     (notification, completion) => {
-      console.tron.log('GOT NOTIFI', notification);
+      console.tron.log('GOT NOTIFI', notification.payload.body);
       if (!isIOS) {
         // check if we have a payload, and if a channel was supplied - if no channel then we have a remote push notification
         // if channel was supplied, it's a callback to the local notification we're creating inside of this if statement
