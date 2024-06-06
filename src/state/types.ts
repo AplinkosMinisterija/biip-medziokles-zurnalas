@@ -198,7 +198,7 @@ export interface GuestInvitation {
   ticketNumber: string;
   firstName?: string;
   lastName?: string;
-  photo?: string;
+  document?: string;
   email?: string;
 }
 
@@ -533,7 +533,6 @@ export interface SyncState {
 export interface AppState {
   selectedAppHomeScreenMode: AppHomeScreenMode;
   selectedHuntingArea: string | null;
-  guestInvitationPhoto: string | null;
   message: GlobalErrorMessageState;
   deviceToken: string | null;
   confirmationModal: ConfirmationModalState;
@@ -628,15 +627,6 @@ export interface PendingLimitRequest {
   updatedBy: string;
   updatedAt: string;
 }
-
-export type MemberGuestInvitation = {
-  nationality: NATIONALITY;
-  firstName: string;
-  lastName: string;
-  ticketNumber: string;
-  personalCode: string;
-  email: string;
-};
 
 // --- Footprints ---
 

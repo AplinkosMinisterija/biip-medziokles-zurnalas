@@ -127,7 +127,10 @@ export type RootStackParamList = {
   [routes.hunterInvitation]: undefined;
   [routes.inviteGuest]: undefined;
   [routes.inviteUser]: undefined;
-  [routes.imagePreview]: undefined;
+  [routes.imagePreview]: {
+    image: string;
+    onDeletePress: () => void;
+  };
   [routes.huntingMemberPanel]: {
     member: ExtendedHuntingMemberData;
     huntingData: ExtendedHuntingData;
