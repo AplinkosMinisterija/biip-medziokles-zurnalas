@@ -1,23 +1,21 @@
-import {useNavigation} from '@react-navigation/native';
-import {appActions} from '@root/state/app/actions';
-import {getGuestInvitationPhoto} from '@root/state/app/appSelectors';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import React from 'react';
 import {Image, View} from 'react-native';
-import {useDispatch, useSelector} from 'react-redux';
 import styled from 'styled-components';
 import Button from '../../components/Button';
 import HeaderBack from '../../components/HeaderBack';
 import {strings} from '../../strings';
+import {RootStackParamList, routes} from '../Router';
+
+type ImagePreviewRouteProp = RouteProp<RootStackParamList, routes.imagePreview>;
 
 const ImagePreview = () => {
-  const dispatch = useDispatch();
+  const route: ImagePreviewRouteProp = useRoute();
+  const {image, onDeletePress} = route.params;
   const navigation = useNavigation<any>();
-  const image: string | null = useSelector(getGuestInvitationPhoto);
 
   const handleDelete = () => {
-    if (image) {
-      dispatch(appActions.setGuestInvitationPhoto(null));
-    }
+    onDeletePress();
     navigation.goBack();
   };
 

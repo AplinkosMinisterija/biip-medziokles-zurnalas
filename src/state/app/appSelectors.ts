@@ -9,9 +9,6 @@ export const getConfirmationModalData = (state: State): any =>
 export const getSelectedHuntingArea = (state: State): string | null =>
   state.app.selectedHuntingArea;
 
-export const getGuestInvitationPhoto = (state: State): string | null =>
-  state.app.guestInvitationPhoto;
-
 export const getMessage = (state: State): GlobalErrorMessageState | null =>
   state.app.message;
 

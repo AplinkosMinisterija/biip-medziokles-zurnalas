@@ -5,7 +5,6 @@ import {appConstants} from './actions';
 export const INITIAL_APP_STATE: AppState = {
   selectedAppHomeScreenMode: AppHomeScreenMode.HUNTING,
   selectedHuntingArea: null,
-  guestInvitationPhoto: null,
   message: {
     type: null,
     message: null,
@@ -35,8 +34,6 @@ export const AppReducer = (state = INITIAL_APP_STATE, action: Action) => {
     case appConstants.SET_MESSAGE: {
       return update(state, {message: {$set: action.payload}});
     }
-    case appConstants.SET_GUEST_INVITATION_PHOTO:
-      return update(state, {guestInvitationPhoto: {$set: action.payload}});
     case appConstants.SAVE_DEVICE_TOKEN:
       return {
         ...state,
@@ -56,11 +53,6 @@ export const AppReducer = (state = INITIAL_APP_STATE, action: Action) => {
       return {
         ...INITIAL_APP_STATE,
         isConnected: state.isConnected,
-      };
-    case appConstants.SET_CONNECTED:
-      return {
-        ...state,
-        isConnected: action.payload,
       };
     case appConstants.NOTIFICATION_PERMISSION_ASKED:
       return {
